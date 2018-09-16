@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import scale
+from utils.data_handler import DataHandler
+from utils.skl import SKL
 
 
 def k_means(data, number_of_clusters, max_iter=300):
@@ -32,4 +34,9 @@ def process(file_path, column_indexes, number_of_clusters, is_normalize=True):
 
 
 if __name__ == '__main__':
-    process('../Data/telecom_churn.csv', [6, 7, 8], 4)
+    # process('../Data/telecom_churn.csv', [6, 7, 8], 4)
+    data = DataHandler.read_data_csv('../data/telecom_churn.csv')
+    data = DataHandler.convert_column_names_to_numbers(data)
+    data = SKL.normalize(data[[6, 7, 8]])
+    print(data[[6, 7, 8]])
+
