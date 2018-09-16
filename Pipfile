@@ -11,6 +11,7 @@ sklearn = "*"
 scipy = "*"
 matplotlib = "*"
 seaborn = "*"
+lxml = "*"
 
 [dev-packages]
 
