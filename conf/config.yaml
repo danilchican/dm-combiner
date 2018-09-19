@@ -1,19 +1,11 @@
 #
-# Database dce_machine Config
-#
-db_machine_user: 'roma'
-db_machine_pass: 'password'
-db_machine_host: '10.137.105.62'
-db_machine_port: '3306'
-db_machine_name: 'dce_machine'
-
-#
 # Logging config
 #
 log_path: '/tmp/combainer.log'
 log_level: 'DEBUG'
 log_date_format: '%Y-%m-%d %H:%M:%S'
 log_format: '%(asctime)-18s %(levelname)-8s %(filename)s:%(lineno)-6d %(message)s'
+
 #
 # Notification credentials
 #

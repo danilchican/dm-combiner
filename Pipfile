@@ -13,6 +13,8 @@ matplotlib = "*"
 seaborn = "*"
 lxml = "*"
 pyyaml = "*"
+"html5lib" = "*"
+"beautifulsoup4" = "*"
 
 [dev-packages]
 
