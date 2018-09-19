@@ -2,27 +2,36 @@ import pandas as pd
 import os
 import io
 import requests
+from utils.logger import logger
 
 
 class DataHandler:
 
     @staticmethod
     def read_data_csv(path):
+        logger.info('Started normalize_data')
+
         data = pd.read_csv(path)
         return data
 
     @staticmethod
     def read_data_html(url):
+        logger.info('Started normalize_data')
+
         data = pd.read_html(url)
         return data
 
     @staticmethod
     def read_data_excel(path):
+        logger.info('Started normalize_data')
+
         data = pd.read_excel(path)
         return data
 
     @staticmethod
     def get_csv_from_url(url):
+        logger.info('Started normalize_data')
+
         content = requests.get(url).content
         data = pd.read_csv(io.StringIO(content.decode('utf-8')))
         return data

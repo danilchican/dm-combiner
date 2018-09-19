@@ -3,9 +3,11 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import scale
 from utils.data_handler import DataHandler
 from utils.skl import SKL
+from utils import logger
 
 
 def k_means(data, number_of_clusters, max_iter=300):
+    logger.logger.info('Started k_means')
     clusterer = KMeans(n_clusters=number_of_clusters, max_iter=max_iter, random_state=10, init='k-means++')
     # compute cluster centers and predict cluster index for each sample
     cluster_indexes = clusterer.fit_predict(data)
@@ -13,17 +15,20 @@ def k_means(data, number_of_clusters, max_iter=300):
 
 
 def read_data_from_file(path):
+    logger.logger.info('Started reading from file')
     df = pd.read_csv(path)
     df.rename(columns={x: y for x, y in zip(df.columns, range(0, len(df.columns)))}, inplace=True)
     return df
 
 
 def normalize_data(data_frame, column_indexes):
+    logger.logger.info('Started normalize_data')
     normalized_data = pd.DataFrame(scale(data_frame[column_indexes]))
     return normalized_data
 
 
 def process(file_path, column_indexes, number_of_clusters, is_normalize=True):
+    logger.logger.info('Started process')
     df = read_data_from_file(path=file_path)
     if is_normalize:
         df = normalize_data(data_frame=df, column_indexes=column_indexes)
