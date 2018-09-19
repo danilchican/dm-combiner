@@ -41,8 +41,6 @@ class DataHandler:
         data = data.rename(columns={x: y for x, y in zip(data.columns, range(0, len(data.columns)))}, inplace=True)
         return data
 
-    def fetch
-
 
 if __name__ == '__main__':
     # data_handler = DataHandler('../data/telecom_churn.csv')
