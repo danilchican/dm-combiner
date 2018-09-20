@@ -44,4 +44,3 @@ if __name__ == '__main__':
     data = DataHandler.convert_column_names_to_numbers(data)
     data = SKL.normalize(data[[6, 7, 8]])
     print(data[[6, 7, 8]])
-

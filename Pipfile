@@ -15,6 +15,7 @@ lxml = "*"
 pyyaml = "*"
 "html5lib" = "*"
 "beautifulsoup4" = "*"
+"flake8" = "*"
 
 [dev-packages]
 

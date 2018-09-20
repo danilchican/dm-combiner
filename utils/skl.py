@@ -16,7 +16,7 @@ class SKL:
         return data
 
     @staticmethod
-    def k_means(data, n_clusters=8, max_iter=300, random_state=None, init='k-means++'):
+    def k_means(data, n_clusters, max_iter=300, random_state=None, init='k-means++'):
         clusters_info = cluster.KMeans(n_clusters=n_clusters, max_iter=max_iter, random_state=random_state, init=init)
 
         # compute cluster centers and predict cluster index for each sample
