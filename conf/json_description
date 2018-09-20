@@ -1,11 +1,8 @@
-Пример взаимодействия уровня библиотек алгоритмов с сервером
 json {
 	command {
-// секция универсальных и обязательных полей
 		name : ‘load’
-		framework : <название библиотеки либо default>
+		framework : 'scikit'
 
-// секция зависимых от name полей
 		data_type : DataType
 		data_size : <размер данных для массива>
 		data : <сами данные>
@@ -16,13 +13,11 @@ json {
 		framework : <название библиотеки либо default> // обязательное поле
 
 		num_clusters :
-		...
 	}
 
 	command {
 		name : ‘save’
-		framework : <название библиотеки либо default> // обязательное поле
-
+		framework : 'scikit'
 		data_type : DataType
 		data_size : <размер данных для массива>
 		data : <сами данные>
