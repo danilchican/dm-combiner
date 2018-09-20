@@ -1,6 +1,7 @@
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+from conf.config import PROJECT_ROOT
 
 
 def data_reduction(data, n_components=2):
@@ -18,7 +19,7 @@ def save_features_2d(fname, x, y, x_label='X Label', y_label='Y Label', title='T
     ax.set_title(title, fontsize=15)
 
     ax.grid(grid)
-    plt.savefig(fname)
+    plt.savefig(get_images_dir() + fname)
 
 
 def get_color_code(values, color_groups):
@@ -41,4 +42,10 @@ def save_clusters_2d(fname, data, centers, colors, x_label='X Label', y_label='Y
     ax1.set_ylabel(y_label)
     ax1.grid(grid)
 
-    plt.savefig(fname)
+    plt.savefig(get_images_dir() + fname)
+
+
+def get_images_dir():
+    path = PROJECT_ROOT + '/images/'
+    return path
+
