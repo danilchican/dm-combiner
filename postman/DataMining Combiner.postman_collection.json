@@ -1,0 +1,89 @@
+{
+	"info": {
+		"_postman_id": "d95bb4f9-8cc7-4962-9b00-610015413f79",
+		"name": "DataMining Combiner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "02fef60c-bdcc-48ed-9719-7cac44b0c457",
+								"type": "text/javascript",
+								"exec": [
+									"var response = JSON.parse(responseBody);",
+									"console.log(response);",
+									"",
+									"if(response.token !== undefined) {",
+									"    pm.environment.set(\"token\", response.token);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "qwerty@dm.combiner",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "qwerty123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{domain}}/{{version}}/auth/access/token",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"access",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3e123777-5083-41e5-b1a6-77d97d4947ed",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "13bf7f4a-3dc5-484b-9cb3-b12fefee5070",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "8159df4d-a442-4975-90f1-4846683ee048",
+  "name": "dm_combiner_local",
+  "values": [
+    {
+      "key": "domain",
+      "value": "http://datamining.combiner",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "enabled": true
+    },
+    {
+      "key": "version",
+      "value": "/api/v1",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2018-09-21T10:26:20.424Z",
+  "_postman_exported_using": "Postman/6.3.0"
+}
