@@ -6,9 +6,6 @@ import matplotlib.pyplot as plt
 from conf.config import PROJECT_ROOT
 
 
-
-
-
 def save_features_2d(fname, x, y, x_label='X Label', y_label='Y Label', title='Title', grid=True):
     fig, ax = plt.subplots()
     ax.scatter(x, y)
