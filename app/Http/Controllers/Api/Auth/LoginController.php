@@ -10,11 +10,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('guest', ['only' => 'login']);
-    }
-
     /**
      * Login user in system.
      *

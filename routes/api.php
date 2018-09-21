@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,7 +21,8 @@ $api->version('v1', function ($api) {
             $api->post('/access/token', 'App\Http\Controllers\Api\Auth\LoginController@login');
 
             $api->group(['middleware' => 'jwt.auth'], function ($api) {
-                $api->post('logout', 'App\Http\Controllers\Api\Auth\LoginController@logout');
+                $api->get('/profile', 'App\Http\Controllers\Api\Auth\ProfileController');
+                $api->post('/logout', 'App\Http\Controllers\Api\Auth\LoginController@logout');
             });
         });
 
