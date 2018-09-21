@@ -60,6 +60,78 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get profile info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "38881c64-9571-470d-9fb6-27ab94056c2a",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{domain}}/{{version}}/auth/profile",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{domain}}/{{version}}/auth/logout",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
