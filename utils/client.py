@@ -30,7 +30,7 @@ json_ob = {
 
 datas = {'file_path': 'Data/telecom_churn.csv', 'column_indexes': [5, 6, 7, 8], 'number_of_clusters': 6,
          'is_normalize': True}
-url = "http://127.0.0.1:5000/proccess_json"
+url = "http://127.0.0.1:5000/process_json"
 
 
 def send_request(url):

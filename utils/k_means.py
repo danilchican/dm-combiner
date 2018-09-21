@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import scale
 from utils.data_handler import DataHandler
-from utils.skl import SKL
+from libs.skl import SKL
 from utils import logger
 
 

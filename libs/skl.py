@@ -1,6 +1,5 @@
-import pandas as pd
-from sklearn import cluster
-from sklearn import preprocessing
+from sklearn import cluster, preprocessing
+from sklearn.decomposition import PCA
 
 
 class SKL:
@@ -25,4 +24,10 @@ class SKL:
         clusters_info_dict = {'centers': clusters_info.cluster_centers_, 'indexes': cluster_indexes,
                               'inertia': clusters_info.inertia_, 'labels': clusters_info.labels_}
         return clusters_info_dict
+
+    @staticmethod
+    def data_reduction(data, n_components=2):
+        pca = PCA(n_components=n_components).fit(data)
+        data = pca.transform(data)
+        return data
 

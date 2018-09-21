@@ -4,10 +4,9 @@ import pandas as pd
 import requests
 import numpy as np
 
-from utils.logger import logger
-from utils.decorators import exception, log_result
+from utils.decorators import exception
 from utils import helpers
-from utils.skl import SKL
+from libs.skl import SKL
 
 
 class DataHandler:

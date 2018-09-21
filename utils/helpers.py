@@ -2,15 +2,11 @@ import os
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
 
 from conf.config import PROJECT_ROOT
 
 
-def data_reduction(data, n_components=2):
-    pca = PCA(n_components=n_components).fit(data)
-    data = pca.transform(data)
-    return data
+
 
 
 def save_features_2d(fname, x, y, x_label='X Label', y_label='Y Label', title='Title', grid=True):
