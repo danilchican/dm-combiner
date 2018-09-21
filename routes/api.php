@@ -13,6 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+$api = app(Dingo\Api\Routing\Router::class);
+
+$api->version('v1', function ($api) {
+    $api->group(['prefix' => '/v1'], function ($api) {
+
+        /* Authentication */
+        $api->group(['prefix' => '/auth'], function ($api) {
+            $api->post('/access/token', 'App\Http\Controllers\Api\Auth\LoginController@login');
+
+            $api->group(['middleware' => 'jwt.auth'], function ($api) {
+                $api->post('logout', 'App\Http\Controllers\Api\Auth\LoginController@logout');
+            });
+        });
+
+    });
 });
