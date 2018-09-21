@@ -17,15 +17,32 @@ class Algorithm():
 class JsonHandler():
     commands = {
         'k-means': ['n_clusters', 'max_iter', 'init', 'random_state'],
-        'load': ['path', 'data_type'],
-        'save': ['data_type', ],
+        'load': ['path', 'data_type', 'columns'],
+        'save': ['data_type'],
         'normalize': ['norm', 'axis', 'copy', 'return_norm'],
         'scale': ['axis', 'with_mean', 'with_std', 'copy'],
         'pca': ['n_components'],
     }
 
-    def __init__(self, raw_data):
-        self.raw_data = raw_data
+    def __init__(self, json):
+        self.json = json
+
+    def validate_commands(self):
+        for al_step in self.json.values():
+            if al_step['name'] in self.commands.keys():
+                pass
+            else:
+                return 0
+        return 1
+
+    def validate_params(self):
+        for al_step in self.json.values():
+            for param in al_step['params']:
+                if param in self.commands.get(al_step['name']):
+                    pass
+                else:
+                    print('bad - {param} {command}'.format(param=param, command=(al_step['name'])))
+        return 1
 
 
 @app.route('/process_json', methods=['POST'])
@@ -35,8 +52,9 @@ def process_json():
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': ex})
-    for param in raw_data:
-        print(param)
+    json_nadler = JsonHandler(raw_data)
+    print(json_nadler.validate_commands())
+    print(json_nadler.validate_params())
 
     return jsonify({'success': True})
 
