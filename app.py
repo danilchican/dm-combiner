@@ -27,34 +27,50 @@ class JsonHandler():
     def __init__(self, json):
         self.json = json
 
-    def validate_commands(self):
+    def _validate_commands(self):
+        is_commands_validating_success = True
+        error = ''
         for al_step in self.json.values():
-            if al_step['name'] in self.commands.keys():
-                pass
-            else:
-                return 0
-        return 1
+            if al_step['name'] not in self.commands.keys():
+                is_commands_validating_success = False
+                error = 'No such command: {command}'.format(command=al_step['name'])
+        return is_commands_validating_success, error
 
-    def validate_params(self):
+    def _validate_params(self):
+        is_params_validating_success = True
+        error = ''
         for al_step in self.json.values():
             for param in al_step['params']:
-                if param in self.commands.get(al_step['name']):
-                    pass
-                else:
-                    print('bad - {param} {command}'.format(param=param, command=(al_step['name'])))
-        return 1
+                if param not in self.commands.get(al_step['name']):
+                    is_params_validating_success = False
+                    error = "No such param in '{command}' command: {param}".format(command=al_step['name'], param=param)
+        return is_params_validating_success, error
+
+    def validate_json(self):
+        is_commands_validating_success, error = self._validate_commands()
+        if not is_commands_validating_success:
+            return is_commands_validating_success, error
+
+        is_params_validating_success, error = self._validate_params()
+        if not is_params_validating_success:
+            return is_params_validating_success, error
+
+        return is_params_validating_success, error
 
 
 @app.route('/process_json', methods=['POST'])
 def process_json():
+    logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url ))
     try:
-        raw_data = json.loads(request.get_json(), encoding='utf-8')
+        json_data = request.get_json(force=True)
+        raw_data = json.loads(json_data, encoding='utf-8')
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': ex})
-    json_hnadler = JsonHandler(raw_data)
-    print(json_hnadler.validate_commands())
-    print(json_hnadler.validate_params())
+        return jsonify({'success': False, 'error': str(ex)})
+    json_handler = JsonHandler(raw_data)
+    is_validate_success, error = json_handler.validate_json()
+    if not is_validate_success:
+        return jsonify({'success': False, 'error': error})
 
     return jsonify({'success': True})
 
