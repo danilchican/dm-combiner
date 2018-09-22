@@ -37,3 +37,19 @@ def exception(func):
     return decorated
 
 
+def log_validators(func):
+    """
+    Logging validators results.
+    """
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        is_success, error = func(*args, **kwargs)
+        if is_success:
+            logger.info('{is_success}, {error} | {func}'.format(is_success=is_success, error=error, func=func.__name__))
+        else:
+            logger.info('{is_success} | {func}'.format(is_success=is_success, func=func.__name__))
+        return is_success, error
+    return decorated
+
+
+

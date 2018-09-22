@@ -5,6 +5,7 @@ from typing import List
 from flask import Flask, request, jsonify
 
 from utils.logger import logger
+from utils.decorators import log_validators
 
 app = Flask(__name__)
 
@@ -27,48 +28,62 @@ class JsonHandler():
     def __init__(self, json):
         self.json = json
 
+    @log_validators
     def _validate_commands(self):
         is_commands_validating_success = True
         error = ''
         for al_step in self.json.values():
-            if al_step['name'] not in self.commands.keys():
+            if al_step.get('name') not in self.commands.keys():
                 is_commands_validating_success = False
                 error = 'No such command: {command}'.format(command=al_step['name'])
         return is_commands_validating_success, error
 
+    @log_validators
     def _validate_params(self):
         is_params_validating_success = True
         error = ''
         for al_step in self.json.values():
-            for param in al_step['params']:
-                if param not in self.commands.get(al_step['name']):
+            for param in al_step.get('params'):
+                if param not in self.commands.get(al_step.get('name')):
                     is_params_validating_success = False
                     error = "No such param in '{command}' command: {param}".format(command=al_step['name'], param=param)
         return is_params_validating_success, error
 
+    @log_validators
+    def _validate_json_structure(self):
+        is_validating_success = True
+        error = ''
+        for al_step in self.json.values():
+            if not(isinstance(al_step, dict) and al_step.get('name') and isinstance(al_step.get('params'), dict)):
+                is_validating_success = False
+                error = 'Not valid json structure'
+        return is_validating_success, error
+
     def validate_json(self):
-        is_commands_validating_success, error = self._validate_commands()
-        if not is_commands_validating_success:
-            return is_commands_validating_success, error
+        validation_functions = [self._validate_json_structure, self._validate_commands, self._validate_params]
 
-        is_params_validating_success, error = self._validate_params()
-        if not is_params_validating_success:
-            return is_params_validating_success, error
+        for validation_function in validation_functions:
+            is_validation_success, error = validation_function()
+            if not is_validation_success:
+                return is_validation_success, error
 
-        return is_params_validating_success, error
+        return is_validation_success, error
 
 
 @app.route('/process_json', methods=['POST'])
 def process_json():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url ))
     try:
-        json_data = request.get_json(force=True)
-        raw_data = json.loads(json_data, encoding='utf-8')
+        raw_data = request.get_json(force=True)
+        print(type(raw_data), raw_data)
+        # raw_data = json.loads(json_data, encoding='utf-8')
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': str(ex)})
+
     json_handler = JsonHandler(raw_data)
     is_validate_success, error = json_handler.validate_json()
+
     if not is_validate_success:
         return jsonify({'success': False, 'error': error})
 
