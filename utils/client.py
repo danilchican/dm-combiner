@@ -6,7 +6,7 @@ json_ob = {
         "name": "load",
         "framework": "scikit",
 
-        'params': {
+        "params": {
             # "data_type": "DataType",
             # "data_size": "размер данных для массива",
             # "data": "сами данные"
@@ -17,7 +17,7 @@ json_ob = {
         "name": "k-means",
         "framework": "scikit",
 
-        'params': {
+        "params": {
             "n_clusters": 2
             },
     },
@@ -26,7 +26,7 @@ json_ob = {
         "name": "save",
         "framework": "scikit",
 
-        'params': {
+        "params": {
             "data_type": "DataType",
             "data_size": "размер данных для массива",
             "data": "сами данные"

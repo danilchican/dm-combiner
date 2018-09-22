@@ -75,8 +75,7 @@ def process_json():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url ))
     try:
         raw_data = request.get_json(force=True)
-        print(type(raw_data), raw_data)
-        # raw_data = json.loads(json_data, encoding='utf-8')
+        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': str(ex)})
@@ -87,7 +86,7 @@ def process_json():
     if not is_validate_success:
         return jsonify({'success': False, 'error': error})
 
-    return jsonify({'success': True})
+    return jsonify({'success': 'Molodec Vladik!! Ty vse sdelal pravilno!!!'})
 
 
 if __name__ == '__main__':
