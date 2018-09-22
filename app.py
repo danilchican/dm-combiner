@@ -4,7 +4,7 @@ from typing import List
 
 from flask import Flask, request, jsonify
 
-from utils import logger
+from utils.logger import logger
 
 app = Flask(__name__)
 
@@ -52,12 +52,12 @@ def process_json():
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': ex})
-    json_nadler = JsonHandler(raw_data)
-    print(json_nadler.validate_commands())
-    print(json_nadler.validate_params())
+    json_hnadler = JsonHandler(raw_data)
+    print(json_hnadler.validate_commands())
+    print(json_hnadler.validate_params())
 
     return jsonify({'success': True})
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
