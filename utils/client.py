@@ -7,6 +7,7 @@ json_ob = {
         "framework": "scikit",
 
         "params": {
+            "path": 'data/telecom_churn.csv'
             # "data_type": "DataType",
             # "data_size": "размер данных для массива",
             # "data": "сами данные"
@@ -28,8 +29,6 @@ json_ob = {
 
         "params": {
             "data_type": "DataType",
-            "data_size": "размер данных для массива",
-            "data": "сами данные"
         },
     },
 }
