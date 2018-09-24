@@ -32,7 +32,7 @@ class CombinerEndpointBuilder extends AbstractEndpointBuilder
     {
         $combinerUrl = config('api.combiner.url');
 
-        if ($combinerUrl === null) {
+        if (empty($combinerUrl)) {
             \Log::error('Combiner url is not set.');
             throw new CombinerConfigurationNotFoundException('Combiner url is not set.');
         }
@@ -43,12 +43,12 @@ class CombinerEndpointBuilder extends AbstractEndpointBuilder
     private function getCombinerPrefix()
     {
         $combinerPrefix = config('api.combiner.prefix');
-        return $combinerPrefix === null ? '' : '/' . $combinerPrefix;
+        return empty($combinerPrefix) ? '' : '/' . $combinerPrefix;
     }
 
     private function getCombinerVersion()
     {
         $combinerVersion = config('api.combiner.version');
-        return $combinerVersion === null ? '' : '/' . $combinerVersion;
+        return empty($combinerVersion) ? '' : '/' . $combinerVersion;
     }
 }
