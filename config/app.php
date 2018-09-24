@@ -162,6 +162,7 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
+        App\Providers\CombinerIntegrationProvider::class,
     ],
 
     /*
