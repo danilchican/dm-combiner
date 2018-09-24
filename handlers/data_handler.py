@@ -60,7 +60,7 @@ if __name__ == '__main__':
     loaded_data = data_handler.convert_column_names_to_numbers(data)
     data = data_handler.get_numerical_data(loaded_data)[[1, 2, 5, 6]]
     helpers.save_features_2d('test.png', data[1], data[2])
-    reducted_data = helpers.data_reduction(data)
+    reducted_data = SKL.data_reduction(data)
 
     clusters_info_dict = SKL.k_means(data=data, n_clusters=3)
     colors = helpers.get_color_code(clusters_info_dict['labels'].astype(float), 3)
