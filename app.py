@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from pandas import json
 import pandas as pd
 import os
 
 from handlers.json_handler import JsonHandler
 from handlers.data_handler import DataHandler
-from conf.config import PROJECT_ROOT
+from conf.config import PROJECT_ROOT, STATIC_FILES
 from utils.logger import logger
 
 app = Flask(__name__)
@@ -51,6 +51,29 @@ def params(name):
         return jsonify({'success': 'true', 'result': params})
     else:
         return jsonify({'success': 'true', 'error': 'No such command.'})
+
+
+@app.route('/get_file/<string:filename>', methods=['GET'])
+def return_file(filename):
+    try:
+        print(os.path.join(PROJECT_ROOT, 'data', filename))
+        return send_file(os.path.join(PROJECT_ROOT, 'data', filename), attachment_filename=filename)
+    except Exception as ex:
+        logger.warning('{}: {}'.format(type(ex).__name__, ex))
+        return jsonify({'success': False, 'error': str(ex)})
+
+
+@app.route('/files', methods=['GET'])
+def files():
+    try:
+        files = []
+        for file in os.listdir(STATIC_FILES):
+            if os.path.isfile(os.path.join(STATIC_FILES, file)):
+                files.append(file)
+        return jsonify({'success': False, 'result': files})
+    except Exception as ex:
+        logger.warning('{}: {}'.format(type(ex).__name__, ex))
+        return jsonify({'success': False, 'error': str(ex)})
 
 
 if __name__ == '__main__':

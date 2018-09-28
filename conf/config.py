@@ -5,6 +5,7 @@ import yaml
 
 PROJECT_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
 PROJECT_ROOT = os.path.normpath(PROJECT_ROOT)
+STATIC_FILES = os.path.join(PROJECT_ROOT, 'data/')
 
 if PROJECT_ROOT not in sys.path:
     sys.path.append(PROJECT_ROOT)

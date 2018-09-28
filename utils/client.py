@@ -1,5 +1,9 @@
+import os
 import requests
 import json
+
+from conf.config import PROJECT_ROOT
+
 
 json_ob = {
     "command_1": {
@@ -47,5 +51,6 @@ def send_request(url):
 
 
 if __name__ == '__main__':
-    send_request(url)
+    # send_request(url)
     # print(json.dumps(datas))
+    os.path.join(PROJECT_ROOT, 'data', '')
