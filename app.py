@@ -16,7 +16,6 @@ def process_json():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
     try:
         raw_data = request.get_json(force=True)
-        raw_data = json.loads(raw_data)
         logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
@@ -34,10 +33,25 @@ def process_json():
             data_handler = DataHandler(os.path.join(PROJECT_ROOT, params.get('path')))
             data = data_handler.read_data_csv()
             data = data.head(n=10)
-            print(data.head())
+            data_dict = data.to_dict()
+    return jsonify({'success': 'true', 'result': data_dict})
 
-    return jsonify({'success': 'True', 'result': pd.DataFrame.to_json(data)})
+
+@app.route('/commands', methods=['GET'])
+def commands():
+    commands = list(JsonHandler.commands.keys())
+    return jsonify({'success': 'true', 'result': commands})
+
+
+@app.route('/params/<string:name>', methods=['GET'])
+def params(name):
+    commands = JsonHandler.commands
+    params = commands.get(name)
+    if params:
+        return jsonify({'success': 'true', 'result': params})
+    else:
+        return jsonify({'success': 'true', 'error': 'No such command.'})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)
