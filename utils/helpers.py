@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from conf.config import PROJECT_ROOT
 
 
+ALLOWED_EXTENSIONS = ['.csv']
+
+
 def save_features_2d(fname, x, y, x_label='X Label', y_label='Y Label', title='Title', grid=True):
     fig, ax = plt.subplots()
     ax.scatter(x, y)
@@ -45,3 +48,6 @@ def get_path_for_saving_image(fname):
     path = os.path.join(PROJECT_ROOT, 'images', fname)
     return path
 
+
+def filter_file_extension(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

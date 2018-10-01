@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify, send_file
-from pandas import json
-import pandas as pd
 import os
+
+from werkzeug.utils import secure_filename
 
 from handlers.json_handler import JsonHandler
 from handlers.data_handler import DataHandler
 from conf.config import PROJECT_ROOT, STATIC_FILES
 from utils.logger import logger
+from utils import helpers
 
 app = Flask(__name__)
 
@@ -57,7 +58,7 @@ def params(name):
 def return_file(filename):
     try:
         print(os.path.join(PROJECT_ROOT, 'data', filename))
-        return send_file(os.path.join(PROJECT_ROOT, 'data', filename), attachment_filename=filename)
+        return send_file(os.path.join(STATIC_FILES, filename), attachment_filename=filename)
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': str(ex)})
@@ -70,10 +71,24 @@ def files():
         for file in os.listdir(STATIC_FILES):
             if os.path.isfile(os.path.join(STATIC_FILES, file)):
                 files.append(file)
-        return jsonify({'success': False, 'result': files})
+        return jsonify({'success': True, 'result': files})
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': str(ex)})
+
+
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'error': "No file part."})
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'success': False, 'error': "No selected file."})
+    if file and helpers.filter_file_extension(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(STATIC_FILES, filename))
+        return jsonify({'success': True})
+    return jsonify({'success': False, 'error': "Not allowed format."})
 
 
 if __name__ == '__main__':
