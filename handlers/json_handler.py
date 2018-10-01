@@ -56,11 +56,9 @@ class JsonHandler():
         return is_validation_success, error
 
     def compose_commands(self):
-        print(111111)
         commands = {}
         for command in self.json.values():
             commands.setdefault(command.get('name'), {})
             for param in command.get('params'):
                 commands[command.get('name')][param] = command.get('params').get(param)
-        print(commands)
         return commands

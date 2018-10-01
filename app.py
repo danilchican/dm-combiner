@@ -34,8 +34,38 @@ def process_json():
             data_handler = DataHandler(os.path.join(PROJECT_ROOT, params.get('path')))
             data = data_handler.read_data_csv()
             data = data.head(n=10)
-            data_dict = data.to_dict()
+            data_dict = data.to_dict('list')
     return jsonify({'success': 'true', 'result': data_dict})
+
+
+@app.route('/preview', methods=['POST'])
+def preview():
+    logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
+    try:
+        raw_data = request.get_json(force=True)
+        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
+    except Exception as ex:
+        logger.warning('{}: {}'.format(type(ex).__name__, ex))
+        return jsonify({'success': False, 'error': str(ex)})
+    json_handler = JsonHandler(raw_data)
+    is_validate_success, error = json_handler.validate_json()
+
+    if not is_validate_success:
+        return jsonify({'success': False, 'error': error})
+    commands = json_handler.compose_commands()
+    for command, params in commands.items():
+        if command == 'load':
+            data_handler = DataHandler(os.path.join(PROJECT_ROOT, params.get('path')))
+            data = data_handler.read_data_csv()
+            data = data.head(n=10)
+            data_dict = data.to_dict('list')
+    data = []
+    for i in data_dict:
+        d ={}
+        d['title'] = i
+        d['data'] = data_dict[i]
+        data.append(d)
+    return jsonify({'success': 'true', 'result': data})
 
 
 @app.route('/commands', methods=['GET'])
