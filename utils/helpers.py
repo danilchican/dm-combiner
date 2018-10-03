@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from conf.config import PROJECT_ROOT
 
 
-ALLOWED_EXTENSIONS = ['.csv']
+ALLOWED_EXTENSIONS = ['csv']
 
 
 def save_features_2d(fname, x, y, x_label='X Label', y_label='Y Label', title='Title', grid=True):

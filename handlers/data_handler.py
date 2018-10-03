@@ -6,7 +6,7 @@ import numpy as np
 
 from utils.decorators import exception
 from utils import helpers
-from libs.skl import SKL
+from frameworks.skl import SKL
 
 
 class DataHandler:

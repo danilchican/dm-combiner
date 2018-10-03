@@ -85,10 +85,22 @@ def params(name):
 
 
 @app.route('/get_file/<string:filename>', methods=['GET'])
-def return_file(filename):
+def get_file(filename):
     try:
-        print(os.path.join(PROJECT_ROOT, 'data', filename))
         return send_file(os.path.join(STATIC_FILES, filename), attachment_filename=filename)
+    except Exception as ex:
+        logger.warning('{}: {}'.format(type(ex).__name__, ex))
+        return jsonify({'success': False, 'error': str(ex)})
+
+
+@app.route('/get_file_path/<string:filename>', methods=['GET'])
+def get_file_path(filename):
+    try:
+        file_path = os.path.join(PROJECT_ROOT, 'data', filename)
+        if os.path.isfile(file_path):
+            return jsonify({'success': True, 'result': file_path})
+        else:
+            return jsonify({'success': False, 'error': 'No such file.'})
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': str(ex)})
@@ -110,15 +122,20 @@ def files():
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
+        logger.warn('upload_file | No file part.')
         return jsonify({'success': False, 'error': "No file part."})
     file = request.files['file']
     if file.filename == '':
+        logger.warn('upload_file | No selected file.')
         return jsonify({'success': False, 'error': "No selected file."})
-    if file and helpers.filter_file_extension(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(STATIC_FILES, filename))
-        return jsonify({'success': True})
-    return jsonify({'success': False, 'error': "Not allowed format."})
+    if not helpers.filter_file_extension(file.filename):
+        logger.warn('upload_file | No selected file.')
+        return jsonify({'success': False, 'error': "Not allowed format."})
+
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(STATIC_FILES, filename)
+    file.save(file_path)
+    return jsonify({'success': True, 'result': file_path})
 
 
 if __name__ == '__main__':

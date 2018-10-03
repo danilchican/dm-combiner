@@ -29,5 +29,4 @@ class SKL:
     def data_reduction(data, n_components=2):
         pca = PCA(n_components=n_components).fit(data)
         data = pca.transform(data)
-        return data
-
+        return da
