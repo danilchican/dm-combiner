@@ -12,10 +12,7 @@ json_ob = {
 
         "params": {
             "path": 'data/telecom_churn.csv'
-            # "data_type": "DataType",
-            # "data_size": "размер данных для массива",
-            # "data": "сами данные"
-        },
+        }
     },
 
     "command_2": {
@@ -24,7 +21,7 @@ json_ob = {
 
         "params": {
             "n_clusters": 2
-            },
+            }
     },
 
     "command_3": {
@@ -32,9 +29,9 @@ json_ob = {
         "framework": "scikit",
 
         "params": {
-            "data_type": "DataType",
-        },
-    },
+            "data_type": "DataType"
+        }
+    }
 }
 
 datas = {'file_path': 'Data/telecom_churn.csv', 'column_indexes': [5, 6, 7, 8], 'number_of_clusters': 6,

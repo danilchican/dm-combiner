@@ -8,6 +8,7 @@ from handlers.data_handler import DataHandler
 from conf.config import PROJECT_ROOT, STATIC_FILES
 from utils.logger import logger
 from utils import helpers
+from frameworks.skl import SKL
 
 app = Flask(__name__)
 
@@ -23,19 +24,30 @@ def process_json():
         return jsonify({'success': False, 'error': str(ex)})
 
     json_handler = JsonHandler(raw_data)
-    is_validate_success, error = json_handler.validate_json()
-
-    if not is_validate_success:
-        return jsonify({'success': False, 'error': error})
+    # is_validate_success, error = json_handler.validate_json()
+    #
+    # if not is_validate_success:
+    #     return jsonify({'success': False, 'error': error})
 
     commands = json_handler.compose_commands()
-    for command, params in commands.items():
-        if command == 'load':
-            data_handler = DataHandler(os.path.join(PROJECT_ROOT, params.get('path')))
-            data = data_handler.read_data_csv()
-            data = data.head(n=10)
-            data_dict = data.to_dict('list')
-    return jsonify({'success': 'true', 'result': data_dict})
+
+    data_handler = DataHandler(os.path.join(PROJECT_ROOT, commands['load'].get('path')))
+    data = data_handler.read_data_csv()
+    data = data_handler.get_numerical_data(data)
+    # data = data.head(n=10)
+    print(data)
+    methods = SKL().methods
+    print(methods)
+    for i in commands:
+        print(i)
+        if i in methods and i == 'k_means':
+            print(commands[i])
+            result = methods[i](data, **commands[i])
+            for i in result:
+                result[i] = result[i].tolist()
+            print(i, result)
+    data_dict = data.to_dict('list')
+    return jsonify({'success': 'true', 'result': result})
 
 
 @app.route('/preview', methods=['POST'])

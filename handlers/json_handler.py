@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from utils.decorators import log_validators
 
 
@@ -56,7 +57,7 @@ class JsonHandler():
         return is_validation_success, error
 
     def compose_commands(self):
-        commands = {}
+        commands = OrderedDict()
         for command in self.json.values():
             commands.setdefault(command.get('name'), {})
             for param in command.get('params'):

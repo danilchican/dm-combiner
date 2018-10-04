@@ -1,5 +1,6 @@
 from sklearn import cluster, preprocessing
 from sklearn.decomposition import PCA
+import inspect
 
 
 class SKL:
@@ -16,6 +17,7 @@ class SKL:
 
     @staticmethod
     def k_means(data, n_clusters, max_iter=300, random_state=None, init='k-means++'):
+        print(11111, data, n_clusters)
         clusters_info = cluster.KMeans(n_clusters=n_clusters, max_iter=max_iter, random_state=random_state, init=init)
 
         # compute cluster centers and predict cluster index for each sample
@@ -29,4 +31,27 @@ class SKL:
     def data_reduction(data, n_components=2):
         pca = PCA(n_components=n_components).fit(data)
         data = pca.transform(data)
-        return da
+        return data
+
+    @property
+    def methods(self):
+        methods = {}
+        for method_name in self.__class__.__dict__:
+            method_obj = getattr(self.__class__, method_name)
+            if callable(method_obj) and not method_name.startswith("__"):
+                methods[method_name] = method_obj
+        return methods
+
+    @property
+    def methods_params(self):
+        methods_params_dict = {}
+        for method_name in self.methods:
+            methods_params_dict[method_name] = inspect.getargspec(getattr(self.__class__, method_name))[0]
+        return methods_params_dict
+
+
+if __name__ == "__main__":
+    lib_dict = SKL.__dict__
+    methods = SKL().methods
+    print(methods)
+    print(SKL().methods_params)
