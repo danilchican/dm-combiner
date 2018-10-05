@@ -14,6 +14,7 @@ from utils.decorators import view_exception
 app = Flask(__name__)
 
 
+# --- Frameworks | commands | params
 @app.route('/frameworks', methods=['GET'])
 @view_exception
 def frameworks():
@@ -36,11 +37,14 @@ def commands(framework_name):
     return jsonify({'success': 'true', 'result': commands})
 
 
-@app.route('/params/<string:name>', methods=['GET'])
+@app.route('/params/<string:framework_name>/<string:func_name>', methods=['GET'])
 @view_exception
-def params(name):
-    commands = JsonHandler.commands
-    params = commands.get(name)
+def params(framework_name, func_name):
+    frameworks = Framework().get_subclasses()
+    framework = frameworks.get(framework_name)
+    if not framework:
+        return jsonify({'success': False, 'error': 'No such framework'})
+    params = framework().methods_params.get(func_name)
     if params:
         return jsonify({'success': 'true', 'result': params})
     else:
@@ -91,39 +95,6 @@ def upload_file():
     return jsonify({'success': True, 'result': file_path})
 
 
-@app.route('/process_json', methods=['POST'])
-@view_exception
-def process_json():
-    logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
-    try:
-        raw_data = request.get_json(force=True)
-        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
-    except Exception as ex:
-        logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': str(ex)})
-
-    json_handler = JsonHandler(raw_data)
-    # is_validate_success, error = json_handler.validate_json()
-    #
-    # if not is_validate_success:
-    #     return jsonify({'success': False, 'error': error})
-
-    commands = json_handler.compose_commands()
-
-    data_handler = DataHandler(os.path.join(PROJECT_ROOT, commands['load'].get('path')))
-    data = data_handler.read_data_csv()
-    data = data_handler.get_numerical_data(data)
-    # data = data.head(n=10)
-    methods = SKL().methods
-    # for i in commands:
-    #     if i in methods and i == 'k_means':
-    #         result = methods[i](data, **commands[i])
-    #         for i in result:
-    #             result[i] = result[i].tolist()
-    data_dict = data.to_dict('list')
-    return jsonify({'success': 'true', 'result': result})
-
-
 # --- Algorithm views
 @app.route('/preview', methods=['POST'])
 @view_exception
@@ -154,6 +125,39 @@ def preview():
         d['data'] = data_dict[i]
         data.append(d)
     return jsonify({'success': 'true', 'result': data})
+
+
+@app.route('/process_json', methods=['POST'])
+@view_exception
+def process_json():
+    logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
+    try:
+        raw_data = request.get_json(force=True)
+        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
+    except Exception as ex:
+        logger.warning('{}: {}'.format(type(ex).__name__, ex))
+        return jsonify({'success': False, 'error': str(ex)})
+
+    json_handler = JsonHandler(raw_data)
+    # is_validate_success, error = json_handler.validate_json()
+    #
+    # if not is_validate_success:
+    #     return jsonify({'success': False, 'error': error})
+
+    commands = json_handler.compose_commands()
+
+    data_handler = DataHandler(os.path.join(PROJECT_ROOT, commands['load'].get('path')))
+    data = data_handler.read_data_csv()
+    data = data_handler.get_numerical_data(data)
+    # data = data.head(n=10)
+    methods = SKL().methods
+    for i in commands:
+        if i in methods and i == 'k_means':
+            result = methods[i](data, **commands[i])
+            for i in result:
+                result[i] = result[i].tolist()
+    data_dict = data.to_dict('list')
+    return jsonify({'success': 'true', 'result': result})
 
 
 if __name__ == '__main__':
