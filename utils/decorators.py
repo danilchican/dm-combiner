@@ -1,6 +1,7 @@
 from functools import wraps
 
 import pandas as pd
+from flask import jsonify
 
 from utils.logger import logger
 
@@ -30,9 +31,25 @@ def exception(func):
         try:
             out_condition = func(*args, **kwargs)
         except Exception as ex:
-            logger.warning('{name}()'.format(name=func.__name__))
-            logger.warning('{}: {}'.format(type(ex).__name__, ex))
+            full_ex_info = '{func_name}() | {type} : {ex}'.format(type=type(ex).__name__, func_name=func.__name__, ex=ex)
+            logger.warning(full_ex_info)
             return None
+        return out_condition
+    return decorated
+
+
+def view_exception(func):
+    """
+    Wrap up views functions with try-except.
+    """
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        try:
+            out_condition = func(*args, **kwargs)
+        except Exception as ex:
+            full_ex_info = '{func_name}() | {type} : {ex}'.format(type=type(ex).__name__, func_name=func.__name__, ex=ex)
+            logger.warning(full_ex_info)
+            return jsonify({'success': False, 'error': str(full_ex_info)})
         return out_condition
     return decorated
 

@@ -2,9 +2,9 @@ import os
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+from werkzeug.utils import secure_filename
 
-from conf.config import PROJECT_ROOT
-
+from conf.config import PROJECT_ROOT, STATIC_FILES
 
 ALLOWED_EXTENSIONS = ['csv']
 
@@ -51,3 +51,10 @@ def get_path_for_saving_image(fname):
 
 def filter_file_extension(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def save_file(file):
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(STATIC_FILES, filename)
+    file.save(file_path)
+    return file_path

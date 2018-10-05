@@ -1,19 +1,98 @@
-from flask import Flask, request, jsonify, send_file
 import os
 
-from werkzeug.utils import secure_filename
+from flask import Flask, request, jsonify, send_file
 
-from handlers.json_handler import JsonHandler
-from handlers.data_handler import DataHandler
 from conf.config import PROJECT_ROOT, STATIC_FILES
-from utils.logger import logger
-from utils import helpers
+from handlers.data_handler import DataHandler
+from handlers.json_handler import JsonHandler
 from frameworks.skl import SKL
+from frameworks.framework import Framework
+from utils import helpers
+from utils.logger import logger
+from utils.decorators import view_exception
 
 app = Flask(__name__)
 
 
+@app.route('/frameworks', methods=['GET'])
+@view_exception
+def frameworks():
+    frameworks_dict = Framework().get_subclasses()
+    frameworks_names = list(frameworks_dict.keys())
+    if not frameworks_names:
+        return jsonify({'success': True, 'result': 'No frameworks.'})
+    return jsonify({'success': True, 'result': frameworks_names})
+
+
+@app.route('/commands/<string:framework_name>', methods=['GET'])
+@view_exception
+def commands(framework_name):
+    frameworks = Framework().get_subclasses()
+    framework = frameworks.get(framework_name)
+    if not framework:
+        return jsonify({'success': False, 'error': 'No such framework'})
+    commands = framework().methods
+    commands = list(commands.keys())
+    return jsonify({'success': 'true', 'result': commands})
+
+
+@app.route('/params/<string:name>', methods=['GET'])
+@view_exception
+def params(name):
+    commands = JsonHandler.commands
+    params = commands.get(name)
+    if params:
+        return jsonify({'success': 'true', 'result': params})
+    else:
+        return jsonify({'success': 'true', 'error': 'No such command.'})
+
+
+# --- Views which working with files
+@app.route('/files', methods=['GET'])
+@view_exception
+def files():
+    files = []
+    for file in os.listdir(STATIC_FILES):
+        if os.path.isfile(os.path.join(STATIC_FILES, file)):
+            files.append(file)
+    return jsonify({'success': True, 'result': files})
+
+
+@app.route('/get_file/<string:filename>', methods=['GET'])
+@view_exception
+def get_file(filename):
+    return send_file(os.path.join(STATIC_FILES, filename), attachment_filename=filename)
+
+
+@app.route('/get_file_path/<string:filename>', methods=['GET'])
+@view_exception
+def get_file_path(filename):
+    file_path = os.path.join(STATIC_FILES, filename)
+    if os.path.isfile(file_path):
+        return jsonify({'success': True, 'result': file_path})
+    else:
+        return jsonify({'success': False, 'error': 'No such file.'})
+
+
+@app.route('/upload_file', methods=['POST'])
+@view_exception
+def upload_file():
+    if 'file' not in request.files:
+        logger.warn('upload_file | No file part.')
+        return jsonify({'success': False, 'error': "No file part."})
+    file = request.files['file']
+    if file.filename == '':
+        logger.warn('upload_file | No selected file.')
+        return jsonify({'success': False, 'error': "No selected file."})
+    if not helpers.filter_file_extension(file.filename):
+        logger.warn('upload_file | No selected file.')
+        return jsonify({'success': False, 'error': "Not allowed format."})
+    file_path = helpers.save_file(file)
+    return jsonify({'success': True, 'result': file_path})
+
+
 @app.route('/process_json', methods=['POST'])
+@view_exception
 def process_json():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
     try:
@@ -35,22 +114,19 @@ def process_json():
     data = data_handler.read_data_csv()
     data = data_handler.get_numerical_data(data)
     # data = data.head(n=10)
-    print(data)
     methods = SKL().methods
-    print(methods)
-    for i in commands:
-        print(i)
-        if i in methods and i == 'k_means':
-            print(commands[i])
-            result = methods[i](data, **commands[i])
-            for i in result:
-                result[i] = result[i].tolist()
-            print(i, result)
+    # for i in commands:
+    #     if i in methods and i == 'k_means':
+    #         result = methods[i](data, **commands[i])
+    #         for i in result:
+    #             result[i] = result[i].tolist()
     data_dict = data.to_dict('list')
     return jsonify({'success': 'true', 'result': result})
 
 
+# --- Algorithm views
 @app.route('/preview', methods=['POST'])
+@view_exception
 def preview():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
     try:
@@ -78,76 +154,6 @@ def preview():
         d['data'] = data_dict[i]
         data.append(d)
     return jsonify({'success': 'true', 'result': data})
-
-
-@app.route('/commands', methods=['GET'])
-def commands():
-    commands = list(JsonHandler.commands.keys())
-    return jsonify({'success': 'true', 'result': commands})
-
-
-@app.route('/params/<string:name>', methods=['GET'])
-def params(name):
-    commands = JsonHandler.commands
-    params = commands.get(name)
-    if params:
-        return jsonify({'success': 'true', 'result': params})
-    else:
-        return jsonify({'success': 'true', 'error': 'No such command.'})
-
-
-@app.route('/get_file/<string:filename>', methods=['GET'])
-def get_file(filename):
-    try:
-        return send_file(os.path.join(STATIC_FILES, filename), attachment_filename=filename)
-    except Exception as ex:
-        logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': str(ex)})
-
-
-@app.route('/get_file_path/<string:filename>', methods=['GET'])
-def get_file_path(filename):
-    try:
-        file_path = os.path.join(PROJECT_ROOT, 'data', filename)
-        if os.path.isfile(file_path):
-            return jsonify({'success': True, 'result': file_path})
-        else:
-            return jsonify({'success': False, 'error': 'No such file.'})
-    except Exception as ex:
-        logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': str(ex)})
-
-
-@app.route('/files', methods=['GET'])
-def files():
-    try:
-        files = []
-        for file in os.listdir(STATIC_FILES):
-            if os.path.isfile(os.path.join(STATIC_FILES, file)):
-                files.append(file)
-        return jsonify({'success': True, 'result': files})
-    except Exception as ex:
-        logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': str(ex)})
-
-
-@app.route('/upload_file', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        logger.warn('upload_file | No file part.')
-        return jsonify({'success': False, 'error': "No file part."})
-    file = request.files['file']
-    if file.filename == '':
-        logger.warn('upload_file | No selected file.')
-        return jsonify({'success': False, 'error': "No selected file."})
-    if not helpers.filter_file_extension(file.filename):
-        logger.warn('upload_file | No selected file.')
-        return jsonify({'success': False, 'error': "Not allowed format."})
-
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(STATIC_FILES, filename)
-    file.save(file_path)
-    return jsonify({'success': True, 'result': file_path})
 
 
 if __name__ == '__main__':
