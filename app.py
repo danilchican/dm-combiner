@@ -37,6 +37,29 @@ def commands(framework_name):
     return jsonify({'success': 'true', 'result': commands})
 
 
+@app.route('/mandatory_commands', methods=['GET'])
+@view_exception
+def mandatory_commands():
+    commands = {'load': ['path', 'columns', 'is_normalize', 'is_scale'],
+                'save': ['type']
+                }
+    commands = list(commands.keys())
+    return jsonify({'success': 'true', 'result': commands})
+
+
+@app.route('/mandatory_commands/params/<string:func_name>', methods=['GET'])
+@view_exception
+def mandatory_commands_params(func_name):
+    commands = {'load': ['path', 'columns', 'is_normalize', 'is_scale'],
+                'save': ['type']
+                }
+    params = commands.get(func_name)
+    if params:
+        return jsonify({'success': 'true', 'result': params})
+    else:
+        return jsonify({'success': 'true', 'error': 'No such command.'})
+
+
 @app.route('/params/<string:framework_name>/<string:func_name>', methods=['GET'])
 @view_exception
 def params(framework_name, func_name):
@@ -88,7 +111,7 @@ def upload_file():
     if file.filename == '':
         logger.warn('upload_file | No selected file.')
         return jsonify({'success': False, 'error': "No selected file."})
-    if not helpers.filter_file_extension(file.filename):
+    if not DataHandler().filter_file_extension(file.filename):
         logger.warn('upload_file | No selected file.')
         return jsonify({'success': False, 'error': "Not allowed format."})
     file_path = helpers.save_file(file)
@@ -96,35 +119,20 @@ def upload_file():
 
 
 # --- Algorithm views
-@app.route('/preview', methods=['POST'])
+@app.route('/preview/<string:filename>', methods=['GET'])
 @view_exception
-def preview():
-    logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
-    try:
-        raw_data = request.get_json(force=True)
-        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
-    except Exception as ex:
-        logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': str(ex)})
-    json_handler = JsonHandler(raw_data)
-    is_validate_success, error = json_handler.validate_json()
-
-    if not is_validate_success:
-        return jsonify({'success': False, 'error': error})
-    commands = json_handler.compose_commands()
-    for command, params in commands.items():
-        if command == 'load':
-            data_handler = DataHandler(os.path.join(PROJECT_ROOT, params.get('path')))
-            data = data_handler.read_data_csv()
-            data = data.head(n=10)
-            data_dict = data.to_dict('list')
-    data = []
-    for i in data_dict:
-        d ={}
-        d['title'] = i
-        d['data'] = data_dict[i]
-        data.append(d)
-    return jsonify({'success': 'true', 'result': data})
+def preview(filename):
+    data_handler = DataHandler(os.path.join(STATIC_FILES, filename))
+    if data_handler.filter_file_extension(filename):
+        if data_handler.is_path_exist():
+            data = data_handler.show_file_preview()
+            if data is None:
+                return jsonify({'success': False, 'error': "Error during proccessing."})
+            return jsonify({'success': 'true', 'result': data})
+        else:
+            return jsonify({'success': False, 'error': "No such path"})
+    else:
+        return jsonify({'success': False, 'error': "Bad file extension."})
 
 
 @app.route('/process_json', methods=['POST'])

@@ -30,3 +30,6 @@ def fetch_config(path=None):
 
 
 CONFIG = fetch_config()
+
+if __name__ == '__main__':
+    print(STATIC_FILES, PROJECT_ROOT )

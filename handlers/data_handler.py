@@ -1,21 +1,49 @@
 import io
+import os
 
+import numpy as np
 import pandas as pd
 import requests
-import numpy as np
 
-from utils.decorators import exception
-from utils import helpers
 from frameworks.skl import SKL
+from utils import helpers
+from utils.decorators import exception
 
 
 class DataHandler:
+    ALLOWED_EXTENSIONS = ['csv']
+    NUM_STRINGS_FOR_PREVIEW = 10
+
     def __init__(self, path):
         self.path = path
+
+    def is_path_exist(self):
+        return os.path.exists(self.path)
+
+    def filter_file_extension(self, filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
 
     @exception
     def read_data_csv(self):
         data = pd.read_csv(self.path)
+        return data
+
+    @exception
+    def show_file_preview(self):
+        data = self.read_data_csv()
+        data = data.head(n=self.NUM_STRINGS_FOR_PREVIEW)
+        data_dict = data.to_dict('list')
+        data = self.restructure_data_before_send(data_dict)
+        return data
+
+    @staticmethod
+    def restructure_data_before_send(data_dict):
+        data = []
+        for i in data_dict:
+            temp_dict = dict()
+            temp_dict['title'] = i
+            temp_dict['data'] = data_dict[i]
+            data.append(temp_dict)
         return data
 
     @exception
@@ -49,14 +77,8 @@ class DataHandler:
 
 
 if __name__ == '__main__':
-    data_handler = DataHandler('../data/telecom_churn.csv')
+    data_handler = DataHandler("/home/roma/work/dm-combiner/data/telecom_churn.csv")
     data = data_handler.read_data_csv()
-    # print(data_handler.data.head(), end='\n' * 2 + '-' * 60 + '\n' * 2)
-    # data_handler2 = DataHandler('http://htmlbook.ru/html/table')
-    # data_handler2.read_data_html()
-    # print(data_handler2.data.head(), end='\n' * 2 + '-' * 60 + '\n' * 2)
-    # data_handler2 = DataHandler("https://raw.githubusercontent.com/cs109/2014_data/master/countries.csv")
-    # data = data_handler2.get_csv_from_url()
     loaded_data = data_handler.convert_column_names_to_numbers(data)
     data = data_handler.get_numerical_data(loaded_data)[[1, 2, 5, 6]]
     helpers.save_features_2d('test.png', data[1], data[2])
