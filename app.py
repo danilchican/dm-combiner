@@ -136,7 +136,7 @@ def preview(filename):
 
 
 @app.route('/process_json', methods=['POST'])
-@view_exception
+# @view_exception
 def process_json():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
     try:
@@ -153,19 +153,25 @@ def process_json():
     #     return jsonify({'success': False, 'error': error})
 
     commands = json_handler.compose_commands()
-
-    data_handler = DataHandler(os.path.join(PROJECT_ROOT, commands['load'].get('path')))
-    data = data_handler.read_data_csv()
-    data = data_handler.get_numerical_data(data)
-    # data = data.head(n=10)
+    print(commands)
     methods = SKL().methods
-    for i in commands:
-        if i in methods and i == 'k_means':
-            result = methods[i](data, **commands[i])
-            for i in result:
-                result[i] = result[i].tolist()
-    data_dict = data.to_dict('list')
-    return jsonify({'success': 'true', 'result': result})
+    for command, params in commands.items():
+        print(command, params)
+        if command == 'load':
+            print('loading')
+            data_handler = DataHandler(params.get('path'))
+            data = data_handler.read_data_csv()
+            data = data_handler.convert_column_names_to_numbers(data)
+            data = data[params.get('columns')]
+        elif command == 'save':
+            print('saving')
+            for i in data:
+                data[i] = data[i].tolist()
+        else:
+            if command in methods:
+                print(command + 'ing')
+                data = methods[command](data, **params)
+    return jsonify({'success': 'true', 'result': data})
 
 
 if __name__ == '__main__':
