@@ -135,9 +135,9 @@ def preview(filename):
         return jsonify({'success': False, 'error': "Bad file extension."})
 
 
-@app.route('/process_json', methods=['POST'])
+@app.route('/algorithm', methods=['POST'])
 # @view_exception
-def process_json():
+def algorithm():
     logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
     try:
         raw_data = request.get_json(force=True)
