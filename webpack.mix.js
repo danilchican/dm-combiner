@@ -11,5 +11,22 @@ const mix = require('laravel-mix');
  |
  */
 
+if (mix.config.hmr) {
+    mix.webpackConfig({
+        output: {
+            chunkFilename: '[name].js',
+        }
+    });
+} else {
+    mix.webpackConfig({
+        output: {
+            publicPath: '/',
+            chunkFilename: '[name].[chunkhash].js',
+        }
+    });
+}
+
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+    .sass('resources/sass/login.scss', 'public/css')
+    .sass('resources/sass/dashboard.scss', 'public/css');
