@@ -134,24 +134,24 @@
                 console.log('set up token');
                 const currentApp = this;
 
-                // let token = refreshedToken !== undefined
-                //     ? refreshedToken
-                //     : $("meta[name='auth-token']").attr("content");
-                //
-                // let time = new Date(jwt_decode(token).exp * 1000).getTime()
-                //     - new Date(Date.now()).getTime()
-                //     - SHOW_POPUP_TIME - 5000;
-                //
-                // Vue.http.headers.common['Authorization'] = 'Bearer ' + token;
-                // store.commit('token', token);/
-                //
-                // if (time > 0) {
-                //     setTimeout(function () {
-                //         currentApp.showPopUp(true);
-                //     }, time);
-                // } else {
-                //     currentApp.showPopUp(false, time);
-                // }
+                let token = refreshedToken !== undefined
+                    ? refreshedToken
+                    : $("meta[name='auth-token']").attr("content");
+
+                let time = new Date(jwt_decode(token).exp * 1000).getTime()
+                    - new Date(Date.now()).getTime()
+                    - SHOW_POPUP_TIME - 5000;
+
+                Vue.http.headers.common['Authorization'] = 'Bearer ' + token;
+                store.commit('token', token);
+
+                if (time > 0) {
+                    setTimeout(function () {
+                        currentApp.showPopUp(true);
+                    }, time);
+                } else {
+                    currentApp.showPopUp(false, time);
+                }
             },
 
             showPopUp: function (useTimeout, time) {
