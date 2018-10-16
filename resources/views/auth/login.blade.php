@@ -1,71 +1,68 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+    <title>{{ config('app.name', 'ФКСиС') }} @isset($subtitle) - {{$subtitle}} @endisset</title>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom.min.css') }}" rel="stylesheet">
+</head>
 
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+<body class="login">
+<div>
+    <a class="hiddenanchor" id="signin"></a>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    {{ __('Forgot Your Password?') }}
-                                </a>
-                            </div>
-                        </div>
-                    </form>
+    <div class="login_wrapper">
+        <div class="animate form login_form">
+            @if(session('successRequestMessage'))
+                <div class="alert alert-success">
+                    {{ session('successRequestMessage') }}
                 </div>
-            </div>
+            @endif
+
+            <section class="login_content">
+                <form method="POST" action="{{ route('login') }}">
+                    {{ csrf_field() }}
+                    <h1>@lang('pages.login.title')</h1>
+                    <div>
+                        <input type="text" value="{{ old('email') }}" class="form-control"
+                               placeholder="Username" name="email" required/>
+                    </div>
+                    {{--TODO make beautiful display errors--}}
+                    @if ($errors->has('email'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('email') }}</strong>
+                        </span>
+                    @endif
+                    <div>
+                        <input type="password" class="form-control" placeholder="Password"
+                               name="password" required/>
+                    </div>
+                    @if ($errors->has('password'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('password') }}</strong>
+                        </span>
+                    @endif
+                    <div>
+                        <button type="submit" class="btn btn-default submit">
+                            @lang('pages.login.buttons.login')
+                        </button>
+                        <a class="reset_pass" href="{{ route('password.request') }}">
+                            @lang('pages.login.buttons.forgot-password')
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="separator">
+                        <div><p>&copy;@lang('pages.login.footer-copyright')</p></div>
+                    </div>
+                </form>
+            </section>
         </div>
     </div>
 </div>
-@endsection
+</body>
+</html>
