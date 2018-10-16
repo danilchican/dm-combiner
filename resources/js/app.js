@@ -8,15 +8,30 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.jwt_decode = require('jwt-decode');
+
+require('vue-resource');
 
 /**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
+ * Toastr notifier
  */
+window.toastr = require('toastr');
+window.toastr.options = {
+    "timeOut": "5000"
+};
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+import router from './config/router'
+import {store} from './store'
+import NProgress from 'vue-nprogress'
+
+Vue.config.productionTip = false;
+
+Vue.use(NProgress);
+
+const nprogress = new NProgress({parent: 'body'});
 
 const app = new Vue({
-    el: '#app'
-});
+    nprogress,
+    router,
+    store
+}).$mount('#app');

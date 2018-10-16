@@ -10,8 +10,23 @@ window.Popper = require('popper.js').default;
 
 try {
     window.$ = window.jQuery = require('jquery');
+    require('bootstrap/dist/js/bootstrap.min');
 
-    require('bootstrap');
+    require('fastclick/lib/fastclick');
+    require('chart.js/dist/Chart.min');
+
+    require('jquery-sparkline/jquery.sparkline.min');
+    require('icheck/icheck.min');
+
+    ///......///
+
+    require('flot.curvedlines/curvedLines');
+    require('flot-spline');
+    require('flot-orderbars/js/jquery.flot.orderBars');
+
+    require('datejs');
+
+    require('bootstrap-daterangepicker/daterangepicker');
 } catch (e) {}
 
 /**
@@ -24,33 +39,10 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
-
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found');
 }
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo'
-
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
-// });

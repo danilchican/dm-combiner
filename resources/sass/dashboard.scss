@@ -1,0 +1,56 @@
+// Main css for dashboard
+@import "~font-awesome/css/font-awesome.min";
+@import "~bootstrap/dist/css/bootstrap.min";
+@import "~bootstrap-daterangepicker/daterangepicker.css";
+@import "~icheck/skins/flat/green.css";
+@import "~toastr/toastr";
+
+.overlay {
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay > .fa {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -15px;
+  margin-top: -15px;
+  color: #000;
+  font-size: 30px;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+}
+
+.btn a {
+  color: white;
+}
+
+.panel_toolbox {
+  min-width: auto !important;
+}
+
+#datatable_paginate .pagination {
+  margin: 0;
+}
+
+#nprogress .bar,
+#nprogress .spinner {
+  z-index: 999999999!important;
+}
+
+.scaling-squares-spinner {
+  position: absolute!important;
+  top: 50%;
+  z-index: 2;
+  margin: -33.5px 0 0 -33.5px;
+  left: 50%;
+}
