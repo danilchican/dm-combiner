@@ -13,8 +13,11 @@ class CombinerEndpointBuilder extends AbstractEndpointBuilder
 
     public function root()
     {
-        // TODO handle exception
-        $this->endpoint = $this->getCombinerUrl() . $this->getCombinerPrefix() . $this->getCombinerVersion();
+        try {
+            $this->endpoint = $this->getCombinerUrl() . $this->getCombinerPrefix() . $this->getCombinerVersion();
+        } catch (CombinerConfigurationNotFoundException $e) {
+            \Log::error($e->getTraceAsString());
+        }
     }
 
     public static function point()

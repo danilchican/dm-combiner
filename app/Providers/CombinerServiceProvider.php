@@ -6,7 +6,7 @@ use App\Services\Combiner\CombinerService;
 use App\Services\Combiner\Contracts\CombinerContract;
 use Illuminate\Support\ServiceProvider;
 
-class CombinerIntegrationProvider extends ServiceProvider
+class CombinerServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.
