@@ -26896,8 +26896,6 @@ try {
     __webpack_require__(135);
     __webpack_require__(136);
 
-    ///......///
-
     __webpack_require__(137);
     __webpack_require__(138);
     __webpack_require__(139);
@@ -26908,12 +26906,6 @@ try {
 } catch (e) {}
 
 var token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    console.error('CSRF token not found');
-}
 
 /***/ }),
 /* 130 */

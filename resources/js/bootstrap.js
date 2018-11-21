@@ -12,8 +12,6 @@ try {
     require('jquery-sparkline/jquery.sparkline.min');
     require('icheck/icheck.min');
 
-    ///......///
-
     require('flot.curvedlines/curvedLines');
     require('flot-spline');
     require('flot-orderbars/js/jquery.flot.orderBars');
@@ -24,9 +22,3 @@ try {
 } catch (e) {}
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    console.error('CSRF token not found');
-}
