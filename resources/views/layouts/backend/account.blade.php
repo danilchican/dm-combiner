@@ -1,7 +1,7 @@
 @extends('layouts.general', ['title' => ' | Account'])
 
 @section('top_dropdown_menu')
-    <li><a href="{{ route('account.index') }}">Мой аккаунт</a></li>
+    <li><a href="{{ route('account.index') }}">@lang('general.account.section.top_dropdown_menu.home')</a></li>
 @endsection
 
 @section('sidebar_header')

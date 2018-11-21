@@ -1,7 +1,7 @@
 @extends('layouts.backend.general', ['title' => ' | Dashboard'])
 
 @section('top_dropdown_menu')
-    <li><a href="{{ route('dashboard.index') }}">Админ-панель</a></li>
+    <li><a href="{{ route('dashboard.index') }}">@lang('general.dashboard.section.top_dropdown_menu.home')</a></li>
 @endsection
 
 @section('sidebar_header')
