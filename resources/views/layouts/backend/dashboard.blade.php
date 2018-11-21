@@ -1,9 +1,13 @@
 @extends('layouts.backend.general', ['title' => ' | Dashboard'])
 
-@section('sidebar')
+@section('sidebar_header')
     @include('partials.dashboard.common.sidebar')
 @endsection
 
-@push('top_dropdown_menu')
+@section('top_dropdown_menu')
     <li><a href="{{ route('dashboard.index') }}">Админ-панель</a></li>
-@endpush
+@endsection
+
+@section('sidebar_menu')
+    // dashboard menu
+@endsection

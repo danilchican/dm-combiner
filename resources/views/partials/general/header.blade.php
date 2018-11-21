@@ -12,7 +12,7 @@
                         <span class="fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                        @stack('top_dropdown_menu')
+                        @yield('top_dropdown_menu')
                         <li><a href="{{ route('logout') }}"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="fa fa-sign-out pull-right"></i> Выйти

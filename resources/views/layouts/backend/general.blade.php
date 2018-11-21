@@ -8,9 +8,19 @@
     <div class="container body">
         <div class="main_container">
             @include('partials.general.header')
+
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
-                    @yield('sidebar')
+                    @yield('sidebar_header')
+
+                    <div class="clearfix"></div>
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            @yield('sidebar_menu')
+                        </div>
+                    </div>
+                    <!-- /sidebar menu -->
                 </div>
             </div>
             <!-- page content -->
