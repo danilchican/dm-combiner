@@ -1,5 +1,9 @@
 @extends('layouts.backend.general', ['title' => ' | Dashboard'])
 
+@section('top_dropdown_menu')
+    <li><a href="{{ route('dashboard.index') }}">Админ-панель</a></li>
+@endsection
+
 @section('sidebar_header')
     <div class="navbar nav_title" style="border: 0;">
         <a href="{{ route('dashboard.index') }}" class="site_title">
@@ -8,10 +12,10 @@
     </div>
 @endsection
 
-@section('top_dropdown_menu')
-    <li><a href="{{ route('dashboard.index') }}">Админ-панель</a></li>
-@endsection
-
 @section('sidebar_menu')
-    // dashboard menu
+    <li>
+        <a href="{{ route('dashboard.index') }}">
+            <i class="fa fa-home"></i> @lang('sidebar.dashboard.menu.home')
+        </a>
+    </li>
 @endsection

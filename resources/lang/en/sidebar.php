@@ -3,8 +3,14 @@
 return [
     'dashboard' => [
         'title' => 'Dashboard',
+        'menu'  => [
+            'home' => 'Home',
+        ],
     ],
-    'account' => [
+    'account'   => [
         'title' => 'Account',
-    ]
+        'menu'  => [
+            'home' => 'Home',
+        ],
+    ],
 ];

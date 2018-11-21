@@ -17,7 +17,9 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
-                            @yield('sidebar_menu')
+                            <ul class="nav side-menu">
+                                @yield('sidebar_menu')
+                            </ul>
                         </div>
                     </div>
                     <!-- /sidebar menu -->
