@@ -1,4 +1,4 @@
-@extends('layouts.general', ['title' => ' | Account'])
+@extends('layouts.general', ['title' => ' | ' . trans('sidebar.account.title')])
 
 @section('top_dropdown_menu')
     <li><a href="{{ route('account.index') }}">@lang('general.account.section.top_dropdown_menu.home')</a></li>

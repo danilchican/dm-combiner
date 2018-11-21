@@ -1,4 +1,4 @@
-@extends('layouts.backend.general', ['title' => ' | Dashboard'])
+@extends('layouts.backend.general', ['title' => ' | ' . trans('sidebar.dashboard.title')]) {{--TODO change title--}}
 
 @section('top_dropdown_menu')
     <li><a href="{{ route('dashboard.index') }}">@lang('general.dashboard.section.top_dropdown_menu.home')</a></li>
