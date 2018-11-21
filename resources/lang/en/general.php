@@ -23,5 +23,8 @@ return [
                 'logout' => 'Logout',
             ],
         ],
+        'headers' => [
+            'action' => 'Action',
+        ],
     ],
 ];
