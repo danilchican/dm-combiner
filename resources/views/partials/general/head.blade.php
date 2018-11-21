@@ -5,7 +5,7 @@
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<title>{{ config('app.name') }}{{ $title or '' }}</title>
+<title>{{ config('app.name') }}@isset($title){{ $title }}@endisset</title>
 
 <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('css/custom.min.css') }}" rel="stylesheet">
