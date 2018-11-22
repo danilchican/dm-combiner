@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Datamining Combiner'),
     'dashboard' => env('DASHBOARD_NAME', 'Админ-панель'),
 
     /*
@@ -163,7 +163,7 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
-        App\Providers\CombinerIntegrationProvider::class,
+        App\Providers\CombinerServiceProvider::class,
     ],
 
     /*

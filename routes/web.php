@@ -13,20 +13,18 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('index');
 
-// Authentication Routes...
-$this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
-$this->post('login', 'Auth\LoginController@loginPost');
-$this->post('/auth/session/prolong', 'Auth\LoginController@prolongSession')->name('auth.session.prolong');
-$this->post('/auth/logout', 'Auth\LoginController@logoutPost')->name('auth.logout');
-
-// Password Reset Routes...
-$this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-$this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-$this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-$this->post('password/reset', 'Auth\ResetPasswordController@reset');
+Route::auth();
 
 Route::get('/home', 'HomeController@index')->name('home');
-$this->get('/dashboard/{link?}/{sublink?}/{query?}', 'Dashboard\DashboardController')
-    ->name('dashboard')->middleware('jwt.auth.token');
+
+Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], function () {
+    Route::get('/', 'Dashboard\DashboardController')->name('dashboard.index');
+    Route::get('/users/{id}', 'Dashboard\UserController@viewUserPage')
+        ->name('dashboard.users.view')->where('id', '[0-9]+');
+});
+
+Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], function () {
+    Route::get('/', 'Account\AccountController')->name('account.index');
+});
