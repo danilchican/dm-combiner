@@ -6,6 +6,13 @@ return [
             'top_dropdown_menu' => [
                 'home' => 'Dashboard',
             ],
+            'user_view'         => [
+                'title' => 'User Profile',
+                'tabs'  => [
+                    'settings' => 'Settings',
+                    'projects' => 'Projects',
+                ],
+            ],
         ],
     ],
 
@@ -26,5 +33,10 @@ return [
         'headers' => [
             'action' => 'Action',
         ],
+    ],
+
+    'roles' => [
+        'client' => 'Client',
+        'admin'  => 'Administrator',
     ],
 ];

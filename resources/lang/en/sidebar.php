@@ -6,6 +6,9 @@ return [
         'menu'  => [
             'home' => 'Home',
         ],
+        'users' => [
+            'view' => 'User Page',
+        ],
     ],
     'account'   => [
         'title' => 'Account',

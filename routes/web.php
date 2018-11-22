@@ -21,6 +21,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], function () {
     Route::get('/', 'Dashboard\DashboardController')->name('dashboard.index');
+    Route::get('/users/{id}', 'Dashboard\UserController@viewUserPage')
+        ->name('dashboard.users.view')->where('id', '[0-9]+');
 });
 
 Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], function () {
