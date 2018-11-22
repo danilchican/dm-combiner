@@ -49,15 +49,15 @@
                     @endif
                     <div>
                         <button type="submit" class="btn btn-default submit">
-                            @lang('pages.login.buttons.login')
+                            @lang('buttons.common.login')
                         </button>
                         <a class="reset_pass" href="{{ route('password.request') }}">
-                            @lang('pages.login.buttons.forgot-password')
+                            @lang('buttons.common.forgot_password')
                         </a>
                     </div>
                     <div class="clearfix"></div>
                     <div class="separator">
-                        <div><p>&copy;@lang('pages.login.footer-copyright')</p></div>
+                        <div><p>&copy;2018 {{ config('app.name', 'Datamining Combiner') }}</p></div>
                     </div>
                 </form>
             </section>

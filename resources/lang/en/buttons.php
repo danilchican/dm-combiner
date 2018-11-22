@@ -2,6 +2,11 @@
 
 return [
     'dashboard' => [
-        'view' => 'View',
+        'view'            => 'View',
+    ],
+
+    'common' => [
+        'login'           => 'Login',
+        'forgot_password' => 'Forgot password?',
     ],
 ];
