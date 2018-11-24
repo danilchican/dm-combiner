@@ -1,4 +1,4 @@
-@extends('layouts.general', ['title' => ' | ' . trans('sidebar.account.title')]) {{--TODO change title--}}
+@extends('layouts.backend.general', ['title' => ' | ' . trans('sidebar.account.title')]) {{--TODO change title--}}
 
 @section('top_dropdown_menu')
     <li><a href="{{ route('account.index') }}">@lang('general.account.section.top_dropdown_menu.home')</a></li>
