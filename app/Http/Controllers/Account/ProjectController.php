@@ -23,6 +23,6 @@ class ProjectController extends Controller
      */
     public function showCreateProjectPage()
     {
-        return view('account.projects.create');
+        return view('account.projects.create.index');
     }
 }
