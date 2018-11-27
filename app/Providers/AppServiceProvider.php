@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
-    private const DEFAULT_STRING_LENGTH = 191;
+    const DEFAULT_STRING_LENGTH = 191;
 
     /**
      * Bootstrap any application services.
