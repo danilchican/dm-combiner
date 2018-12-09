@@ -1,15 +1,9 @@
-window.$previewBlock = $('#preview-block');
-window.$previewTable = $('#preview-table');
-
-window.$tableHead = $previewTable.find('.headings');
-window.$tableContent = $previewTable.find('tbody');
-
 window.tableContentRowTemplate = "<tr class='{0} pointer'>{1}</tr>";
 
 window.showPreviewTable = function (headers, data) {
     // console.log(headers, data);
-    $tableHead.empty();
-    $tableContent.empty();
+    let $tableHead = $('#preview-table .headings');
+    let $tableContent = $('#preview-table tbody');
 
     for (let i = 0; i < headers.length; i++) {
         $tableHead.append(getHeaderItem(headers[i]));

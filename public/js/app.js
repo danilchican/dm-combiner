@@ -98230,18 +98230,12 @@ module.exports = function spread(callback) {
 /* 345 */
 /***/ (function(module, exports) {
 
-window.$previewBlock = $('#preview-block');
-window.$previewTable = $('#preview-table');
-
-window.$tableHead = $previewTable.find('.headings');
-window.$tableContent = $previewTable.find('tbody');
-
 window.tableContentRowTemplate = "<tr class='{0} pointer'>{1}</tr>";
 
 window.showPreviewTable = function (headers, data) {
     // console.log(headers, data);
-    $tableHead.empty();
-    $tableContent.empty();
+    var $tableHead = $('#preview-table .headings');
+    var $tableContent = $('#preview-table tbody');
 
     for (var i = 0; i < headers.length; i++) {
         $tableHead.append(getHeaderItem(headers[i]));
@@ -99031,7 +99025,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.error('Something went wrong...', 'Error');
             });
         },
-        removeAndRestore: function removeAndRestore(index, command) {
+        removeAndRestore: function removeAndRestore(index) {
             this.selectedAlgorithms.splice(index, 1);
         }
     },
@@ -101153,7 +101147,7 @@ var render = function() {
                 "draggable",
                 {
                   attrs: {
-                    options: { group: "frameworks", handle: "draggable" },
+                    options: { group: "frameworks", handle: ".draggable" },
                     element: "tbody"
                   },
                   model: {
@@ -101183,7 +101177,7 @@ var render = function() {
                             staticClass: "btn btn-danger btn-xs",
                             on: {
                               click: function($event) {
-                                _vm.removeAndRestore(index, algorithm)
+                                _vm.removeAndRestore(index)
                               }
                             }
                           },

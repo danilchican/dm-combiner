@@ -64,13 +64,17 @@
     <script>
         $(document).ready(function () {
             // TODO add validation "OR rule"
-            var $clearBtn = $('#data-file-clear');
+            let $clearBtn = $('#data-file-clear');
 
             $clearBtn.click(function (e) {
                 e.preventDefault();
+
+                let $tableHead = $('#preview-table .headings');
+                let $tableContent = $('#preview-table tbody');
+
                 $('#data-file').val('');
                 $clearBtn.hide();
-                $previewBlock.find('p').show();
+                $('#preview-block').find('p').show();
                 $tableHead.empty();
                 $tableContent.empty();
             });
@@ -84,11 +88,12 @@
                         header: true,
                         skipEmptyLines: true,
                         complete: function (results) {
-                            var headers = results.meta.fields;
-                            var data = results.data;
-                            var headersCount = headers.length;
+                            let headers = results.meta.fields;
+                            let data = results.data;
+                            let headersCount = headers.length;
 
                             if (headersCount > 0) {
+                                let $previewBlock = $('#preview-block');
                                 $previewBlock.find('.table-responsive').show();
                                 $previewBlock.find('p').hide();
                                 showPreviewTable(headers, data);
@@ -99,13 +104,19 @@
             });
 
             $('#data-url').on('focusout', function () {
-                var url = $(this).val();
+                let url = $(this).val();
+                let $previewBlock = $('#preview-block');
 
                 if(url === undefined || url.length < 1) {
                     alert('You should paste link to load data.');
+
+                    let $tableHead = $('#preview-table .headings');
+                    let $tableContent = $('#preview-table tbody');
+
                     $previewBlock.find('p').show();
                     $tableHead.empty();
                     $tableContent.empty();
+
                     return;
                 }
 
