@@ -15,3 +15,13 @@ window.toastr = require('toastr');
 window.toastr.options = {
     "timeOut": "5000"
 };
+
+import ProjectConfiguration from './components/ProjectConfigurationComponent'
+
+Vue.config.productionTip = false;
+
+const app = new Vue({
+    components: {
+        'project-configuration': ProjectConfiguration
+    }
+}).$mount('#app');
