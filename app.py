@@ -34,7 +34,7 @@ def commands(framework_name):
         return jsonify({'success': False, 'error': 'No such framework'})
     commands = framework().methods
     commands = list(commands.keys())
-    return jsonify({'success': 'true', 'result': commands})
+    return jsonify({'success': True, 'result': commands})
 
 
 @app.route('/mandatory_commands', methods=['GET'])
@@ -44,7 +44,7 @@ def mandatory_commands():
                 'save': ['type']
                 }
     commands = list(commands.keys())
-    return jsonify({'success': 'true', 'result': commands})
+    return jsonify({'success': True, 'result': commands})
 
 
 @app.route('/mandatory_commands/params/<string:func_name>', methods=['GET'])
@@ -55,9 +55,9 @@ def mandatory_commands_params(func_name):
                 }
     params = commands.get(func_name)
     if params:
-        return jsonify({'success': 'true', 'result': params})
+        return jsonify({'success': True, 'result': params})
     else:
-        return jsonify({'success': 'true', 'error': 'No such command.'})
+        return jsonify({'success': True, 'error': 'No such command.'})
 
 
 @app.route('/params/<string:framework_name>/<string:func_name>', methods=['GET'])
@@ -69,9 +69,9 @@ def params(framework_name, func_name):
         return jsonify({'success': False, 'error': 'No such framework'})
     params = framework().methods_params.get(func_name)
     if params:
-        return jsonify({'success': 'true', 'result': params})
+        return jsonify({'success': True, 'result': params})
     else:
-        return jsonify({'success': 'true', 'error': 'No such command.'})
+        return jsonify({'success': True, 'error': 'No such command.'})
 
 
 # --- Views which working with files
@@ -128,7 +128,7 @@ def preview(filename):
             data = data_handler.show_file_preview()
             if data is None:
                 return jsonify({'success': False, 'error': "Error during proccessing."})
-            return jsonify({'success': 'true', 'result': data})
+            return jsonify({'success': True, 'result': data})
         else:
             return jsonify({'success': False, 'error': "No such path"})
     else:
@@ -171,7 +171,7 @@ def algorithm():
             if command in methods:
                 print(command + 'ing')
                 data = methods[command](data, **params)
-    return jsonify({'success': 'true', 'result': data})
+    return jsonify({'success': True, 'result': data})
 
 
 if __name__ == '__main__':
