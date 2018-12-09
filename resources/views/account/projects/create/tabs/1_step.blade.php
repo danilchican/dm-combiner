@@ -63,6 +63,7 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
+            // TODO add validation "OR rule"
             var $clearBtn = $('#data-file-clear');
 
             $clearBtn.click(function (e) {
