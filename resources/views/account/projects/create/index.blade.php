@@ -49,7 +49,7 @@
                             @include('account.projects.create.tabs.1_step')
                         </div>
                         <div id="step-2">
-                            @include('account.projects.create.tabs.2_step')
+                            <project-configuration></project-configuration>
                         </div>
                         <div id="step-3">
                             @include('account.projects.create.tabs.3_step')

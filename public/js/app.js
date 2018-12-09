@@ -98943,14 +98943,66 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            arr: [{ id: 1, name: 'tile 1' }, { id: 2, name: 'tile 2' }, { id: 3, name: 'tile 3' }],
-            arr2: [{ id: 1, name: 'tile 1' }, { id: 2, name: 'tile 2' }, { id: 3, name: 'tile 3' }]
+            frameworks: [],
+            selectedAlgorithms: []
         };
     },
     created: function created() {
@@ -98961,15 +99013,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         uploadFrameworks: function uploadFrameworks() {
+            var _this = this;
+
             var requestURL = '/account/projects/frameworks';
 
             if (useMock) {
                 requestURL = '/mocks/frameworks.json';
             }
 
-            this.$http.get(requestURL).then(function (response) {}, function () {
+            this.$http.get(requestURL).then(function (response) {
+                console.log(response);
+
+                if (response.status === 200) {
+                    _this.frameworks = response.body;
+                }
+            }, function () {
                 toastr.error('Something went wrong...', 'Error');
             });
+        },
+        removeAndRestore: function removeAndRestore(index, command) {
+            this.selectedAlgorithms.splice(index, 1);
         }
     },
 
@@ -100969,69 +101032,230 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "draggable",
-        {
-          attrs: { options: { group: "workers" } },
-          model: {
-            value: _vm.arr,
-            callback: function($$v) {
-              _vm.arr = $$v
+  return _c("div", [
+    _c("div", { staticClass: "col-md-4 col-sm-4 col-xs-12" }, [
+      _c("div", { staticClass: "x_panel" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "x_content" }, [
+          _c(
+            "div",
+            {
+              staticClass: "accordion",
+              attrs: {
+                id: "accordion1",
+                role: "tablist",
+                "aria-multiselectable": "true"
+              }
             },
-            expression: "arr"
-          }
-        },
-        _vm._l(_vm.arr, function(element) {
-          return _c("div", { key: element.id }, [
-            _vm._v("\n            " + _vm._s(element.name) + "\n        ")
-          ])
-        })
-      ),
-      _vm._v(" "),
-      _c(
-        "draggable",
-        {
-          attrs: { options: { group: "workers" } },
-          model: {
-            value: _vm.arr2,
-            callback: function($$v) {
-              _vm.arr2 = $$v
-            },
-            expression: "arr2"
-          }
-        },
-        _vm._l(_vm.arr2, function(element) {
-          return _c("div", { key: element.id }, [
-            _vm._v("\n            " + _vm._s(element.name) + "\n        ")
-          ])
-        })
-      ),
-      _vm._v(" "),
-      _c("h2", [_vm._v("List 1 v-for")]),
-      _vm._v(" "),
-      _c(
-        "div",
-        _vm._l(_vm.arr, function(element) {
-          return _c("div", [_vm._v(_vm._s(element.name))])
-        })
-      ),
-      _vm._v(" "),
-      _c("h2", [_vm._v("List 2 v-for")]),
-      _vm._v(" "),
-      _c(
-        "div",
-        _vm._l(_vm.arr2, function(element) {
-          return _c("div", [_vm._v(_vm._s(element.name))])
-        })
-      )
-    ],
-    1
-  )
+            _vm._l(_vm.frameworks, function(framework, index) {
+              return _vm.frameworks.length > 0
+                ? _c("div", { staticClass: "panel" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "panel-heading",
+                        attrs: {
+                          role: "tab",
+                          id: "headingOne-" + index,
+                          "data-toggle": "collapse",
+                          "data-parent": "#accordion1",
+                          href: "#collapseOne-" + index,
+                          "aria-expanded": "true",
+                          "aria-controls": "collapseOne"
+                        }
+                      },
+                      [
+                        _c("h4", { staticClass: "panel-title" }, [
+                          _vm._v(_vm._s(framework.title))
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "panel-collapse collapse",
+                        attrs: {
+                          id: "collapseOne-" + index,
+                          role: "tabpanel",
+                          "aria-labelledby": "headingOne"
+                        }
+                      },
+                      [
+                        _c("div", { staticClass: "panel-body" }, [
+                          framework.commands.length > 0
+                            ? _c(
+                                "ul",
+                                { staticClass: "to_do" },
+                                [
+                                  _c(
+                                    "draggable",
+                                    {
+                                      attrs: {
+                                        options: {
+                                          group: {
+                                            name: "frameworks",
+                                            pull: "clone",
+                                            put: false
+                                          }
+                                        }
+                                      },
+                                      model: {
+                                        value: framework.commands,
+                                        callback: function($$v) {
+                                          _vm.$set(framework, "commands", $$v)
+                                        },
+                                        expression: "framework.commands"
+                                      }
+                                    },
+                                    _vm._l(framework.commands, function(
+                                      command
+                                    ) {
+                                      return _c("li", [
+                                        _c("p", [
+                                          _c("input", {
+                                            staticClass: "flat",
+                                            attrs: { type: "checkbox" }
+                                          }),
+                                          _vm._v(" " + _vm._s(command))
+                                        ])
+                                      ])
+                                    })
+                                  )
+                                ],
+                                1
+                              )
+                            : _c("p", [_vm._v("No commands found.")])
+                        ])
+                      ]
+                    )
+                  ])
+                : _c("p", [_vm._v("No frameworks found.")])
+            })
+          )
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-8 col-sm-8 col-xs-12" }, [
+      _c("div", { staticClass: "x_panel" }, [
+        _vm._m(1),
+        _vm._v(" "),
+        _c("div", { staticClass: "x_content" }, [
+          _c(
+            "table",
+            { staticClass: "table table-striped projects" },
+            [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "draggable",
+                {
+                  attrs: {
+                    options: { group: "frameworks", handle: "draggable" },
+                    element: "tbody"
+                  },
+                  model: {
+                    value: _vm.selectedAlgorithms,
+                    callback: function($$v) {
+                      _vm.selectedAlgorithms = $$v
+                    },
+                    expression: "selectedAlgorithms"
+                  }
+                },
+                [
+                  _vm._l(_vm.selectedAlgorithms, function(algorithm, index) {
+                    return _c("tr", { staticClass: "draggable" }, [
+                      _c("td", [_vm._v(_vm._s(index + 1))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(algorithm))]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("a", { staticClass: "btn btn-info btn-xs" }, [
+                          _c("i", { staticClass: "fa fa-pencil" }),
+                          _vm._v(" Edit ")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-danger btn-xs",
+                            on: {
+                              click: function($event) {
+                                _vm.removeAndRestore(index, algorithm)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-trash-o" }),
+                            _vm._v(" Delete\n                                ")
+                          ]
+                        )
+                      ])
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _vm.selectedAlgorithms.length < 1
+                    ? _c("tr", [
+                        _c("td", { attrs: { colspan: "3" } }, [
+                          _vm._v("No one algorithm is selected.")
+                        ])
+                      ])
+                    : _vm._e()
+                ],
+                2
+              )
+            ],
+            1
+          )
+        ])
+      ])
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "x_title" }, [
+      _c("h2", [
+        _c("i", { staticClass: "fa fa-align-left" }),
+        _vm._v(" Frameworks / Algorithms")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "clearfix" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "x_title" }, [
+      _c("h2", [
+        _c("i", { staticClass: "fa fa-sellsy" }),
+        _vm._v(" Selected algorithms")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "clearfix" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { staticStyle: { width: "1%" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Algorithm Name")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "30%" } }, [_vm._v("Action")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
