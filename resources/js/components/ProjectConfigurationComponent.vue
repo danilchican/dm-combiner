@@ -52,7 +52,7 @@
                             <th style="width: 30%">Action</th>
                         </tr>
                         </thead>
-                        <draggable v-model="selectedAlgorithms" :options="{group:'frameworks', handle: 'draggable'}" :element="'tbody'">
+                        <draggable v-model="selectedAlgorithms" :options="{group:'frameworks', handle: '.draggable'}" :element="'tbody'">
                             <tr class="draggable" v-for="(algorithm, index) in selectedAlgorithms">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ algorithm }}</td>
