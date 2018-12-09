@@ -20,9 +20,10 @@
                                  aria-labelledby="headingOne">
                                 <div class="panel-body">
                                     <ul class="to_do" v-if="framework.commands.length > 0">
-                                        <draggable v-model="framework.commands" :options="{group:{name:'frameworks', pull:'clone', put: false}}">
+                                        <draggable v-model="framework.commands"
+                                                   :options="{group:{name:'frameworks', pull:'clone', put: false}}">
                                             <li v-for="command in framework.commands">
-                                                <p><input type="checkbox" class="flat"> {{ command }}</p>
+                                                <p>{{ command }}</p>
                                             </li>
                                         </draggable>
                                     </ul>
@@ -52,19 +53,21 @@
                             <th style="width: 30%">Action</th>
                         </tr>
                         </thead>
-                        <draggable v-model="selectedAlgorithms" :options="{group:'frameworks', handle: '.draggable'}" :element="'tbody'">
+                        <draggable v-model="selectedAlgorithms" :options="{group:'frameworks', handle: '.draggable'}"
+                                   :element="'tbody'">
                             <tr class="draggable" v-for="(algorithm, index) in selectedAlgorithms">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ algorithm }}</td>
                                 <td>
                                     <a class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
-                                    <a class="btn btn-danger btn-xs"
-                                       @click="removeAndRestore(index)">
+                                    <a class="btn btn-danger btn-xs" @click="remove(index)">
                                         <i class="fa fa-trash-o"></i> Delete
                                     </a>
                                 </td>
                             </tr>
-                            <tr v-if="selectedAlgorithms.length < 1"><td colspan="3">No one algorithm is selected.</td></tr>
+                            <tr v-if="selectedAlgorithms.length < 1">
+                                <td colspan="3">No one algorithm is selected.</td>
+                            </tr>
                         </draggable>
                     </table>
                     <!-- end selected algorithm list -->
@@ -86,8 +89,14 @@
         },
 
         created() {
-            // init data
             this.uploadFrameworks();
+        },
+
+        watch: {
+            selectedAlgorithms: function () {
+                console.log(this.selectedAlgorithms);
+                config = this.selectedAlgorithms;
+            }
         },
 
         methods: {
@@ -108,7 +117,7 @@
                     toastr.error('Something went wrong...', 'Error');
                 });
             },
-            removeAndRestore(index) {
+            remove(index) {
                 this.selectedAlgorithms.splice(index, 1);
             }
         },

@@ -1,3 +1,5 @@
+window.config = {};
+
 window.tableContentRowTemplate = "<tr class='{0} pointer'>{1}</tr>";
 
 window.showPreviewTable = function (headers, data) {

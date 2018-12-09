@@ -98230,6 +98230,8 @@ module.exports = function spread(callback) {
 /* 345 */
 /***/ (function(module, exports) {
 
+window.config = {};
+
 window.tableContentRowTemplate = "<tr class='{0} pointer'>{1}</tr>";
 
 window.showPreviewTable = function (headers, data) {
@@ -98989,6 +98991,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -99000,10 +99005,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     created: function created() {
-        // init data
         this.uploadFrameworks();
     },
 
+
+    watch: {
+        selectedAlgorithms: function selectedAlgorithms() {
+            console.log(this.selectedAlgorithms);
+            config = this.selectedAlgorithms;
+        }
+    },
 
     methods: {
         uploadFrameworks: function uploadFrameworks() {
@@ -99025,7 +99036,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.error('Something went wrong...', 'Error');
             });
         },
-        removeAndRestore: function removeAndRestore(index) {
+        remove: function remove(index) {
             this.selectedAlgorithms.splice(index, 1);
         }
     },
@@ -101107,13 +101118,7 @@ var render = function() {
                                       command
                                     ) {
                                       return _c("li", [
-                                        _c("p", [
-                                          _c("input", {
-                                            staticClass: "flat",
-                                            attrs: { type: "checkbox" }
-                                          }),
-                                          _vm._v(" " + _vm._s(command))
-                                        ])
+                                        _c("p", [_vm._v(_vm._s(command))])
                                       ])
                                     })
                                   )
@@ -101177,7 +101182,7 @@ var render = function() {
                             staticClass: "btn btn-danger btn-xs",
                             on: {
                               click: function($event) {
-                                _vm.removeAndRestore(index)
+                                _vm.remove(index)
                               }
                             }
                           },
