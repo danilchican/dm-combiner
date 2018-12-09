@@ -8,7 +8,7 @@ abstract class AbstractCombiner implements CombinerContract
 {
     use CombinerTrait;
 
-    protected const DELIMITER = '/';
+    const DELIMITER = '/';
 
     /**
      * @var string

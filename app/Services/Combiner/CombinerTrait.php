@@ -17,7 +17,25 @@ trait CombinerTrait
             $client = new \GuzzleHttp\Client();
             $response = $client->post($this->endpoint, $this->options);
 
-            return \GuzzleHttp\json_decode($response->getBody())->data;
+            return \GuzzleHttp\json_decode($response->getBody());
+        } catch (RequestException $e) {
+            \Log::error($e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Execute GET request.
+     *
+     * @return mixed
+     */
+    public function executeGetRequest()
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get($this->endpoint, $this->options);
+
+            return \GuzzleHttp\json_decode($response->getBody());
         } catch (RequestException $e) {
             \Log::error($e->getMessage());
             return null;
