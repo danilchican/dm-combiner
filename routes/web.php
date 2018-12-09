@@ -33,5 +33,7 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], f
             ->name('account.projects.index');
         Route::get('/create', 'Account\ProjectController@showCreateProjectPage')
             ->name('account.projects.create');
+        Route::get('/frameworks', 'Account\ProjectController@getFrameworksList')
+            ->name('account.projects.frameworks');
     });
 });
