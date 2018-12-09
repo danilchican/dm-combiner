@@ -1,0 +1,15 @@
+[
+  {
+    "title": "SKL",
+    "commands": [
+      "normalize",
+      "scale",
+      "k_means",
+      "data_reduction"
+    ]
+  },
+  {
+    "title": "Theano",
+    "commands": []
+  }
+]

@@ -1,6 +1,7 @@
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
 window.Vue = require('vue');
+require('vue-resource');
 
 try {
     window.$ = window.jQuery = require('jquery');
@@ -40,10 +41,10 @@ $.ajaxSetup({
 });
 
 String.prototype.format = function() {
-    var str = this;
+    let str = this;
 
-    for (var i = 0; i < arguments.length; i++) {
-        var reg = new RegExp("\\{" + i + "\\}", "gm");
+    for (let i = 0; i < arguments.length; i++) {
+        let reg = new RegExp("\\{" + i + "\\}", "gm");
         str = str.replace(reg, arguments[i]);
     }
 
