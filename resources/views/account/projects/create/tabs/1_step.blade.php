@@ -28,7 +28,7 @@
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="checkbox">
                         <label style="padding-left: 0;">
-                            <input type="checkbox" class="flat" checked="checked">
+                            <input type="checkbox" class="flat" checked="checked" id="normalize-option">
                             Normalize
                         </label>
                     </div>
@@ -36,7 +36,7 @@
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="checkbox">
                         <label style="padding-left: 0;">
-                            <input type="checkbox" class="flat" checked="checked">
+                            <input type="checkbox" class="flat" checked="checked" id="scale-option">
                             Scale
                         </label>
                     </div>

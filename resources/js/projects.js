@@ -1,6 +1,8 @@
 window.config = {};
 
 window.tableContentRowTemplate = "<tr class='{0} pointer'>{1}</tr>";
+window.tableHeaderRowTemplate = "<th class='column-title'>" +
+    "<input type='checkbox' class='data-head-option flat' value='{0}'> {1}</th>";
 
 window.showPreviewTable = function (headers, data) {
     // console.log(headers, data);
@@ -8,7 +10,7 @@ window.showPreviewTable = function (headers, data) {
     let $tableContent = $('#preview-table tbody');
 
     for (let i = 0; i < headers.length; i++) {
-        $tableHead.append(getHeaderItem(headers[i]));
+        $tableHead.append(getHeaderItem(i, headers[i]));
     }
 
     $("input").iCheck({checkboxClass: "icheckbox_flat-green"});
@@ -19,8 +21,8 @@ window.showPreviewTable = function (headers, data) {
     }
 };
 
-window.getHeaderItem = function (title) {
-    return '<th class="column-title"> <input type="checkbox" class="flat"> ' + title + '</th>'
+window.getHeaderItem = function (index, title) {
+    return tableHeaderRowTemplate.format(index, title);
 };
 
 window.getTableContentItem = function (itemTds, tdClass) {
@@ -31,4 +33,38 @@ window.getTableContentItem = function (itemTds, tdClass) {
     });
 
     return tableContentRowTemplate.format(tdClass, tds);
+};
+
+window.saveProject = function () {
+    console.log('Saving project...');
+    let dataUrl = $('input#data-url').val();
+
+    let normalize = $('input#normalize-option').attr('checked');
+    let scale = $('input#scale-option').attr('checked');
+
+    let checkedCols = [];
+    $.each($('.data-head-option:checked'), function (index, option) {
+        checkedCols.push(option.val());
+    });
+
+    let configuration = []; // TODO
+    let executionResults; // TODO if executed
+
+    let formData = new FormData();
+
+    formData.append('title', $('input#project-title').val());
+    formData.append('cols', JSON.stringify(checkedCols));
+    formData.append('normalize', JSON.stringify(normalize));
+    formData.append('scale', JSON.stringify(scale));
+    formData.append('configuration', JSON.stringify(configuration));
+    formData.append('results', executionResults);  // TODO if executed
+
+    if (dataUrl === '') {
+        formData.append('file', $('input#data-file')[0].files[0]);
+    } else {
+        formData.append('file-url', dataUrl);
+    }
+
+    console.log('data:');
+    console.log(formData);
 };

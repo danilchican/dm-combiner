@@ -23,7 +23,7 @@ function SmartWizard(target, options) {
     this.buttons = {
         next: $('<a>' + options.labelNext + '</a>').attr("href", "#").addClass("buttonNext"),
         previous: $('<a>' + options.labelPrevious + '</a>').attr("href", "#").addClass("buttonPrevious"),
-        finish: $('<a>' + options.labelFinish + '</a>').attr("href", "#").addClass("buttonFinish").attr('id', 'save-project-btn'),
+        save: $('<a>' + options.labelSave + '</a>').attr("href", "#").addClass("buttonSave"),
         run: $('<a>' + options.labelRun + '</a>').attr("href", "#").addClass("buttonRun")
     };
 
@@ -55,7 +55,7 @@ function SmartWizard(target, options) {
         $this.target.append($this.elmStepContainer);
         elmActionBar.append($this.buttons.previous)
             .append($this.buttons.next)
-            .append($this.buttons.finish)
+            .append($this.buttons.save)
             .append($this.buttons.run);
         $this.target.append(elmActionBar);
         this.contentWidth = $this.elmStepContainer.width();
@@ -68,11 +68,12 @@ function SmartWizard(target, options) {
             $this.goBackward();
             return false;
         });
-        $($this.buttons.finish).click(function () {
+        $($this.buttons.save).click(function () {
             if (!$(this).hasClass('buttonDisabled')) {
-                if ($.isFunction($this.options.onFinish)) {
+                saveProject();
+                if ($.isFunction($this.options.onSave)) {
                     var context = {fromStep: $this.curStepIdx + 1};
-                    if (!$this.options.onFinish.call(this, $($this.steps), context)) {
+                    if (!$this.options.onSave.call(this, $($this.steps), context)) {
                         return false;
                     }
                 } else {
@@ -289,16 +290,16 @@ function SmartWizard(target, options) {
                 }
             }
         }
-        // Finish Button
-        if (!$this.steps.hasClass('disabled') || $this.options.enableFinishButton) {
-            $($this.buttons.finish).removeClass("buttonDisabled");
+        // Save Button
+        if (!$this.steps.hasClass('disabled') || $this.options.enableSaveButton) {
+            $($this.buttons.save).removeClass("buttonDisabled");
             if ($this.options.hideButtonsOnDisabled) {
-                $($this.buttons.finish).show();
+                $($this.buttons.save).show();
             }
         } else {
-            $($this.buttons.finish).addClass("buttonDisabled");
+            $($this.buttons.save).addClass("buttonDisabled");
             if ($this.options.hideButtonsOnDisabled) {
-                $($this.buttons.finish).hide();
+                $($this.buttons.save).hide();
             }
         }
     };
@@ -439,19 +440,19 @@ function SmartWizard(target, options) {
         contentURL: null, // content url, Enables Ajax content loading
         contentCache: true, // cache step contents, if false content is fetched always from ajax url
         cycleSteps: false, // cycle step navigation
-        enableFinishButton: false, // make finish button enabled always
-        enableRunButton: false, // make finish button enabled always
-        hideButtonsOnDisabled: false, // when the previous/next/finish buttons are disabled, hide them instead?
+        enableSaveButton: false, // make save button enabled always
+        enableRunButton: false, // make run button enabled always
+        hideButtonsOnDisabled: false, // when the previous/next/save/run buttons are disabled, hide them instead?
         errorSteps: [],    // Array Steps with errors
         labelNext: 'Дальше',
         labelPrevious: 'Назад',
-        labelFinish: 'Сохранить',
+        labelSave: 'Сохранить',
         labelRun: 'Запустить',
         noForwardJumping: false,
         onLeaveStep: null, // triggers when leaving a step
         onShowStep: null,  // triggers when showing a step
-        onFinish: null,  // triggers when Finish button is clicked
-        onRun: null  // triggers when Finish button is clicked
+        onSave: null,  // triggers when Save button is clicked
+        onRun: null  // triggers when Run button is clicked
     };
 
 })(jQuery);

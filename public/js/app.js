@@ -98233,6 +98233,7 @@ module.exports = function spread(callback) {
 window.config = {};
 
 window.tableContentRowTemplate = "<tr class='{0} pointer'>{1}</tr>";
+window.tableHeaderRowTemplate = "<th class='column-title'>" + "<input type='checkbox' class='data-head-option flat' value='{0}'> {1}</th>";
 
 window.showPreviewTable = function (headers, data) {
     // console.log(headers, data);
@@ -98240,7 +98241,7 @@ window.showPreviewTable = function (headers, data) {
     var $tableContent = $('#preview-table tbody');
 
     for (var i = 0; i < headers.length; i++) {
-        $tableHead.append(getHeaderItem(headers[i]));
+        $tableHead.append(getHeaderItem(i, headers[i]));
     }
 
     $("input").iCheck({ checkboxClass: "icheckbox_flat-green" });
@@ -98251,8 +98252,8 @@ window.showPreviewTable = function (headers, data) {
     }
 };
 
-window.getHeaderItem = function (title) {
-    return '<th class="column-title"> <input type="checkbox" class="flat"> ' + title + '</th>';
+window.getHeaderItem = function (index, title) {
+    return tableHeaderRowTemplate.format(index, title);
 };
 
 window.getTableContentItem = function (itemTds, tdClass) {
@@ -98263,6 +98264,20 @@ window.getTableContentItem = function (itemTds, tdClass) {
     });
 
     return tableContentRowTemplate.format(tdClass, tds);
+};
+
+window.saveProject = function () {
+    var title = $('input#project-title').val();
+    var dataUrl = $('input#data-url').val();
+    var dataFile = $('input#data-file'); // TODO
+
+    var normalize = $('input#normalize-option').attr('checked');
+    var scale = $('input#scale-option').attr('checked');
+
+    var checkedCols = [];
+    $.each($('.data-head-option:checked'), function (index, option) {
+        checkedCols.push(option.val());
+    });
 };
 
 /***/ }),
