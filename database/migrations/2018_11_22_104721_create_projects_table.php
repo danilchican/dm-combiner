@@ -19,7 +19,7 @@ class CreateProjectsTable extends Migration
             $table->string('title', 80);
             $table->boolean('normalize')->default(1);
             $table->boolean('scale')->default(1);
-            $table->string('data_url');
+            $table->string('data_url')->nullable();
             $table->string('columns', 512)->nullable();
             $table->longText('configuration')->nullable();
             $table->longText('result')->nullable();

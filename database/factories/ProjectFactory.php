@@ -4,7 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(\App\Models\Project::class, function (Faker $faker) {
     return [
-        'title'         => $faker->title,
+        'title'         => $faker->text(80),
         'normalize'     => $faker->boolean,
         'scale'         => $faker->boolean,
         'data_url'      => $faker->url,

@@ -37,34 +37,61 @@ window.getTableContentItem = function (itemTds, tdClass) {
 
 window.saveProject = function () {
     console.log('Saving project...');
-    let dataUrl = $('input#data-url').val();
+    toastr.info('Saving project...', 'Info');
+    let title = $('input#project-title').val();
 
-    let normalize = $('input#normalize-option').attr('checked');
-    let scale = $('input#scale-option').attr('checked');
+    let normalize = $('input#normalize-option').prop('checked');
+    let scale = $('input#scale-option').prop('checked');
+    let dataUrl = $('input#data-url').val();
 
     let checkedCols = [];
     $.each($('.data-head-option:checked'), function (index, option) {
-        checkedCols.push(option.val());
+        checkedCols.push($(option).val());
     });
 
-    let configuration = []; // TODO
+    let configuration = [1]; // TODO
     let executionResults; // TODO if executed
 
-    let formData = new FormData();
+    let data = {
+        title: title,
+        normalize: normalize,
+        scale: scale,
+        columns: checkedCols,
+        configuration: configuration,
+        result: executionResults  // TODO if executed
+    };
 
-    formData.append('title', $('input#project-title').val());
-    formData.append('cols', JSON.stringify(checkedCols));
-    formData.append('normalize', JSON.stringify(normalize));
-    formData.append('scale', JSON.stringify(scale));
-    formData.append('configuration', JSON.stringify(configuration));
-    formData.append('results', executionResults);  // TODO if executed
-
-    if (dataUrl === '') {
-        formData.append('file', $('input#data-file')[0].files[0]);
-    } else {
-        formData.append('file-url', dataUrl);
+    if (dataUrl !== '') {
+        data.data_url = dataUrl;
     }
 
-    console.log('data:');
-    console.log(formData);
+    $.ajax({
+        url: '/account/projects/create',
+        method: "POST",
+        data: data,
+    }).done(function (response) {
+        toastr.success(response.message, 'Success');
+        console.log(response);
+        toastr.info('Uploading data...', 'Info');
+
+        let id = response.project.id; // TODO
+
+        let formData = new FormData();
+
+        if (dataUrl === '') {
+            formData.append('file', $('input#data-file')[0].files[0]);
+        }
+
+        toastr.success('Project data was uploaded.', 'Success');
+
+        // $.ajax({
+        //     url: '/account/projects/' + id + '/upload',
+        //     method: "POST",
+        //     data: formData,
+        //     dataType: false,
+        //     processData: false,
+        // }).done(function (response) {
+        //     console.log(response);
+        // });
+    });
 };

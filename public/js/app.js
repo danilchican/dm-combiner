@@ -98267,16 +98267,63 @@ window.getTableContentItem = function (itemTds, tdClass) {
 };
 
 window.saveProject = function () {
+    console.log('Saving project...');
+    toastr.info('Saving project...', 'Info');
     var title = $('input#project-title').val();
-    var dataUrl = $('input#data-url').val();
-    var dataFile = $('input#data-file'); // TODO
 
-    var normalize = $('input#normalize-option').attr('checked');
-    var scale = $('input#scale-option').attr('checked');
+    var normalize = $('input#normalize-option').prop('checked');
+    var scale = $('input#scale-option').prop('checked');
+    var dataUrl = $('input#data-url').val();
 
     var checkedCols = [];
     $.each($('.data-head-option:checked'), function (index, option) {
-        checkedCols.push(option.val());
+        checkedCols.push($(option).val());
+    });
+
+    var configuration = [1]; // TODO
+    var executionResults = void 0; // TODO if executed
+
+    var data = {
+        title: title,
+        normalize: normalize,
+        scale: scale,
+        columns: checkedCols,
+        configuration: configuration,
+        result: executionResults // TODO if executed
+    };
+
+    if (dataUrl !== '') {
+        data.data_url = dataUrl;
+    }
+
+    $.ajax({
+        url: '/account/projects/create',
+        method: "POST",
+        data: data
+    }).done(function (response) {
+        toastr.success(response.message, 'Success');
+        console.log(response);
+        toastr.info('Uploading data...', 'Info');
+
+        var id = response.project.id; // TODO
+
+        var formData = new FormData();
+
+        if (dataUrl === '') {
+            formData.append('file', $('input#data-file')[0].files[0]);
+        }
+
+        toastr.success('Project data was uploaded.', 'Success');
+
+        // $.ajax({
+        //     url: '/account/projects/' + id + '/upload',
+        //     method: "POST",
+        //     data: formData,
+        //     dataType: false,
+        //     processData: false,
+        // }).done(function (response) {
+        //     console.log(response);
+        // });
     });
 };
 

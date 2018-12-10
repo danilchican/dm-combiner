@@ -11,5 +11,11 @@
   {
     "title": "Theano",
     "commands": []
+  },
+  {
+    "title": "NONE",
+    "commands": [
+      "asd"
+    ]
   }
 ]
