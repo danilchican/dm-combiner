@@ -19,6 +19,37 @@ class CombinerService extends AbstractCombiner
         return $this->executePostRequest();
     }
 
+    /**
+     * Get all frameworks.
+     *
+     * @return mixed
+     */
+    public function getFrameworks()
+    {
+        $endpoint = CombinerEndpointBuilder::point()->to('/frameworks')->make();
+        $this->setConfiguration($endpoint);
+
+        return $this->executeGetRequest();
+    }
+
+    /**
+     * Get list of framework commands.
+     *
+     * @param string $framework
+     *
+     * @return mixed
+     */
+    public function getFrameworkCommands(string $framework)
+    {
+        $endpoint = CombinerEndpointBuilder::point()
+            ->to('/commands/')
+            ->to($framework)
+            ->make();
+
+        $this->setConfiguration($endpoint);
+        return $this->executeGetRequest();
+    }
+
     private function prepareExecuteAlgorithmData()
     {
         $endpoint = $this->prepareExecuteAlgorithmEndpoint();

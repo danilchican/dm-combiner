@@ -27,4 +27,15 @@ Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], 
 
 Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], function () {
     Route::get('/', 'Account\AccountController')->name('account.index');
+
+    Route::group(['prefix' => '/projects'], function () {
+        Route::get('/', 'Account\ProjectController@showProjectsPage')
+            ->name('account.projects.index');
+        Route::get('/create', 'Account\ProjectController@showCreateProjectPage')
+            ->name('account.projects.create');
+        Route::post('/create', 'Account\ProjectController@createProject')
+            ->name('account.projects.create.post');
+        Route::get('/frameworks', 'Account\ProjectController@getFrameworksList')
+            ->name('account.projects.frameworks');
+    });
 });

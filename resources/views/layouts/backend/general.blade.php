@@ -34,7 +34,8 @@
     </div>
 </div>
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/vendor/smartWizard/jquery.smartWizard.js') }}"></script>
 <script src="{{ asset('js/custom.min.js') }}"></script>
-@yield('scripts')
+@stack('scripts')
 </body>
 </html>

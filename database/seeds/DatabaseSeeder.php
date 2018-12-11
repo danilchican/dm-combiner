@@ -12,5 +12,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(RolesSeeder::class);
+
+        if (app()->environment() !== 'production') {
+            $this->call(TestClientsSeeder::class);
+        }
     }
 }

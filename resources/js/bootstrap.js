@@ -1,9 +1,12 @@
-
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
+window.Vue = require('vue');
+require('vue-resource');
 
 try {
     window.$ = window.jQuery = require('jquery');
+    window.Papa = require('papaparse');
+
     require('bootstrap/dist/js/bootstrap.min');
 
     require('fastclick/lib/fastclick');
@@ -19,6 +22,31 @@ try {
     require('datejs');
 
     require('bootstrap-daterangepicker/daterangepicker');
-} catch (e) {}
+} catch (e) {
+}
 
-let token = document.head.querySelector('meta[name="csrf-token"]');
+window.axios = require('axios');
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+const token = $('meta[name="csrf-token"]');
+
+if (token) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+}
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': token.attr('content')
+    }
+});
+
+String.prototype.format = function() {
+    let str = this;
+
+    for (let i = 0; i < arguments.length; i++) {
+        let reg = new RegExp("\\{" + i + "\\}", "gm");
+        str = str.replace(reg, arguments[i]);
+    }
+
+    return str;
+};

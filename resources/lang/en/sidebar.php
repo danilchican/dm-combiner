@@ -13,7 +13,12 @@ return [
     'account'   => [
         'title' => 'Account',
         'menu'  => [
-            'home' => 'Home',
+            'home'     => 'Home',
+            'projects' => [
+                'title'    => 'Projects',
+                'view_all' => 'View all',
+                'create'   => 'Create new',
+            ],
         ],
     ],
 ];

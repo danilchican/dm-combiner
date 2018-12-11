@@ -136,7 +136,7 @@ class User extends Authenticatable
         switch ($role) {
             case 'admin':
                 return $this->isAdministrator();
-            case 'partner':
+            case 'client':
                 return $this->isClient();
             default:
                 return false;
@@ -171,5 +171,15 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
+     * Get user's projects.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
     }
 }

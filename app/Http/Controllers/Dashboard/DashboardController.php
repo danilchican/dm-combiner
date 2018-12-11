@@ -7,7 +7,7 @@ use App\Models\User;
 
 class DashboardController extends Controller
 {
-    private const USERS_PER_PAGE = 10;
+    const USERS_PER_PAGE = 10;
 
     /**
      * Show index page of the dashboard.
