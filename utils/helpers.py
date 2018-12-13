@@ -46,6 +46,7 @@ def get_path_for_saving_image(fname):
     path = os.path.join(PROJECT_ROOT, 'images', fname)
     return path
 
+
 def save_file(file):
     filename = secure_filename(file.filename)
     file_path = os.path.join(STATIC_FILES, filename)

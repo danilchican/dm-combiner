@@ -3,8 +3,7 @@ import sys
 import yaml
 
 
-PROJECT_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
-PROJECT_ROOT = os.path.normpath(PROJECT_ROOT)
+PROJECT_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../"))
 STATIC_FILES = os.path.join(PROJECT_ROOT, 'data/')
 
 if PROJECT_ROOT not in sys.path:
@@ -32,4 +31,5 @@ def fetch_config(path=None):
 CONFIG = fetch_config()
 
 if __name__ == '__main__':
-    print(STATIC_FILES, PROJECT_ROOT )
+    print(STATIC_FILES, PROJECT_ROOT)
+    print(sys.path)

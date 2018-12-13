@@ -1,7 +1,7 @@
 import logging
 from conf.config import CONFIG
 
-logger = logging.getLogger("dce_analyzer")
+logger = logging.getLogger("dm-combiner")
 logging.basicConfig(
     format=CONFIG.log_format,
     datefmt=CONFIG.log_date_format,

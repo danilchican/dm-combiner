@@ -14,15 +14,14 @@ from utils.decorators import view_exception
 app = Flask(__name__)
 
 
-# --- Frameworks | commands | params
 @app.route('/frameworks', methods=['GET'])
 @view_exception
 def frameworks():
-    frameworks_dict = Framework().get_subclasses()
-    frameworks_names = list(frameworks_dict.keys())
-    if not frameworks_names:
-        return jsonify({'success': True, 'result': 'No frameworks.'})
-    return jsonify({'success': True, 'result': frameworks_names})
+    result = []
+    frameworks = Framework().get_subclasses()
+    for framework_name, framework_instance in frameworks.items():
+        result.append({"name": framework_name, 'methods': list(framework_instance().methods.keys())})
+    return jsonify({'success': True, 'frameworks': result})
 
 
 @app.route('/commands/<string:framework_name>', methods=['GET'])
@@ -33,8 +32,8 @@ def commands(framework_name):
     if not framework:
         return jsonify({'success': False, 'error': 'No such framework'})
     commands = framework().methods
-    commands = list(commands.keys())
-    return jsonify({'success': True, 'result': commands})
+    commands_names = list(commands.keys())
+    return jsonify({'success': True, 'result': commands_names})
 
 
 @app.route('/mandatory_commands', methods=['GET'])
@@ -175,4 +174,4 @@ def algorithm():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)
