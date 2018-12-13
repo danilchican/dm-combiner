@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import inspect
+from collections import defaultdict
 
 
 class Framework(ABC):
@@ -16,15 +17,21 @@ class Framework(ABC):
                 methods[method_name] = method_obj
         return methods
 
-    @property
-    def methods_params(self) -> dict:
+    def method_params(self, method_name) -> list:
         """
         Get the names of a methods parameters.
         """
-        methods_params_dict = {}
-        for method_name, method_instance in self.methods.items():
-            methods_params_dict[method_name] = inspect.getargspec(method_instance)[0]
-        return methods_params_dict
+        restricted_args = ['return', 'data']
+        args = []
+        method_instance = self.methods.get(method_name)
+        if method_instance:
+            # return tuple with 7 elements, but we need only last
+            method_args_info = inspect.getfullargspec(method_instance)[6]
+            for arg, arg_type in method_args_info.items():
+                if arg not in restricted_args:
+                    args.append({'name': arg, 'type': arg_type.__name__})
+            return args
+        return None
 
     def get_subclasses(self) -> dict:
         """

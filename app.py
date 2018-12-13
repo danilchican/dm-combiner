@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 @app.route('/frameworks', methods=['GET'])
 @view_exception
-def frameworks():
+def get_frameworks():
     result = []
     frameworks = Framework().get_subclasses()
     for framework_name, framework_instance in frameworks.items():
@@ -24,80 +24,48 @@ def frameworks():
     return jsonify({'success': True, 'frameworks': result})
 
 
-@app.route('/commands/<string:framework_name>', methods=['GET'])
-@view_exception
-def commands(framework_name):
+@app.route('/args/<string:framework_name>/<string:method_name>', methods=['GET'])
+# @view_exception
+def get_args(framework_name: str, method_name: str):
     frameworks = Framework().get_subclasses()
     framework = frameworks.get(framework_name)
     if not framework:
         return jsonify({'success': False, 'error': 'No such framework'})
-    commands = framework().methods
-    commands_names = list(commands.keys())
-    return jsonify({'success': True, 'result': commands_names})
-
-
-@app.route('/mandatory_commands', methods=['GET'])
-@view_exception
-def mandatory_commands():
-    commands = {'load': ['path', 'columns', 'is_normalize', 'is_scale'],
-                'save': ['type']
-                }
-    commands = list(commands.keys())
-    return jsonify({'success': True, 'result': commands})
-
-
-@app.route('/mandatory_commands/params/<string:func_name>', methods=['GET'])
-@view_exception
-def mandatory_commands_params(func_name):
-    commands = {'load': ['path', 'columns', 'is_normalize', 'is_scale'],
-                'save': ['type']
-                }
-    params = commands.get(func_name)
-    if params:
-        return jsonify({'success': True, 'result': params})
+    args = framework().method_params(method_name)
+    if args:
+        return jsonify({'success': True, 'args': args})
     else:
-        return jsonify({'success': True, 'error': 'No such command.'})
+        return jsonify({'success': True, 'error': 'No such method'})
 
 
-@app.route('/params/<string:framework_name>/<string:func_name>', methods=['GET'])
-@view_exception
-def params(framework_name, func_name):
-    frameworks = Framework().get_subclasses()
-    framework = frameworks.get(framework_name)
-    if not framework:
-        return jsonify({'success': False, 'error': 'No such framework'})
-    params = framework().methods_params.get(func_name)
-    if params:
-        return jsonify({'success': True, 'result': params})
-    else:
-        return jsonify({'success': True, 'error': 'No such command.'})
-
-
-# --- Views which working with files
 @app.route('/files', methods=['GET'])
 @view_exception
-def files():
+def get_files_list():
     files = []
     for file in os.listdir(STATIC_FILES):
         if os.path.isfile(os.path.join(STATIC_FILES, file)):
             files.append(file)
-    return jsonify({'success': True, 'result': files})
+    return jsonify({'success': True, 'files': files})
 
 
 @app.route('/get_file/<string:filename>', methods=['GET'])
 @view_exception
-def get_file(filename):
-    return send_file(os.path.join(STATIC_FILES, filename), attachment_filename=filename)
+def get_file(filename: str):
+    file_path = os.path.join(STATIC_FILES, filename)
+    if os.path.isfile(file_path):
+        return send_file(os.path.join(STATIC_FILES, filename), attachment_filename=filename)
+    else:
+        return jsonify({'success': False, 'error': 'No such file'})
 
 
 @app.route('/get_file_path/<string:filename>', methods=['GET'])
 @view_exception
-def get_file_path(filename):
+def get_file_path(filename: str):
     file_path = os.path.join(STATIC_FILES, filename)
     if os.path.isfile(file_path):
-        return jsonify({'success': True, 'result': file_path})
+        return jsonify({'success': True, 'path': file_path})
     else:
-        return jsonify({'success': False, 'error': 'No such file.'})
+        return jsonify({'success': False, 'error': 'No such file'})
 
 
 @app.route('/upload_file', methods=['POST'])
@@ -114,7 +82,7 @@ def upload_file():
         logger.warn('upload_file | No selected file.')
         return jsonify({'success': False, 'error': "Not allowed format."})
     file_path = helpers.save_file(file)
-    return jsonify({'success': True, 'result': file_path})
+    return jsonify({'success': True, 'path': file_path})
 
 
 # --- Algorithm views
