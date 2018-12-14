@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import requests
 
-from utils import logger
-from utils.decorators import exception
+from dm_combiner.utils.logger import logger
+from dm_combiner.utils.decorators import exception
 
 
 class DataHandler:

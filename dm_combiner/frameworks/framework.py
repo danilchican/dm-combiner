@@ -1,23 +1,22 @@
-from abc import ABC, abstractmethod
 import inspect
-from collections import defaultdict
+from abc import ABC
 
 
 class Framework(ABC):
+    """
+    Base class for all frameworks.
+    """
 
-    @property
-    def methods(self) -> dict:
+    def get_subclasses(self) -> dict:
         """
         Fetch all subclasses and return dict with instances if this subclasses.
         """
-        methods = {}
-        for method_name in self.__class__.__dict__:
-            method_obj = getattr(self.__class__, method_name)
-            if callable(method_obj) and not method_name.startswith("__"):
-                methods[method_name] = method_obj
-        return methods
+        subclasses = {}
+        for subclass in self.__class__.__subclasses__():
+            subclasses[subclass.__name__] = subclass
+        return subclasses
 
-    def method_params(self, method_name) -> list:
+    def get_method_params(self, method_name) -> list:
         """
         Get the names of a methods parameters.
         """
@@ -33,14 +32,17 @@ class Framework(ABC):
             return args
         return None
 
-    def get_subclasses(self) -> dict:
+    @property
+    def methods(self) -> dict:
         """
         Fetch all subclasses and return dict with instances if this subclasses.
         """
-        subclasses = {}
-        for subclass in self.__class__.__subclasses__():
-            subclasses[subclass.__name__] = subclass
-        return subclasses
+        methods = {}
+        for method_name in self.__class__.__dict__:
+            method_obj = getattr(self.__class__, method_name)
+            if callable(method_obj) and not method_name.startswith("__"):
+                methods[method_name] = method_obj
+        return methods
 
 
 if __name__ == '__main':

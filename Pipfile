@@ -19,6 +19,8 @@ pyyaml = "*"
 flask-restful = "*"
 celery = {git = "https://github.com/celery/celery.git", ref = "master", editable = true}
 redis = "*"
+theano = "*"
+raven = {version = "*", extras = ["flask"]}
 
 [dev-packages]
 
