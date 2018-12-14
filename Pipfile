@@ -17,6 +17,8 @@ pyyaml = "*"
 "beautifulsoup4" = "*"
 "flake8" = "*"
 flask-restful = "*"
+celery = {git = "https://github.com/celery/celery.git", ref = "master", editable = true}
+redis = "*"
 
 [dev-packages]
 
