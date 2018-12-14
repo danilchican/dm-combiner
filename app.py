@@ -2,13 +2,13 @@ import os
 import time
 
 from celery import Celery
+import numpy as np
 from flask import Flask, request, jsonify, send_file
 
 from conf.config import STATIC_FILES
 from frameworks.framework import Framework
 from frameworks.skl import SKL
 from handlers.data_handler import DataHandler
-from handlers.json_handler import JsonHandler
 from utils import helpers
 from utils.decorators import view_exception
 from utils.logger import logger
@@ -96,7 +96,7 @@ def upload_file():
 
 
 @app.route('/algorithm', methods=['POST'])
-# @view_exception
+@view_exception
 def algorithm():
     try:
         data = request.get_json(force=True)
@@ -108,10 +108,27 @@ def algorithm():
 
     config, commands = data.get('config', {}), data.get('commands', [])
     print(commands)
-    is_success = parse_config(config)
-    if not is_success:
+    data = parse_config(config)
+    data = parse_commands(data, commands)
+    data = DataHandler().restructure_data_before_send(data_dict=data)
+    if data is None:
         return jsonify({'success': False, 'error': 'Bad configs'})
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'result': data})
+
+
+def parse_commands(data: np.ndarray, commands: list):
+    for command in commands:
+        framework_name = command.get('framework')
+        frameworks = Framework().get_subclasses()
+        framework_class = frameworks.get(framework_name)
+        if framework_class:
+            method_name = command.get('name')
+            args = command.get('params')
+            method = getattr(framework_class(), method_name)
+            print(method)
+            data = method(data, **args)
+            print(data)
+    return data
 
 
 def parse_config(config: dict):
@@ -122,14 +139,25 @@ def parse_config(config: dict):
     columns = config.get('columns')
     if not all([file_path, callback_url, columns]):
         return None
-    if os.path.isfile(file_path):
-        data_handler = DataHandler(file_path)
-        data = data_handler.process_file(columns)
-        print(data)
-        if data is not None:
-            print(data)
-        return True
+    data = prepare_data(file_path=file_path, columns=columns)
+    if data is not None:
+        print(f'without: {data}')
+        if is_normalize:
+            data = SKL().normalize(data=data)
+            print(f'with norm: {data}')
+        if is_scale:
+            data = SKL().scale(data=data)
+            print(f'with scale: {data}')
+        return data
 
+
+def prepare_data(file_path: str, columns: list):
+    if os.path.isfile(file_path):
+        data_handler = DataHandler()
+        data = data_handler.process_file(path=file_path, columns=columns)
+        if data is not None:
+            return data
+    return None
 
 
 @app.route('/status/<task_id>')

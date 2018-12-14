@@ -8,17 +8,17 @@ from frameworks.framework import Framework
 class SKL(Framework):
 
     @staticmethod
-    def normalize(data: pd.DataFrame, norm: str='l2', axis: int=1, copy: bool=True, return_norm: bool=False) -> pd.DataFrame:
+    def normalize(data, norm: str='l2', axis: int=1, copy: bool=True, return_norm: bool=False):
         data = preprocessing.normalize(X=data, norm=norm, axis=axis, copy=copy, return_norm=return_norm)
         return data
 
     @staticmethod
-    def scale(data: pd.DataFrame, axis: int=0, with_mean: bool=True, with_std: bool=True, copy: bool=True) -> pd.DataFrame:
+    def scale(data, axis: int=0, with_mean: bool=True, with_std: bool=True, copy: bool=True):
         data = preprocessing.scale(X=data, axis=axis, with_mean=with_mean, copy=copy, with_std=with_std)
         return data
 
     @staticmethod
-    def k_means(data: pd.DataFrame, n_clusters: int, max_iter: int=300, random_state: int=None, init: str='k-means++') -> dict:
+    def k_means(data, n_clusters: int, max_iter: int=300, random_state: int=None, init: str='k-means++') -> dict:
         clusters_info = cluster.KMeans(n_clusters=n_clusters, max_iter=max_iter, random_state=random_state, init=init)
 
         # compute cluster centers and predict cluster index for each sample
@@ -29,7 +29,7 @@ class SKL(Framework):
         return clusters_info_dict
 
     @staticmethod
-    def data_reduction(data: pd.DataFrame, n_components: int=2) -> pd.DataFrame:
+    def data_reduction(data, n_components: int=2):
         pca = PCA(n_components=n_components).fit(data)
         data = pca.transform(data)
         return data

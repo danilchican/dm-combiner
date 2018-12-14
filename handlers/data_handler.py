@@ -14,28 +14,26 @@ class DataHandler:
     ALLOWED_EXTENSIONS = ['csv']
     NUM_STRINGS_FOR_PREVIEW = 10
 
-    def __init__(self, path):
-        self.path = path
-
-    def is_path_exist(self):
-        return os.path.exists(self.path)
+    def is_path_exist(self, path: str):
+        return os.path.exists(path)
 
     def filter_file_extension(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
 
     @exception
-    def read_data_csv(self):
-        data = pd.read_csv(self.path)
+    def read_data_csv(self, path: str):
+        data = pd.read_csv(path)
         return data
 
-    def process_file(self, columns: list):
-        if self.is_path_exist():
-            if self.filter_file_extension(self.path):
+    def process_file(self, path: str, columns: list):
+        if self.is_path_exist(path):
+            if self.filter_file_extension(path):
                 try:
-                    data = self.read_data_csv()
+                    data = self.read_data_csv(path)
                     data = self.convert_column_names_to_numbers(data)
                     data = self.fillna_df(data)
                     data = data[columns]
+                    data = data.values      # convert dataframe to np.ndarray
                 except Exception as ex:
                     logger.logger.warning('{}: {}'.format(type(ex).__name__, ex))
                     return None
@@ -48,13 +46,13 @@ class DataHandler:
         for i in data_dict:
             temp_dict = dict()
             temp_dict['title'] = i
-            temp_dict['data'] = data_dict[i]
+            temp_dict['data'] = data_dict[i].tolist()
             data.append(temp_dict)
         return data
 
     @exception
-    def get_csv_from_url(self):
-        content = requests.get(self.path).content
+    def get_csv_from_url(self, path: str):
+        content = requests.get(path).content
         data = pd.read_csv(io.StringIO(content.decode('utf-8')))
         return data
 
