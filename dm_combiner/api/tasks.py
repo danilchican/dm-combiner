@@ -19,7 +19,9 @@ def run_algorithm(data):
     data = DataHandler().jsonify_data(data=data)
     if data is None:
         return None
-    # r = requests.post(callback_url, json=json.dumps(data))
+    print(data, callback_url)
+    r = requests.post(callback_url, json=json.dumps(data))
+    print(r)
     return data
 
 
