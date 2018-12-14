@@ -1,6 +1,7 @@
 import logging
-from dm_combiner import config
+from dm_combiner.config import Config
 
+config = Config()
 logger = logging.getLogger("dm-combiner")
 logging.basicConfig(
     format=config.LOG_FORMAT,

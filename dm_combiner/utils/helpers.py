@@ -4,7 +4,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from werkzeug.utils import secure_filename
 
-from dm_combiner import config
+from dm_combiner.config import Config
 
 
 def save_features_2d(fname, x, y, x_label='X Label', y_label='Y Label', title='Title', grid=True):
@@ -43,12 +43,12 @@ def save_clusters_2d(fname, data, centers, colors, x_label='X Label', y_label='Y
 
 
 def get_path_for_saving_image(fname):
-    path = os.path.join(config.PROJECT_ROOT, 'images', fname)
+    path = os.path.join(Config().PROJECT_ROOT, 'images', fname)
     return path
 
 
 def save_file(file):
     filename = secure_filename(file.filename)
-    file_path = os.path.join(config.STATIC_FILES, filename)
+    file_path = os.path.join(Config().STATIC_FILES, filename)
     file.save(file_path)
     return file_path

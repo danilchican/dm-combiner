@@ -1,16 +1,16 @@
 import os
-import time
 
 import numpy as np
 from flask import request, jsonify, send_file, Blueprint
 
+from dm_combiner.config import Config
 from dm_combiner.frameworks.framework import Framework
 from dm_combiner.frameworks.skl import SKL
 from dm_combiner.handlers.data_handler import DataHandler
 from dm_combiner.utils import helpers
 from dm_combiner.utils.decorators import view_exception
 from dm_combiner.utils.logger import logger
-from dm_combiner import celery, config
+from . import tasks
 
 api = Blueprint('api', __name__)
 
@@ -18,7 +18,7 @@ api = Blueprint('api', __name__)
 @api.route('/frameworks', methods=['GET'])
 @view_exception
 def get_frameworks():
-    task = my_background_task.apply_async(args=[10, 20])
+    task = tasks.my_background_task.apply_async(args=[10, 20])
     print(task.id, task.state)
     print(task.get())
     result = []
@@ -46,8 +46,8 @@ def get_args(framework_name: str, method_name: str):
 @view_exception
 def get_files_list():
     files = []
-    for file in os.listdir(config.STATIC_FILES):
-        if os.path.isfile(os.path.join(STATIC_FILES, file)):
+    for file in os.listdir(Config().STATIC_FILES):
+        if os.path.isfile(os.path.join(Config().STATIC_FILES, file)):
             files.append(file)
     return jsonify({'success': True, 'files': files})
 
@@ -55,9 +55,9 @@ def get_files_list():
 @api.route('/get_file/<string:filename>', methods=['GET'])
 @view_exception
 def get_file(filename: str):
-    file_path = os.path.join(config.STATIC_FILES, filename)
+    file_path = os.path.join(Config().STATIC_FILES, filename)
     if os.path.isfile(file_path):
-        return send_file(os.path.join(config.STATIC_FILES, filename), attachment_filename=filename)
+        return send_file(os.path.join(Config().STATIC_FILES, filename), attachment_filename=filename)
     else:
         return jsonify({'success': False, 'error': 'No such file'})
 
@@ -65,7 +65,7 @@ def get_file(filename: str):
 @api.route('/get_file_path/<string:filename>', methods=['GET'])
 @view_exception
 def get_file_path(filename: str):
-    file_path = os.path.join(config.STATIC_FILES, filename)
+    file_path = os.path.join(Config().STATIC_FILES, filename)
     if os.path.isfile(file_path):
         return jsonify({'success': True, 'path': file_path})
     else:
@@ -90,7 +90,7 @@ def upload_file():
 
 
 @api.route('/algorithm', methods=['POST'])
-@view_exception
+# @view_exception
 def algorithm():
     try:
         data = request.get_json(force=True)
@@ -104,7 +104,7 @@ def algorithm():
     print(commands)
     data = parse_config(config)
     data = parse_commands(data, commands)
-    data = DataHandler().restructure_data_before_send(data_dict=data)
+    data = DataHandler().jsonify_data(data=data)
     if data is None:
         return jsonify({'success': False, 'error': 'Bad configs'})
     return jsonify({'success': True, 'result': data})
@@ -156,7 +156,7 @@ def prepare_data(file_path: str, columns: list):
 
 @api.route('/status/<task_id>')
 def taskstatus(task_id):
-    task = my_background_task.AsyncResult(task_id)
+    task = tasks.my_background_task.AsyncResult(task_id)
     if task.state == 'PENDING':
         # job did not start yet
         response = {
@@ -185,7 +185,4 @@ def taskstatus(task_id):
     return jsonify(response)
 
 
-@celery.task
-def my_background_task(arg1, arg2):
-    time.sleep(10)
-    return arg1 + arg2
+
