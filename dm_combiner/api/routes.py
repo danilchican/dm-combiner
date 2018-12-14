@@ -18,9 +18,6 @@ api = Blueprint('api', __name__)
 @api.route('/frameworks', methods=['GET'])
 @view_exception
 def get_frameworks():
-    task = tasks.my_background_task.apply_async(args=[10, 20])
-    print(task.id, task.state)
-    print(task.get())
     result = []
     frameworks = Framework().get_subclasses()
     for framework_name, framework_instance in frameworks.items():
@@ -92,71 +89,19 @@ def upload_file():
 @api.route('/algorithm', methods=['POST'])
 # @view_exception
 def algorithm():
-    try:
-        data = request.get_json(force=True)
-        print(data.get('config'))
-        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(data), data=data))
-    except Exception as ex:
-        logger.warning('{}: {}'.format(type(ex).__name__, ex))
-        return jsonify({'success': False, 'error': str(ex)})
-
-    config, commands = data.get('config', {}), data.get('commands', [])
-    print(commands)
-    data = parse_config(config)
-    data = parse_commands(data, commands)
-    data = DataHandler().jsonify_data(data=data)
-    if data is None:
-        return jsonify({'success': False, 'error': 'Bad configs'})
-    return jsonify({'success': True, 'result': data})
-
-
-def parse_commands(data: np.ndarray, commands: list):
-    for command in commands:
-        framework_name = command.get('framework')
-        frameworks = Framework().get_subclasses()
-        framework_class = frameworks.get(framework_name)
-        if framework_class:
-            method_name = command.get('name')
-            args = command.get('params')
-            method = getattr(framework_class(), method_name)
-            print(method)
-            data = method(data, **args)
-            print(data)
-    return data
-
-
-def parse_config(config: dict):
-    file_path = config.get('file_url')
-    is_normalize = config.get('normalize', False)
-    is_scale = config.get('scale', False)
-    callback_url = config.get('callback_url')
-    columns = config.get('columns')
-    if not all([file_path, callback_url, columns]):
-        return None
-    data = prepare_data(file_path=file_path, columns=columns)
-    if data is not None:
-        print(f'without: {data}')
-        if is_normalize:
-            data = SKL().normalize(data=data)
-            print(f'with norm: {data}')
-        if is_scale:
-            data = SKL().scale(data=data)
-            print(f'with scale: {data}')
-        return data
-
-
-def prepare_data(file_path: str, columns: list):
-    if os.path.isfile(file_path):
-        data_handler = DataHandler()
-        data = data_handler.process_file(path=file_path, columns=columns)
-        if data is not None:
-            return data
-    return None
+    # try:
+    data = request.get_json(force=True)
+    task = tasks.run_algorithm.apply_async((data,))
+    #     logger.info(f'Algorithm start executing | Task id: {task.id} | Data: {data}')
+    # except Exception as ex:
+    #     logger.warning('{}: {}'.format(type(ex).__name__, ex))
+    #     return jsonify({'success': False, 'error': str(ex)})
+    return jsonify({'success': True, 'task_id': task.id})
 
 
 @api.route('/status/<task_id>')
 def taskstatus(task_id):
-    task = tasks.my_background_task.AsyncResult(task_id)
+    task = tasks.run_algorithm.AsyncResult(task_id)
     if task.state == 'PENDING':
         # job did not start yet
         response = {

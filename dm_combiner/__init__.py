@@ -5,7 +5,6 @@ from raven.contrib.flask import Sentry
 from dm_combiner.config import Config
 from dm_combiner.utils import logger
 
-print(__name__)
 config = Config()
 sentry = Sentry(logging=True, level='ERROR', dsn=config.SENTRY_DSN)
 celery = Celery(__name__, broker=config.CELERY_BROKER_URL, backend=config.CELERY_RESULT_BACKEND,
