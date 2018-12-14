@@ -4,39 +4,36 @@ import json
 
 from conf.config import PROJECT_ROOT
 
-
 json_ob = {
-    "command_1": {
-        "name": "load",
-        "framework": "scikit",
-
-        "params": {
-            "path": 'data/telecom_churn.csv'
-        }
+    "config": {
+        "normalize": True,
+        "scale": True,
+        "file_url": "/home/roma/work/dm-combiner/data/telecom_churn.csv",
+        "columns": [6, 7, 8, 9],
+        "callback_url": "localhost:8000/"
     },
-
-    "command_2": {
-        "name": "k-means",
-        "framework": "scikit",
-
-        "params": {
-            "n_clusters": 2
-            }
-    },
-
-    "command_3": {
-        "name": "save",
-        "framework": "scikit",
-
-        "params": {
-            "data_type": "DataType"
+    "commands": [
+        {
+            "name": "normalize",
+            "framework": "SKL",
+            "params": {
+                "norm": "l2",
+                "axis": "1",
+                "return_norm": True,
+            },
+        },
+        {
+            "name": "k_means",
+            "framework": "SKL",
+            "params": {
+                "n_clusters": "5",
+                "init": "k-means++",
+            },
         }
-    }
+    ]
 }
 
-datas = {'file_path': 'Data/telecom_churn.csv', 'column_indexes': [5, 6, 7, 8], 'number_of_clusters': 6,
-         'is_normalize': True}
-url = "http://127.0.0.1:5000/process_json"
+url = "http://127.0.0.1:5000/algorithm"
 
 
 def send_request(url):
@@ -48,6 +45,6 @@ def send_request(url):
 
 
 if __name__ == '__main__':
-    # send_request(url)
+    send_request(url)
     # print(json.dumps(datas))
-    os.path.join(PROJECT_ROOT, 'data', '')
+    # os.path.join(PROJECT_ROOT, 'data', '')

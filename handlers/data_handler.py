@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 
 from frameworks.skl import SKL
-from utils import helpers
+from utils import helpers, logger
 from utils.decorators import exception
 
 
@@ -28,13 +28,19 @@ class DataHandler:
         data = pd.read_csv(self.path)
         return data
 
-    @exception
-    def show_file_preview(self):
-        data = self.read_data_csv()
-        data = data.head(n=self.NUM_STRINGS_FOR_PREVIEW)
-        data_dict = data.to_dict('list')
-        data = self.restructure_data_before_send(data_dict)
-        return data
+    def process_file(self, columns: list):
+        if self.is_path_exist():
+            if self.filter_file_extension(self.path):
+                try:
+                    data = self.read_data_csv()
+                    data = self.convert_column_names_to_numbers(data)
+                    data = self.fillna_df(data)
+                    data = data[columns]
+                except Exception as ex:
+                    logger.logger.warning('{}: {}'.format(type(ex).__name__, ex))
+                    return None
+                return data
+        return None
 
     @staticmethod
     def restructure_data_before_send(data_dict):
@@ -47,19 +53,6 @@ class DataHandler:
         return data
 
     @exception
-    def read_data_html(self, table_index=0):
-        # pd.read_html return list of frames
-        data = pd.read_html(self.path)
-        # get frame from list
-        data = data[table_index]
-        return data
-
-    @exception
-    def read_data_excel(self):
-        data = pd.read_excel(self.path)
-        return data
-
-    @exception
     def get_csv_from_url(self):
         content = requests.get(self.path).content
         data = pd.read_csv(io.StringIO(content.decode('utf-8')))
@@ -67,12 +60,17 @@ class DataHandler:
 
     @staticmethod
     def convert_column_names_to_numbers(data):
-        data.rename(columns={x: y for x, y in zip(data.columns, range(0, len(data.columns)))}, inplace=True)
+        data = data.rename(columns={x: y for x, y in zip(data.columns, range(1, len(data.columns) + 1))})
         return data
 
     @staticmethod
     def get_numerical_data(data):
         data = data.select_dtypes(include=[np.number])
+        return data
+
+    @staticmethod
+    def fillna_df(data):
+        data = data.fillna(0)
         return data
 
 

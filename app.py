@@ -34,38 +34,6 @@ def get_frameworks():
     return jsonify({'success': True, 'frameworks': result})
 
 
-@app.route('/status/<task_id>')
-def taskstatus(task_id):
-    print(task_id)
-    task = my_background_task.AsyncResult(task_id)
-    if task.state == 'PENDING':
-        # job did not start yet
-        response = {
-            'state': task.state,
-            'current': 0,
-            'total': 1,
-            'status': 'Pending...'
-        }
-    elif task.state != 'FAILURE':
-        response = {
-            'state': task.state,
-            'current': task.info.get('current', 0),
-            'total': task.info.get('total', 1),
-            'status': task.info.get('status', '')
-        }
-        if 'result' in task.info:
-            response['result'] = task.info['result']
-    else:
-        # something went wrong in the background job
-        response = {
-            'state': task.state,
-            'current': 1,
-            'total': 1,
-            'status': str(task.info),  # this is the exception raised
-        }
-    return jsonify(response)
-
-
 @app.route('/args/<string:framework_name>/<string:method_name>', methods=['GET'])
 # @view_exception
 def get_args(framework_name: str, method_name: str):
@@ -130,41 +98,69 @@ def upload_file():
 @app.route('/algorithm', methods=['POST'])
 # @view_exception
 def algorithm():
-    logger.info('Received request: {method}, {url}'.format(method=request.method, url=request.host_url))
     try:
-        raw_data = request.get_json(force=True)
-        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(raw_data), data=raw_data))
+        data = request.get_json(force=True)
+        print(data.get('config'))
+        logger.info('Request Data | type: {type}, data: {data}'.format(type=type(data), data=data))
     except Exception as ex:
         logger.warning('{}: {}'.format(type(ex).__name__, ex))
         return jsonify({'success': False, 'error': str(ex)})
 
-    json_handler = JsonHandler(raw_data)
-    # is_validate_success, error = json_handler.validate_json()
-    #
-    # if not is_validate_success:
-    #     return jsonify({'success': False, 'error': error})
-
-    commands = json_handler.compose_commands()
+    config, commands = data.get('config', {}), data.get('commands', [])
     print(commands)
-    methods = SKL().methods
-    for command, params in commands.items():
-        print(command, params)
-        if command == 'load':
-            print('loading')
-            data_handler = DataHandler(params.get('path'))
-            data = data_handler.read_data_csv()
-            data = data_handler.convert_column_names_to_numbers(data)
-            data = data[params.get('columns')]
-        elif command == 'save':
-            print('saving')
-            for i in data:
-                data[i] = data[i].tolist()
-        else:
-            if command in methods:
-                print(command + 'ing')
-                data = methods[command](data, **params)
-    return jsonify({'success': True, 'result': data})
+    is_success = parse_config(config)
+    if not is_success:
+        return jsonify({'success': False, 'error': 'Bad configs'})
+    return jsonify({'success': True})
 
+
+def parse_config(config: dict):
+    file_path = config.get('file_url')
+    is_normalize = config.get('normalize', False)
+    is_scale = config.get('scale', False)
+    callback_url = config.get('callback_url')
+    columns = config.get('columns')
+    if not all([file_path, callback_url, columns]):
+        return None
+    if os.path.isfile(file_path):
+        data_handler = DataHandler(file_path)
+        data = data_handler.process_file(columns)
+        print(data)
+        if data is not None:
+            print(data)
+        return True
+
+
+
+@app.route('/status/<task_id>')
+def taskstatus(task_id):
+    task = my_background_task.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        # job did not start yet
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
 
 @celery.task
 def my_background_task(arg1, arg2):
