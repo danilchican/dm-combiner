@@ -55,7 +55,7 @@
         "celery": {
             "editable": true,
             "git": "https://github.com/celery/celery.git",
-            "ref": "cd6c7444cadbdaaccca14a986e7e1b3330c33024"
+            "ref": "407e5d116cba076d7f176c3806a27428f0594a30"
         },
         "certifi": {
             "hashes": [
