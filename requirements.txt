@@ -1,0 +1,46 @@
+-i https://pypi.org/simple
+-e git+https://github.com/celery/celery.git@407e5d116cba076d7f176c3806a27428f0594a30#egg=celery
+amqp==2.3.2
+aniso8601==4.0.1
+beautifulsoup4==4.6.3
+billiard==3.5.0.5
+blinker==1.4 ; extra == 'flask'
+certifi==2018.11.29
+chardet==3.0.4
+click==7.0
+cycler==0.10.0
+flake8==3.6.0
+flask-restful==0.3.6
+flask==1.0.2
+gunicorn==19.9.0
+html5lib==1.0.1
+idna==2.8
+itsdangerous==1.1.0
+jinja2==2.10
+kiwisolver==1.0.1
+kombu==4.2.2
+lxml==4.2.5
+markupsafe==1.1.0
+matplotlib==3.0.2
+mccabe==0.6.1
+numpy==1.15.4
+pandas==0.23.4
+pycodestyle==2.4.0
+pyflakes==2.0.0
+pyparsing==2.3.0
+python-dateutil==2.7.5
+pytz==2018.7
+pyyaml==3.13
+raven[flask]==6.9.0
+redis==3.0.1
+requests==2.21.0
+scikit-learn==0.20.1
+scipy==1.1.0
+seaborn==0.9.0
+six==1.12.0
+sklearn==0.0
+theano==1.0.3
+urllib3==1.24.1
+vine==1.1.4
+webencodings==0.5.1
+werkzeug==0.14.1
