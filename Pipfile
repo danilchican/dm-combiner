@@ -22,6 +22,7 @@ redis = "*"
 theano = "*"
 raven = {version = "*", extras = ["flask"]}
 gunicorn = "*"
+blinker = "*"
 
 [dev-packages]
 

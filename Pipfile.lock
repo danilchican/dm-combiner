@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4bb57aa017b911825b66874e14a0b2e9be52ed74d5326803a05558d996754036"
+            "sha256": "651ca43aa2e65dec808ed730c91e82c5688f19830d197e80938d005f9cb04786"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -49,7 +49,7 @@
             "hashes": [
                 "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"
             ],
-            "markers": "extra == 'flask'",
+            "index": "pypi",
             "version": "==1.4"
         },
         "celery": {
