@@ -1,5 +1,6 @@
 from celery import Celery
 from flask import Flask
+from flask_cors import CORS
 from raven.contrib.flask import Sentry
 
 from dm_combiner.config import Config
@@ -23,4 +24,5 @@ def create_app():
 
     app.logger.addHandler(logger.logger)
 
+    cors = CORS(app, resources={r"/*": {"origins": "*"}})
     return app

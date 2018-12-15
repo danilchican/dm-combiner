@@ -23,6 +23,7 @@ theano = "*"
 raven = {version = "*", extras = ["flask"]}
 gunicorn = "*"
 blinker = "*"
+flask-cors = "*"
 
 [dev-packages]
 
