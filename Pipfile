@@ -21,6 +21,7 @@ celery = {git = "https://github.com/celery/celery.git", ref = "master", editable
 redis = "*"
 theano = "*"
 raven = {version = "*", extras = ["flask"]}
+gunicorn = "*"
 
 [dev-packages]
 
