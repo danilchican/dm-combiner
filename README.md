@@ -1,32 +1,32 @@
 # dm-combiner
 ## DataMining Combiner ##
 
-base_url: http://romaresh.me:5000/
+base_url: http://104.248.26.47:5000/
+
+romaresh.me:5000 also availbale but response time may increase
 
 __API METHODS__
 
 - get files list `[GET]`: /files
 
-Request:`romaresh.me:5000/files`
+Request:`104.248.26.47:5000/files`
 
 Response:
 ```json
 {
-    "result": [
+    "files": [
         "telecom_churn.csv",
-        "telecom_churn.info",
-        "telecom_churn.html",
-        "iris.data",
-        "telecom_churn_1.csv",
         "iris.txt",
-        "colors.json"
+        "iris.data",
+        "telecom_churn.info",
+        "telecom_churn.html"
     ],
     "success": true
 }
 ```
 - download file `[GET]`: /get_file/<filename>
 
-Request: `romaresh.me:5000/get_file/telecom_churn.csv`
+Request: `104.248.26.47:5000/get_file/telecom_churn.csv`
 
 Response:file
 
@@ -43,134 +43,94 @@ Response:
 ```
 - upload_file (in form should be file) `[POST]`: /upload_file
 
-Request: `romaresh.me:5000/upload_file`
+Request: `104.248.26.47:5000/upload_file` (file should be send in form with key `file`)
 
 Response:
 ```json
 {
-    "result": "/home/roma/work/dm-combiner/data/telecom_churn_1.csv",
+    "path": "/home/roma/dm-combiner/dm_combiner/data/telecom_churn.csv",
     "success": true
 }
 ```
 - get list of frameworks `[GET]`: /frameworks
 
-Request: `romaresh.me:5000/frameworks`
+Request: `104.248.26.47:5000/frameworks`
 
 Response:
 ```json
 {
-    "result": [
-        "SKL",
-        "Theano"
+    "frameworks": [
+        {
+            "methods": [
+                "normalize",
+                "scale",
+                "k_means",
+                "data_reduction"
+            ],
+            "name": "SKL"
+        }
     ],
     "success": true
 }
 ```
-- get list of commands for framework `[GET]`: /commands/<framework_name>
 
-Request: `romaresh.me:5000/commands/SKL`
+- get args for methods `[GET]`: /args/<framework_name>/<method_name>
 
-Response:
-```json
-{
-    "result": [
-        "normalize",
-        "scale",
-        "k_means",
-        "data_reduction"
-    ],
-    "success": "true"
-}
-```
-- get list of mandatory commands `[GET]`: /mandatory_commands
-
-Request: `romaresh.me:5000/mandatory_commands`
+Request: `104.248.26.47:5000/args/SKL/normalize`
 
 Response:
 ```json
 {
-    "result": [
-        "load",
-        "save"
+    "args": [
+        {
+            "name": "norm",
+            "type": "str"
+        },
+        {
+            "name": "axis",
+            "type": "int"
+        },
+        {
+            "name": "copy",
+            "type": "bool"
+        },
+        {
+            "name": "return_norm",
+            "type": "bool"
+        }
     ],
-    "success": "true"
-}
-```
-- get list of params for mandatory commands `[GET]`: /mandatory_commands/params/<command_name>
-
-Request: `romaresh.me:5000/mandatory_commands/params/load`
-
-Response:
-```json
-{
-    "result": [
-        "path",
-        "columns",
-        "is_normalize",
-        "is_scale"
-    ],
-    "success": "true"
-}
-```
-
-- get params for command `[GET]`: /params/<framework_name>/<command_name>
-
-Request: `romaresh.me:5000/params/SKL/normalize`
-
-Response:
-```json
-{
-    "result": [
-        "data",
-        "norm",
-        "axis",
-        "copy",
-        "return_norm"
-    ],
-    "success": "true"
+    "success": true
 }
 ```
 
 - algorithm `[POST]`: /algorithm
 
-Request: `romaresh.me:5000/algorithm`
+Request: `104.248.26.47:5000/algorithm`
 ```json
 {
-    "command_1": {
-        "name": "load",
-        "framework": "scikit",
-
-        "params": {
-            "path": "/home/roma/work/dm-combiner/data/telecom_churn.csv",
-            "columns": [1,2,17]
-        }
+    "config": {
+        "normalize": true,
+        "scale": true,
+        "file_url": "/home/roma/dm-combiner/dm_combiner/data/telecom_churn.csv",
+        "columns": [6, 7, 8, 9],
+        "callback_url": "http://romaresh.me:5000/"
     },
-
-    "command_2": {
-        "name": "normalize",
-        "framework": "scikit",
-
-        "params": {
-        }
-    },
-    
-     "command_3": {
-        "name": "k_means",
-        "framework": "scikit",
-
-        "params": {
-            "n_clusters": 3
+    "commands": [
+    	{
+            "name": "data_reduction",
+            "framework": "SKL",
+            "params": {
             }
-    },
-    
-        "command_4": {
-        "name": "save",
-        "framework": "scikit",
-
-        "params": {
+        },
+        {
+            "name": "k_means",
+            "framework": "SKL",
+            "params": {
+                "n_clusters": 2,
+                "init": "k-means++"
+            }
         }
-    }
-
+    ]
 }
 ```
 
@@ -178,35 +138,16 @@ Request: `romaresh.me:5000/algorithm`
 Response:
 ```json
 {
-    "result": {
-        "centers": [
-            [
-                0.2256543332700875,
-                0.9737066016612957,
-                0.006212603729089694
-            ],
-            [
-                0.3302144821283248,
-                0.9428148527121636,
-                0.006203442777769738
-            ],
-            [
-                0.11869851760604402,
-                0.9920263802526129,
-                0.006133546348963394
-            ]
-        ],
-        "indexes": [
-            1,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            1,
-            2,
-            ....
+    "success": true,
+    "task_id": "93140863-e2ae-4913-afe1-6be949794b04"
+}
+```
+
+- get status of algorithm `[POST]`: /status/<task_id>
+
+Response: `104.248.26.47:5000/status/93140863-e2ae-4913-afe1-6be949794b04`
+```json
+{
+    "state": "SUCCESS"           # available: 'SUCCESS', "PENDING", "FAILED"
+}
 ```
