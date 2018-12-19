@@ -178,6 +178,26 @@ class Project extends Model
     }
 
     /**
+     * Get result of the project execution.
+     *
+     * @return null|string
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * Set result for the project.
+     *
+     * @param $result
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
+
+    /**
      * Get creation date of the project.
      *
      * @return string

@@ -80,7 +80,7 @@ class ProjectController extends Controller
                     \Log::error('Upload project file error.', [$response]);
                     return response()->json([
                         'message' => 'Upload project file error. See logs.',
-                    ]);
+                    ], 400);
                 }
 
                 return response()->json([
@@ -91,7 +91,7 @@ class ProjectController extends Controller
             $project->delete();
             return response()->json([
                 'message' => 'Looks lime something went wrong. Try again later.',
-            ]);
+            ], 400);
         } catch (FileNotFoundException $e) {
             \Log::error($e->getMessage(), $e->getTraceAsString());
             return response()->json([
@@ -129,7 +129,7 @@ class ProjectController extends Controller
             'title'         => $title,
             'normalize'     => $normalize === 'true',
             'scale'         => $scale === 'true',
-            'columns'       => serialize($columns),
+            'columns'       => serialize(array_map('intval', $columns)),
             'configuration' => serialize($this->prepareConfiguration($configuration)),
         ];
 
@@ -157,27 +157,29 @@ class ProjectController extends Controller
 
             $project = \Auth::user()->projects()->findOrFail($projectId);
             $response = $combiner->executeAlgorithm($project);
+            \Log::debug('Response from API: ', [$response]);
 
             if ($response !== null) {
                 if ($response->success === true) {
-                    $project->setTaskId($response->task_id);
+                    $project->setResult(json_encode($response->result));
                     $project->setStatus('pending');
                     $project->save();
                 } else {
                     \Log::error('Combiner project start execution error: ', [$response]);
                     return response()->json([
-                        'message' => 'Project execution error. See logs.',
-                    ]);
+                        'message' => 'Project execution error. See logs. ' . $response->error,
+                    ], 400);
                 }
 
                 return response()->json([
                     'message' => 'Project has been successfully run.',
+                    'result'  => $project->getResult(),
                 ]);
             }
 
             return response()->json([
                 'message' => 'Looks lime something went wrong. Try again later.',
-            ]);
+            ], 400);
         } catch (ModelNotFoundException $e) {
             \Log::error($e->getMessage(), $e->getTraceAsString());
             return response()->json([
@@ -239,7 +241,8 @@ class ProjectController extends Controller
             foreach ($response->args as $option) {
                 $object = new stdClass;
                 $object->title = $option->name;
-                $object->type = $this->getCommandOptionType($option->type);
+                $object->field = $this->getCommandOptionType($option->type);
+                $object->type = $option->type;
 
                 $options[] = $object;
             }
@@ -290,11 +293,20 @@ class ProjectController extends Controller
 
                 $tempConfigOptions = [];
 
-                foreach ($commandConfig['options'] as $option) {
-                    $tempConfigOptions[$option['title']] = $this->getOptionValue($option);
+                if (array_key_exists('options', $commandConfig)) {
+                    foreach ($commandConfig['options'] as $option) {
+                        $optionValue = $this->getOptionValue($option);
+
+                        if ($optionValue !== null) {
+                            $tempConfigOptions[$option['title']] = $optionValue;
+                        }
+                    }
+
+                    if (\count($tempConfigOptions) > 0) {
+                        $tempConfig['params'] = $tempConfigOptions;
+                    }
                 }
 
-                $tempConfig['params'] = $tempConfigOptions;
                 $resultConfiguration[] = $tempConfig;
             }
         }
@@ -307,23 +319,14 @@ class ProjectController extends Controller
         if (\is_array($option)) {
             if (array_key_exists('value', $option)) {
                 switch ($option['type']) {
-                    case 'text':
-                        return $option['value'];
-                    case 'checkbox':
-                        return $option['value'] === 'true';
-                    case 'number':
+                    case 'int':
+                        return (int)$option['value'];
+                    case 'float':
                         return (float)$option['value'];
-                    default:
-                        return null;
-                }
-            } else {
-                switch ($option['type']) {
-                    case 'text':
-                        return '';
-                    case 'checkbox':
-                        return false;
-                    case 'number':
-                        return 0;
+                    case 'bool':
+                        return $option['value'] === 'true';
+                    case 'str':
+                        return (string)$option['value'];
                     default:
                         return null;
                 }
