@@ -48,7 +48,7 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function uploadProjectData(UploadProjectDataRequest $request, CombinerContract $combiner, $projectId = null)
+    public function uploadProjectData(UploadProjectDataRequest $request, CombinerContract $combiner, $projectId)
     {
         try {
             $project = Project::findOrFail($projectId);
@@ -75,6 +75,7 @@ class ProjectController extends Controller
                     $project->setDataUrl($response->path);
                     $project->save();
                 } else {
+                    $project->delete();
                     \Log::error('Upload project file error.', [$response]);
                     return response()->json([
                         'message' => 'Upload project file error. See logs.',
@@ -86,6 +87,7 @@ class ProjectController extends Controller
                 ]);
             }
 
+            $project->delete();
             return response()->json([
                 'message' => 'Looks lime something went wrong. Try again later.',
             ]);
@@ -98,6 +100,11 @@ class ProjectController extends Controller
             \Log::error($e->getMessage(), $e->getTraceAsString());
             return response()->json([
                 'message' => 'Project not found. Please update page and try again.',
+            ], 400);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage(), $e->getTraceAsString());
+            return response()->json([
+                'message' => 'Internal error. Try again later.',
             ], 400);
         }
     }
