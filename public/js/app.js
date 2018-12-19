@@ -98313,11 +98313,26 @@ window.saveProject = function () {
                 console.log(response);
                 toastr.success('Project data was uploaded.', 'Success');
                 toastr.success(message, 'Success');
-                setTimeout(function () {
-                    window.location.href = '/account/projects';
-                }, 1000);
+                window.lastProjectId = id;
             }
         });
+    });
+};
+
+window.runProject = function () {
+    var id = window.lastProjectId;
+
+    $.ajax({
+        url: '/account/projects/run',
+        data: { id: id },
+        type: 'POST',
+        success: function success(response) {
+            console.log(response);
+            toastr.success(response.message, 'Success');
+            setTimeout(function () {
+                window.location.href = '/account/projects';
+            }, 2000);
+        }
     });
 };
 
