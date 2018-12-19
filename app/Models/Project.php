@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Project
  *
- * @property int $id
- * @property int $user_id
- * @property string $title
- * @property int $normalize
- * @property int $scale
- * @property string|null $data_url
- * @property string|null $columns
- * @property string|null $configuration
- * @property string|null $result
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property int                                                              $id
+ * @property int                                                              $user_id
+ * @property string                                                           $title
+ * @property int                                                              $normalize
+ * @property int                                                              $scale
+ * @property string|null                                                      $data_url
+ * @property string|null                                                      $columns
+ * @property string|null                                                      $configuration
+ * @property string|null                                                      $result
+ * @property \Illuminate\Support\Carbon                                       $created_at
+ * @property \Illuminate\Support\Carbon                                       $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project newQuery()
@@ -37,6 +37,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Project extends Model
 {
+    /**
+     * Statuses of the project running.
+     */
+    const STATUSES = ['new', 'pending', 'finished', 'aborted'];
+
     public $table = 'projects';
 
     /**
@@ -45,7 +50,7 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'title', 'normalize', 'scale', 'data_url', 'columns', 'configuration', 'result'
+        'user_id', 'status', 'title', 'normalize', 'scale', 'data_url', 'columns', 'configuration', 'result',
     ];
 
     /**
