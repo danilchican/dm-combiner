@@ -3,6 +3,7 @@
 namespace App\Services\Combiner;
 
 use App\Builders\CombinerEndpointBuilder;
+use App\Models\Project;
 
 class CombinerService extends AbstractCombiner
 {
@@ -11,11 +12,16 @@ class CombinerService extends AbstractCombiner
     /**
      * Execute algorithm.
      *
+     * @param Project $project
+     *
      * @return mixed
      */
-    public function executeAlgorithm()
+    public function executeAlgorithm(Project $project)
     {
-        $this->prepareExecuteAlgorithmData();
+        $endpoint = CombinerEndpointBuilder::point()->to('/algorithm')->make();
+        $options = $this->prepareExecuteAlgorithmOptions($project);
+
+        $this->setConfiguration($endpoint, $options);
         return $this->executePostRequest();
     }
 
@@ -96,30 +102,18 @@ class CombinerService extends AbstractCombiner
         return $this->executePostRequest();
     }
 
-    private function prepareExecuteAlgorithmData()
-    {
-        $endpoint = $this->prepareExecuteAlgorithmEndpoint();
-        $options = $this->prepareExecuteAlgorithmOptions();
-
-        $this->setConfiguration($endpoint, $options);
-    }
-
-    /**
-     * Prepare endpoint for execution of algorithm.
-     *
-     * @return string|null
-     */
-    private function prepareExecuteAlgorithmEndpoint()
-    {
-        // TODO change URI to real
-        return CombinerEndpointBuilder::point()->to('/process_json')->make();
-    }
-
-    private function prepareExecuteAlgorithmOptions()
+    private function prepareExecuteAlgorithmOptions(Project $project)
     {
         return [
             \GuzzleHttp\RequestOptions::JSON => [
-                // TODO json body for the request
+                'config'   => [
+                    'normalize'    => $project->getNormalize(),
+                    'scale'        => $project->getScale(),
+                    'file_url'     => $project->getDataUrl(),
+                    'columns'      => unserialize($project->getCheckedColumns()),
+                    'callback_url' => 'http://github.com/danilchican', // TODO
+                ],
+                'commands' => unserialize($project->getConfiguration()),
             ],
         ];
     }

@@ -2,6 +2,8 @@
 
 namespace App\Services\Combiner\Contracts;
 
+use App\Models\Project;
+
 interface CombinerContract
 {
     /**
@@ -17,9 +19,11 @@ interface CombinerContract
     /**
      * Execute algorithm.
      *
+     * @param Project $project
+     *
      * @return mixed
      */
-    public function executeAlgorithm();
+    public function executeAlgorithm(Project $project);
 
     /**
      * Get all frameworks.
