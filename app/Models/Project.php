@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property string                                                           $status
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereStatus($value)
+ * @property string|null $task_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereTaskId($value)
  */
 class Project extends Model
 {
@@ -52,7 +54,8 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'status', 'title', 'normalize', 'scale', 'data_url', 'columns', 'configuration', 'result',
+        'user_id', 'status', 'task_id', 'title', 'normalize', 'scale',
+        'data_url', 'columns', 'configuration', 'result',
     ];
 
     /**
@@ -76,6 +79,36 @@ class Project extends Model
     }
 
     /**
+     * Get normalize flag.
+     *
+     * @return int
+     */
+    public function getNormalize()
+    {
+        return $this->normalize;
+    }
+
+    /**
+     * Get scale flag.
+     *
+     * @return int
+     */
+    public function getScale()
+    {
+        return $this->scale;
+    }
+
+    /**
+     * Get data url.
+     *
+     * @return null|string
+     */
+    public function getDataUrl()
+    {
+        return $this->data_url;
+    }
+
+    /**
      * Set data url of the project.
      *
      * @param null $dataUrl
@@ -93,6 +126,45 @@ class Project extends Model
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * Set task ID of the running project.
+     *
+     * @param $taskId
+     */
+    public function setTaskId($taskId) {
+        $this->task_id = $taskId;
+    }
+
+    /**
+     * Get configuration of the project.
+     *
+     * @return null|string
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * Set configuration of the project.
+     *
+     * @param $configuration
+     */
+    public function setConfiguration($configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * Get checked columns for the algorithm.
+     *
+     * @return null|string
+     */
+    public function getCheckedColumns()
+    {
+        return $this->columns;
     }
 
     /**
