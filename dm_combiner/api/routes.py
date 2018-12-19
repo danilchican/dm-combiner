@@ -21,7 +21,7 @@ def get_frameworks():
     result = []
     frameworks = Framework().get_subclasses()
     for framework_name, framework_instance in frameworks.items():
-        result.append({"name": framework_name, 'methods': list(framework_instance().methods.keys())})
+        result.append({"name": framework_name, 'commands': list(framework_instance().methods.keys())})
     return jsonify({'success': True, 'frameworks': result})
 
 

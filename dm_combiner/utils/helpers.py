@@ -49,9 +49,11 @@ def get_path_for_saving_image(fname):
 
 
 def save_file(file):
+    extension = file.filename.rsplit('.', 1)[1].lower()
     filename = file.filename + str(datetime.now())
     hash_filename = sha512(filename.encode('utf-8')).hexdigest()
     filename = secure_filename(hash_filename[:20])
+    filename = f"{filename}.{extension}"
     file_path = os.path.join(Config().STATIC_FILES, filename)
     file.save(file_path)
     return file_path
