@@ -87,7 +87,7 @@ function SmartWizard(target, options) {
         });
 
         $($this.buttons.run).click(function () {
-            console.log('button RUN was clicked'); // TODO change
+            runProject();
             return false;
         });
 

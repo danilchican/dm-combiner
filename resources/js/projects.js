@@ -82,7 +82,25 @@ window.saveProject = function () {
                 console.log(response);
                 toastr.success('Project data was uploaded.', 'Success');
                 toastr.success(message, 'Success');
+                window.lastProjectId = id;
             }
         });
+    });
+};
+
+window.runProject = function () {
+    var id = window.lastProjectId;
+
+    $.ajax({
+        url: '/account/projects/run',
+        data: {id: id},
+        type: 'POST',
+        success: function (response) {
+            console.log(response);
+            toastr.success(response.message, 'Success');
+            setTimeout(function () {
+                window.location.href = '/account/projects';
+            }, 2000);
+        }
     });
 };
