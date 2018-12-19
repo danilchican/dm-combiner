@@ -34,13 +34,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereUserId($value)
  * @mixin \Eloquent
+ * @property string                                                           $status
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereStatus($value)
  */
 class Project extends Model
 {
     /**
      * Statuses of the project running.
      */
-    const STATUSES = ['new', 'pending', 'finished', 'aborted'];
+    const STATUSES = ['new', 'pending', 'finished', 'failed'];
 
     public $table = 'projects';
 
@@ -81,6 +83,16 @@ class Project extends Model
     public function setDataUrl($dataUrl = null)
     {
         $this->data_url = $dataUrl;
+    }
+
+    /**
+     * Set status of the project.
+     *
+     * @param $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
     /**

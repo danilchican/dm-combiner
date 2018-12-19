@@ -98313,6 +98313,9 @@ window.saveProject = function () {
                 console.log(response);
                 toastr.success('Project data was uploaded.', 'Success');
                 toastr.success(message, 'Success');
+                setTimeout(function () {
+                    window.location.href = '/account/projects';
+                }, 1000);
             }
         });
     });

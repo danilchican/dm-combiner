@@ -14,7 +14,7 @@ class AddStatusFieldToProjectsTable extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->enum('status', ['new', 'pending', 'finished', 'aborted'])
+            $table->enum('status', ['new', 'pending', 'finished', 'failed'])
                 ->after('user_id')->default('new');
         });
     }
