@@ -42,7 +42,6 @@ window.saveProject = function () {
 
     let normalize = $('input#normalize-option').prop('checked');
     let scale = $('input#scale-option').prop('checked');
-    let dataUrl = $('input#data-url').val();
 
     let checkedCols = [];
     $.each($('.data-head-option:checked'), function (index, option) {
@@ -61,37 +60,32 @@ window.saveProject = function () {
         result: executionResults  // TODO if executed
     };
 
-    if (dataUrl !== '') {
-        data.data_url = dataUrl;
-    }
-
     $.ajax({
         url: '/account/projects/create',
         method: "POST",
         data: data,
     }).done(function (response) {
-        toastr.success(response.message, 'Success');
         console.log(response);
+        console.log('Project saved.');
+        console.log('Saving project data.');
+
+        toastr.success(response.message, 'Success');
         toastr.info('Uploading data...', 'Info');
 
-        let id = response.project.id; // TODO
+        let id = response.project.id;
+        let form = $('#project-data-upload-form')[0];
+        let formData = new FormData(form);
 
-        let formData = new FormData();
-
-        if (dataUrl === '') {
-            formData.append('file', $('input#data-file')[0].files[0]);
-        }
-
-        toastr.success('Project data was uploaded.', 'Success');
-
-        // $.ajax({
-        //     url: '/account/projects/' + id + '/upload',
-        //     method: "POST",
-        //     data: formData,
-        //     dataType: false,
-        //     processData: false,
-        // }).done(function (response) {
-        //     console.log(response);
-        // });
+        $.ajax({
+            url: '/account/projects/' + id + '/upload/data',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log(response);
+                toastr.success('Project data was uploaded.', 'Success');
+            }
+        });
     });
 };

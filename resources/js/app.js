@@ -8,7 +8,7 @@
 require('./bootstrap');
 require('./projects');
 
-window.useMock = true;
+window.useMock = false;
 
 /**
  * Toastr notifier

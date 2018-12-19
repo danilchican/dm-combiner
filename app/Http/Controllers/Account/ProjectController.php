@@ -62,7 +62,7 @@ class ProjectController extends Controller
                 $filePath = $request->input('file-url');
 
                 $filename = 'url-file_project-' . $projectId . '_'
-                    . \Carbon\Carbon::now()->format('d-m-Y_H-i-s').'.csv';
+                    . \Carbon\Carbon::now()->format('d-m-Y_H-i-s') . '.csv';
                 $contents = $this->getFileContentsByExternalUrl($filePath);
             }
 
@@ -162,10 +162,12 @@ class ProjectController extends Controller
                 $object->title = $framework->name;
                 $object->commands = [];
 
-                foreach($framework->commands as $command) {
+                foreach ($framework->commands as $command) {
                     $commandObj = new stdClass;
                     $commandObj->title = $command;
                     $commandObj->framework = $framework->name;
+                    $commandObj->options = [];
+
                     $object->commands[] = $commandObj;
                 }
 
@@ -194,7 +196,7 @@ class ProjectController extends Controller
             foreach ($response->args as $option) {
                 $object = new stdClass;
                 $object->title = $option->name;
-                $object->type = $option->type;
+                $object->type = $this->getCommandOptionType($option->type);
 
                 $options[] = $object;
             }
@@ -214,5 +216,21 @@ class ProjectController extends Controller
             \Log::error($e->getMessage(), $e->getTraceAsString());
             return null;
         }
+    }
+
+    private function getCommandOptionType($type)
+    {
+        $types = [
+            'int'   => 'number',
+            'float' => 'number',
+            'str'   => 'text',
+            'bool'  => 'checkbox',
+        ];
+
+        if (array_key_exists($type, $types)) {
+            return $types[$type];
+        }
+
+        return $types['str'];
     }
 }

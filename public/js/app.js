@@ -98273,7 +98273,6 @@ window.saveProject = function () {
 
     var normalize = $('input#normalize-option').prop('checked');
     var scale = $('input#scale-option').prop('checked');
-    var dataUrl = $('input#data-url').val();
 
     var checkedCols = [];
     $.each($('.data-head-option:checked'), function (index, option) {
@@ -98292,54 +98291,34 @@ window.saveProject = function () {
         result: executionResults // TODO if executed
     };
 
-    if (dataUrl !== '') {
-        data.data_url = dataUrl;
-    }
-
-    var id = 1; //response.project.id; // TODO
-    var form = $('#project-data-upload-form')[0];
-    var formData = new FormData(form);
-
     $.ajax({
-        url: '/account/projects/' + id + '/upload/data',
-        data: formData,
-        type: 'POST',
-        contentType: false,
-        processData: false,
-        success: function success(response) {
-            console.log(response);
-        }
-    });
+        url: '/account/projects/create',
+        method: "POST",
+        data: data
+    }).done(function (response) {
+        console.log(response);
+        console.log('Project saved.');
+        console.log('Saving project data.');
 
-    // $.ajax({
-    //     url: '/account/projects/create',
-    //     method: "POST",
-    //     data: data,
-    // }).done(function (response) {
-    //     toastr.success(response.message, 'Success');
-    //     console.log(response);
-    //     toastr.info('Uploading data...', 'Info');
-    //
-    //     let id = response.project.id; // TODO
-    //
-    //     let formData = new FormData();
-    //
-    //     if (dataUrl === '') {
-    //         formData.append('file', $('input#data-file')[0].files[0]);
-    //     }
-    //
-    //     toastr.success('Project data was uploaded.', 'Success');
-    //
-    //     // $.ajax({
-    //     //     url: '/account/projects/' + id + '/upload',
-    //     //     method: "POST",
-    //     //     data: formData,
-    //     //     dataType: false,
-    //     //     processData: false,
-    //     // }).done(function (response) {
-    //     //     console.log(response);
-    //     // });
-    // });
+        toastr.success(response.message, 'Success');
+        toastr.info('Uploading data...', 'Info');
+
+        var id = response.project.id;
+        var form = $('#project-data-upload-form')[0];
+        var formData = new FormData(form);
+
+        $.ajax({
+            url: '/account/projects/' + id + '/upload/data',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function success(response) {
+                console.log(response);
+                toastr.success('Project data was uploaded.', 'Success');
+            }
+        });
+    });
 };
 
 /***/ }),
@@ -99071,6 +99050,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -99078,7 +99089,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             frameworks: [],
-            selectedAlgorithms: []
+            selectedAlgorithms: [],
+            options: [],
+            editCommand: {
+                index: null,
+                title: '',
+                framework: '',
+                options: []
+            }
         };
     },
     created: function created() {
@@ -99115,6 +99133,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         remove: function remove(index) {
             this.selectedAlgorithms.splice(index, 1);
+        },
+        editAlgorithm: function editAlgorithm(index, command) {
+            var _this2 = this;
+
+            this.editCommand = JSON.parse(JSON.stringify(command));
+            this.editCommand.index = index;
+
+            if (this.editCommand.options.length < 1) {
+                var requestURL = '/account/projects/args/' + command.framework + '/' + command.title;
+
+                this.$http.get(requestURL).then(function (response) {
+                    console.log(response);
+
+                    if (response.status === 200) {
+                        _this2.editCommand.options = response.body;
+                    }
+                }, function () {
+                    toastr.error('Something went wrong...', 'Error');
+                });
+            }
+        },
+        updateCommandConfig: function updateCommandConfig() {
+            var editCommandIndex = this.editCommand.index;
+            this.selectedAlgorithms[editCommandIndex].options = this.editCommand.options;
+
+            this.editCommand.index = null;
+            this.editCommand.title = '';
+            this.editCommand.framework = '';
+            this.editCommand.options = [];
+
+            $('#editCommandModal').modal('hide');
         }
     },
 
@@ -101195,7 +101244,7 @@ var render = function() {
                                       command
                                     ) {
                                       return _c("li", [
-                                        _c("p", [_vm._v(_vm._s(command))])
+                                        _c("p", [_vm._v(_vm._s(command.title))])
                                       ])
                                     })
                                   )
@@ -101245,13 +101294,28 @@ var render = function() {
                     return _c("tr", { staticClass: "draggable" }, [
                       _c("td", [_vm._v(_vm._s(index + 1))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(algorithm))]),
+                      _c("td", [_vm._v(_vm._s(algorithm.title))]),
                       _vm._v(" "),
                       _c("td", [
-                        _c("a", { staticClass: "btn btn-info btn-xs" }, [
-                          _c("i", { staticClass: "fa fa-pencil" }),
-                          _vm._v(" Edit ")
-                        ]),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-info btn-xs",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#editCommandModal"
+                            },
+                            on: {
+                              click: function($event) {
+                                _vm.editAlgorithm(index, algorithm)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-pencil" }),
+                            _vm._v(" Edit\n                                ")
+                          ]
+                        ),
                         _vm._v(" "),
                         _c(
                           "a",
@@ -101287,7 +101351,264 @@ var render = function() {
           )
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "editCommandModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "h4",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "editCommandModalLabel" }
+                  },
+                  [
+                    _vm._v(
+                      '\n                        Command configuration "' +
+                        _vm._s(_vm.editCommand.framework) +
+                        "/" +
+                        _vm._s(_vm.editCommand.title) +
+                        '"\n                    '
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "modal-body" },
+                [
+                  _vm._l(_vm.editCommand.options, function(option, index) {
+                    return _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "link-title-edit" } }, [
+                        _vm._v(_vm._s(option.title))
+                      ]),
+                      _vm._v(" "),
+                      option.type === "checkbox"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.editCommand.options[index].value,
+                                expression: "editCommand.options[index].value"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              id: "link-title-edit",
+                              placeholder: "Enter the value",
+                              type: "checkbox"
+                            },
+                            domProps: {
+                              checked: Array.isArray(
+                                _vm.editCommand.options[index].value
+                              )
+                                ? _vm._i(
+                                    _vm.editCommand.options[index].value,
+                                    null
+                                  ) > -1
+                                : _vm.editCommand.options[index].value
+                            },
+                            on: {
+                              keyup: function($event) {
+                                if (
+                                  !("button" in $event) &&
+                                  _vm._k(
+                                    $event.keyCode,
+                                    "enter",
+                                    13,
+                                    $event.key,
+                                    "Enter"
+                                  )
+                                ) {
+                                  return null
+                                }
+                                _vm.updateLink()
+                              },
+                              change: function($event) {
+                                var $$a = _vm.editCommand.options[index].value,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 &&
+                                      _vm.$set(
+                                        _vm.editCommand.options[index],
+                                        "value",
+                                        $$a.concat([$$v])
+                                      )
+                                  } else {
+                                    $$i > -1 &&
+                                      _vm.$set(
+                                        _vm.editCommand.options[index],
+                                        "value",
+                                        $$a
+                                          .slice(0, $$i)
+                                          .concat($$a.slice($$i + 1))
+                                      )
+                                  }
+                                } else {
+                                  _vm.$set(
+                                    _vm.editCommand.options[index],
+                                    "value",
+                                    $$c
+                                  )
+                                }
+                              }
+                            }
+                          })
+                        : option.type === "radio"
+                          ? _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.editCommand.options[index].value,
+                                  expression: "editCommand.options[index].value"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                id: "link-title-edit",
+                                placeholder: "Enter the value",
+                                type: "radio"
+                              },
+                              domProps: {
+                                checked: _vm._q(
+                                  _vm.editCommand.options[index].value,
+                                  null
+                                )
+                              },
+                              on: {
+                                keyup: function($event) {
+                                  if (
+                                    !("button" in $event) &&
+                                    _vm._k(
+                                      $event.keyCode,
+                                      "enter",
+                                      13,
+                                      $event.key,
+                                      "Enter"
+                                    )
+                                  ) {
+                                    return null
+                                  }
+                                  _vm.updateLink()
+                                },
+                                change: function($event) {
+                                  _vm.$set(
+                                    _vm.editCommand.options[index],
+                                    "value",
+                                    null
+                                  )
+                                }
+                              }
+                            })
+                          : _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.editCommand.options[index].value,
+                                  expression: "editCommand.options[index].value"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                id: "link-title-edit",
+                                placeholder: "Enter the value",
+                                type: option.type
+                              },
+                              domProps: {
+                                value: _vm.editCommand.options[index].value
+                              },
+                              on: {
+                                keyup: function($event) {
+                                  if (
+                                    !("button" in $event) &&
+                                    _vm._k(
+                                      $event.keyCode,
+                                      "enter",
+                                      13,
+                                      $event.key,
+                                      "Enter"
+                                    )
+                                  ) {
+                                    return null
+                                  }
+                                  _vm.updateLink()
+                                },
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.editCommand.options[index],
+                                    "value",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _vm.editCommand.options.length < 1
+                    ? _c("p", [_vm._v("No options found.")])
+                    : _vm._e()
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-default",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Отмена")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.updateCommandConfig()
+                      }
+                    }
+                  },
+                  [_vm._v("Сохранить")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -101330,6 +101651,23 @@ var staticRenderFns = [
         _c("th", { staticStyle: { width: "30%" } }, [_vm._v("Action")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true

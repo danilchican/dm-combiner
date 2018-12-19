@@ -10443,3 +10443,9 @@ button.toast-close-button {
   right: 0;
   top: 0;
 }
+
+#editCommandModal input[type="checkbox"] {
+  width: auto !important;
+  height: auto !important;
+  display: initial;
+}
