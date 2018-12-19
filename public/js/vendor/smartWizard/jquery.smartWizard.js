@@ -71,16 +71,9 @@ function SmartWizard(target, options) {
         $($this.buttons.save).click(function () {
             if (!$(this).hasClass('buttonDisabled')) {
                 saveProject();
-                if ($.isFunction($this.options.onSave)) {
-                    var context = {fromStep: $this.curStepIdx + 1};
-                    if (!$this.options.onSave.call(this, $($this.steps), context)) {
-                        return false;
-                    }
-                } else {
-                    var frm = $this.target.parents('form');
-                    if (frm && frm.length) {
-                        frm.submit();
-                    }
+                var context = {fromStep: $this.curStepIdx + 1};
+                if (!$this.options.onSave.call(this, $($this.steps), context)) {
+                    return false;
                 }
             }
             return false;

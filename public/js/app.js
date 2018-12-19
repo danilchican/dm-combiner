@@ -98341,6 +98341,10 @@ window.runProject = function () {
             var resultData = response.result;
             $('#result-textarea').text(resultData);
             toastr.success(response.message, 'Success');
+        },
+        error: function error(xhr) {
+            var response = JSON.parse(xhr.responseText);
+            showErrors(response);
         }
     });
 };
@@ -101438,7 +101442,7 @@ var render = function() {
                 [
                   _vm._l(_vm.editCommand.options, function(option, index) {
                     return _c("div", { staticClass: "form-group" }, [
-                      _c("label", { attrs: { for: "link-title-edit" } }, [
+                      _c("label", { attrs: { for: "config-title-edit" } }, [
                         _vm._v(_vm._s(option.title))
                       ]),
                       _vm._v(" "),
@@ -101454,7 +101458,7 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             attrs: {
-                              id: "link-title-edit",
+                              id: "config-title-edit",
                               placeholder: "Enter the value",
                               type: "checkbox"
                             },
@@ -101469,21 +101473,6 @@ var render = function() {
                                 : _vm.editCommand.options[index].value
                             },
                             on: {
-                              keyup: function($event) {
-                                if (
-                                  !("button" in $event) &&
-                                  _vm._k(
-                                    $event.keyCode,
-                                    "enter",
-                                    13,
-                                    $event.key,
-                                    "Enter"
-                                  )
-                                ) {
-                                  return null
-                                }
-                                _vm.updateLink()
-                              },
                               change: function($event) {
                                 var $$a = _vm.editCommand.options[index].value,
                                   $$el = $event.target,
@@ -101530,7 +101519,7 @@ var render = function() {
                               ],
                               staticClass: "form-control",
                               attrs: {
-                                id: "link-title-edit",
+                                id: "config-title-edit",
                                 placeholder: "Enter the value",
                                 type: "radio"
                               },
@@ -101541,21 +101530,6 @@ var render = function() {
                                 )
                               },
                               on: {
-                                keyup: function($event) {
-                                  if (
-                                    !("button" in $event) &&
-                                    _vm._k(
-                                      $event.keyCode,
-                                      "enter",
-                                      13,
-                                      $event.key,
-                                      "Enter"
-                                    )
-                                  ) {
-                                    return null
-                                  }
-                                  _vm.updateLink()
-                                },
                                 change: function($event) {
                                   _vm.$set(
                                     _vm.editCommand.options[index],
@@ -101576,7 +101550,7 @@ var render = function() {
                               ],
                               staticClass: "form-control",
                               attrs: {
-                                id: "link-title-edit",
+                                id: "config-title-edit",
                                 placeholder: "Enter the value",
                                 type: option.field
                               },
@@ -101584,21 +101558,6 @@ var render = function() {
                                 value: _vm.editCommand.options[index].value
                               },
                               on: {
-                                keyup: function($event) {
-                                  if (
-                                    !("button" in $event) &&
-                                    _vm._k(
-                                      $event.keyCode,
-                                      "enter",
-                                      13,
-                                      $event.key,
-                                      "Enter"
-                                    )
-                                  ) {
-                                    return null
-                                  }
-                                  _vm.updateLink()
-                                },
                                 input: function($event) {
                                   if ($event.target.composing) {
                                     return

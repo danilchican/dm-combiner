@@ -110,6 +110,10 @@ window.runProject = function () {
             let resultData = response.result;
             $('#result-textarea').text(resultData);
             toastr.success(response.message, 'Success');
+        },
+        error: function (xhr) {
+            let response = JSON.parse(xhr.responseText);
+            showErrors(response);
         }
     });
 };
