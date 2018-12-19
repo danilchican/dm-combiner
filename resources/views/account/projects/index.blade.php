@@ -20,6 +20,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Title</th>
+                                <th>Status</th>
                                 <th>Created at</th>
                                 <th>Action</th>
                             </tr>
@@ -30,6 +31,7 @@
                                 <tr>
                                     <td>{{ $project->getId() }}</td>
                                     <td>{{ $project->getTitle() }}</td>
+                                    <td>{{ $project->getStatus() }}</td>
                                     <td>{{ $project->getCreatedDate() }}</td>
                                     <td>
                                         <a href="" class="btn btn-info btn-xs">

@@ -119,6 +119,16 @@ class Project extends Model
     }
 
     /**
+     * Get status of the running project task.
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Set status of the project.
      *
      * @param $status
