@@ -33,6 +33,9 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], f
             ->name('account.projects.index');
         Route::get('/create', 'Account\ProjectController@showCreateProjectPage')
             ->name('account.projects.create');
+        Route::post('/{projectId}/upload/data', 'Account\ProjectController@uploadProjectData')
+            ->name('account.projects.upload.data')
+            ->where('projectId', '[0-9]+');
         Route::post('/create', 'Account\ProjectController@createProject')
             ->name('account.projects.create.post');
         Route::get('/frameworks', 'Account\ProjectController@getFrameworksList')

@@ -27747,7 +27747,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 __webpack_require__(137);
 __webpack_require__(345);
 
-window.useMock = true;
+window.useMock = false;
 
 /**
  * Toastr notifier
@@ -98296,35 +98296,50 @@ window.saveProject = function () {
         data.data_url = dataUrl;
     }
 
+    var id = 1; //response.project.id; // TODO
+    var form = $('#project-data-upload-form')[0];
+    var formData = new FormData(form);
+
     $.ajax({
-        url: '/account/projects/create',
-        method: "POST",
-        data: data
-    }).done(function (response) {
-        toastr.success(response.message, 'Success');
-        console.log(response);
-        toastr.info('Uploading data...', 'Info');
-
-        var id = response.project.id; // TODO
-
-        var formData = new FormData();
-
-        if (dataUrl === '') {
-            formData.append('file', $('input#data-file')[0].files[0]);
+        url: '/account/projects/' + id + '/upload/data',
+        data: formData,
+        type: 'POST',
+        contentType: false,
+        processData: false,
+        success: function success(response) {
+            console.log(response);
         }
-
-        toastr.success('Project data was uploaded.', 'Success');
-
-        // $.ajax({
-        //     url: '/account/projects/' + id + '/upload',
-        //     method: "POST",
-        //     data: formData,
-        //     dataType: false,
-        //     processData: false,
-        // }).done(function (response) {
-        //     console.log(response);
-        // });
     });
+
+    // $.ajax({
+    //     url: '/account/projects/create',
+    //     method: "POST",
+    //     data: data,
+    // }).done(function (response) {
+    //     toastr.success(response.message, 'Success');
+    //     console.log(response);
+    //     toastr.info('Uploading data...', 'Info');
+    //
+    //     let id = response.project.id; // TODO
+    //
+    //     let formData = new FormData();
+    //
+    //     if (dataUrl === '') {
+    //         formData.append('file', $('input#data-file')[0].files[0]);
+    //     }
+    //
+    //     toastr.success('Project data was uploaded.', 'Success');
+    //
+    //     // $.ajax({
+    //     //     url: '/account/projects/' + id + '/upload',
+    //     //     method: "POST",
+    //     //     data: formData,
+    //     //     dataType: false,
+    //     //     processData: false,
+    //     // }).done(function (response) {
+    //     //     console.log(response);
+    //     // });
+    // });
 };
 
 /***/ }),

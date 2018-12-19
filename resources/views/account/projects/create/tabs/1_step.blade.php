@@ -1,4 +1,4 @@
-<form class="form-horizontal form-label-left">
+<form class="form-horizontal form-label-left" id="project-data-upload-form" enctype="multipart/form-data">
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Data
             <span class="required">*</span>
@@ -6,12 +6,12 @@
         <div class="col-md-9 col-sm-9 col-xs-12">
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-12">
-                    <input type="url" id="data-url" name="data-url" class="form-control col-md-7 col-xs-12"
+                    <input type="url" id="file-url" name="file-url" class="form-control col-md-7 col-xs-12"
                            placeholder="URL link to .csv file">
                 </div>
                 <div class="col-md-1 col-sm-1 col-xs-12" style="text-align: center; padding-top: 7px;">or</div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="file" id="data-file" class="form-control" accept=".csv">
+                    <input type="file" id="data-file" name="data-file" class="form-control" accept=".csv">
                     <button id="data-file-clear" class="btn btn-danger">
                         X
                     </button>
@@ -19,6 +19,8 @@
             </div>
         </div>
     </div>
+</form>
+<div class="form-horizontal form-label-left">
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Options
             <span class="required">*</span>
@@ -44,7 +46,7 @@
             </div>
         </div>
     </div>
-</form>
+</div>
 <div class="clearfix"></div>
 <br/>
 <label class="control-label col-md-2 col-sm-2 col-xs-12" style="text-align: right">Preview:</label>
@@ -107,7 +109,7 @@
                 let url = $(this).val();
                 let $previewBlock = $('#preview-block');
 
-                if(url === undefined || url.length < 1) {
+                if (url === undefined || url.length < 1) {
                     alert('You should paste link to load data.');
 
                     let $tableHead = $('#preview-table .headings');

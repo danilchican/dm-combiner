@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProjectRequest;
+use App\Http\Requests\UploadProjectDataRequest;
 use App\Models\Project;
 use App\Services\Combiner\Contracts\CombinerContract;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\File;
 use stdClass;
 
 class ProjectController extends Controller
@@ -34,6 +39,70 @@ class ProjectController extends Controller
     }
 
     /**
+     * Upload project data
+     *
+     * @param UploadProjectDataRequest $request
+     * @param CombinerContract         $combiner
+     *
+     * @param null                     $projectId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadProjectData(UploadProjectDataRequest $request, CombinerContract $combiner, $projectId = null)
+    {
+        try {
+            $project = Project::findOrFail($projectId);
+
+            if ($request->has('data-file')) {
+                $file = $request->file('data-file');
+
+                $filename = $file->getClientOriginalName();
+                $contents = File::get($file->getRealPath());
+            } else {
+                $filePath = $request->input('file-url');
+
+                $filename = 'url-file_project-' . $projectId . '_'
+                    . \Carbon\Carbon::now()->format('d-m-Y_H-i-s').'.csv';
+                $contents = $this->getFileContentsByExternalUrl($filePath);
+            }
+
+            \Log::debug('Using ' . $filename . ' to upload data for project.');
+            $response = $combiner->uploadFile($filename, $contents);
+            \Log::debug('Combiner file upload response: ', [$response]);
+
+            if ($response !== null) {
+                if ($response->success === true) {
+                    $project->setDataUrl($response->path);
+                    $project->save();
+                } else {
+                    \Log::error('Upload project file error.', [$response]);
+                    return response()->json([
+                        'message' => 'Upload project file error. See logs.',
+                    ]);
+                }
+
+                return response()->json([
+                    'message' => 'Project data successfully uploaded.',
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Looks lime something went wrong. Try again later.',
+            ]);
+        } catch (FileNotFoundException $e) {
+            \Log::error($e->getMessage(), $e->getTraceAsString());
+            return response()->json([
+                'message' => 'File not found. Please select another file.',
+            ], 400);
+        } catch (ModelNotFoundException $e) {
+            \Log::error($e->getMessage(), $e->getTraceAsString());
+            return response()->json([
+                'message' => 'Project not found. Please update page and try again.',
+            ], 400);
+        }
+    }
+
+    /**
      * Create project.
      *
      * @param CreateProjectRequest $request
@@ -45,7 +114,6 @@ class ProjectController extends Controller
         $title = $request->input('title');
         $normalize = $request->input('normalize');
         $scale = $request->input('scale');
-        $data_url = $request->input('data_url'); // TODO url of upload file
         $columns = $request->input('columns');
         $configuration = $request->input('configuration');
         $result = $request->input('result');
@@ -54,7 +122,6 @@ class ProjectController extends Controller
             'title'         => $title,
             'normalize'     => $normalize === 'true',
             'scale'         => $scale === 'true',
-            'data_url'      => $data_url,
             'columns'       => json_encode($columns),
             'configuration' => json_encode($configuration),
             'result'        => $result,
@@ -78,15 +145,16 @@ class ProjectController extends Controller
      */
     public function getFrameworksList(CombinerContract $combiner)
     {
-        $frameworks = $combiner->getFrameworks();
+        // TODO move to another layer
+        $response = $combiner->getFrameworks();
 
-        if ($frameworks->success === true) {
+        if ($response !== null && $response->success === true) {
             $combinedFrameworks = [];
 
-            foreach ($frameworks->result as $framework) {
+            foreach ($response->frameworks as $framework) {
                 $object = new stdClass;
-                $object->title = $framework;
-                $object->commands = $this->getFrameworkCommands($framework, $combiner);
+                $object->title = $framework->name;
+                $object->commands = $framework->commands;
 
                 $combinedFrameworks[] = $object;
             }
@@ -95,14 +163,16 @@ class ProjectController extends Controller
         return response()->json($combinedFrameworks);
     }
 
-    private function getFrameworkCommands(string $framework, CombinerContract $combiner)
+    private function getFileContentsByExternalUrl(string $url)
     {
-        $commands = $combiner->getFrameworkCommands($framework);
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get($url);
 
-        if ($commands->success === true) {
-            return $commands->result;
+            return $response->getBody()->getContents();
+        } catch (RequestException $e) {
+            \Log::error($e->getMessage(), $e->getTraceAsString());
+            return null;
         }
-
-        return [];
     }
 }
