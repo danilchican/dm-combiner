@@ -60,31 +60,41 @@ window.saveProject = function () {
         url: '/account/projects/create',
         method: "POST",
         data: data,
-    }).done(function (response) {
-        console.log(response);
-        console.log('Project saved.');
-        console.log('Saving project data.');
+        success: function(response) {
+            console.log(response);
+            console.log('Project saved.');
+            console.log('Saving project data.');
 
-        var message = response.message;
-        toastr.info('Uploading data...', 'Info');
+            var message = response.message;
+            toastr.info('Uploading data...', 'Info');
 
-        let id = response.project.id;
-        let form = $('#project-data-upload-form')[0];
-        let formData = new FormData(form);
+            let id = response.project.id;
+            let form = $('#project-data-upload-form')[0];
+            let formData = new FormData(form);
 
-        $.ajax({
-            url: '/account/projects/' + id + '/upload/data',
-            data: formData,
-            type: 'POST',
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                console.log(response);
-                toastr.success('Project data was uploaded.', 'Success');
-                toastr.success(message, 'Success');
-                window.lastProjectId = id;
-            }
-        });
+            $.ajax({
+                url: '/account/projects/' + id + '/upload/data',
+                data: formData,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    toastr.success('Project data was uploaded.', 'Success');
+                    toastr.success(message, 'Success');
+                    window.lastProjectId = id;
+                    return true;
+                },
+                error: function (xhr) {
+                    let response = JSON.parse(xhr.responseText);
+                    showErrors(response);
+                }
+            });
+        },
+        error: function (xhr) {
+            let response = JSON.parse(xhr.responseText);
+            showErrors(response);
+        }
     });
 };
 
@@ -104,3 +114,16 @@ window.runProject = function () {
         }
     });
 };
+
+function showErrors(data) {
+    console.log(data);
+
+    if (data.errors !== undefined) {
+        // error callback
+        $.each(data.errors, function (key, value) {
+            toastr.error(value, 'Error')
+        });
+    } else {
+        toastr.error('Something went wrong...', 'Error')
+    }
+}
