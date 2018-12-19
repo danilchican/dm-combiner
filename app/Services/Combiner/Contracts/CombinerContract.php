@@ -38,6 +38,16 @@ interface CombinerContract
     public function getFrameworkCommands(string $framework);
 
     /**
+     * Get framework command options.
+     *
+     * @param string $framework
+     * @param string $command
+     *
+     * @return mixed
+     */
+    public function getCommandOptions(string $framework, string $command);
+
+    /**
      * Upload file for the project
      *
      * @param $filename

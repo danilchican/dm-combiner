@@ -40,5 +40,8 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], f
             ->name('account.projects.create.post');
         Route::get('/frameworks', 'Account\ProjectController@getFrameworksList')
             ->name('account.projects.frameworks');
+        Route::get('/args/{framework}/{command}', 'Account\ProjectController@getCommandOptions')
+            ->name('account.projects.frameworks')
+            ->where(['framework' => '[a-zA-Z_]+', 'command' => '[a-zA-Z_]+']);
     });
 });

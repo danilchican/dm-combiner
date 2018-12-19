@@ -50,6 +50,27 @@ class CombinerService extends AbstractCombiner
         return $this->executeGetRequest();
     }
 
+
+    /**
+     * Get framework command options.
+     *
+     * @param string $framework
+     * @param string $command
+     *
+     * @return mixed
+     */
+    public function getCommandOptions(string $framework, string $command)
+    {
+        $endpoint = CombinerEndpointBuilder::point()
+            ->to('/args/')
+            ->to($framework)
+            ->to('/' . $command)
+            ->make();
+
+        $this->setConfiguration($endpoint);
+        return $this->executeGetRequest();
+    }
+
     /**
      * Upload file for the project
      *

@@ -154,20 +154,53 @@ class ProjectController extends Controller
     {
         // TODO move to another layer
         $response = $combiner->getFrameworks();
+        $combinedFrameworks = [];
 
         if ($response !== null && $response->success === true) {
-            $combinedFrameworks = [];
-
             foreach ($response->frameworks as $framework) {
                 $object = new stdClass;
                 $object->title = $framework->name;
-                $object->commands = $framework->commands;
+                $object->commands = [];
+
+                foreach($framework->commands as $command) {
+                    $commandObj = new stdClass;
+                    $commandObj->title = $command;
+                    $commandObj->framework = $framework->name;
+                    $object->commands[] = $commandObj;
+                }
 
                 $combinedFrameworks[] = $object;
             }
         }
 
         return response()->json($combinedFrameworks);
+    }
+
+    /**
+     * Get framework command options.
+     *
+     * @param CombinerContract $combiner
+     * @param                  $framework
+     * @param                  $command
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCommandOptions(CombinerContract $combiner, $framework, $command)
+    {
+        $response = $combiner->getCommandOptions($framework, $command);
+        $options = [];
+
+        if ($response !== null && $response->success === true) {
+            foreach ($response->args as $option) {
+                $object = new stdClass;
+                $object->title = $option->name;
+                $object->type = $option->type;
+
+                $options[] = $object;
+            }
+        }
+
+        return response()->json($options);
     }
 
     private function getFileContentsByExternalUrl(string $url)
