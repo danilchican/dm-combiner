@@ -98338,10 +98338,9 @@ window.runProject = function () {
         type: 'POST',
         success: function success(response) {
             console.log(response);
+            var resultData = response.result;
+            $('#result-textarea').text(resultData);
             toastr.success(response.message, 'Success');
-            setTimeout(function () {
-                window.location.href = '/account/projects';
-            }, 2000);
         }
     });
 };
@@ -101443,7 +101442,7 @@ var render = function() {
                         _vm._v(_vm._s(option.title))
                       ]),
                       _vm._v(" "),
-                      option.type === "checkbox"
+                      option.field === "checkbox"
                         ? _c("input", {
                             directives: [
                               {
@@ -101519,7 +101518,7 @@ var render = function() {
                               }
                             }
                           })
-                        : option.type === "radio"
+                        : option.field === "radio"
                           ? _c("input", {
                               directives: [
                                 {
@@ -101579,7 +101578,7 @@ var render = function() {
                               attrs: {
                                 id: "link-title-edit",
                                 placeholder: "Enter the value",
-                                type: option.type
+                                type: option.field
                               },
                               domProps: {
                                 value: _vm.editCommand.options[index].value

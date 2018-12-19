@@ -107,10 +107,9 @@ window.runProject = function () {
         type: 'POST',
         success: function (response) {
             console.log(response);
+            let resultData = response.result;
+            $('#result-textarea').text(resultData);
             toastr.success(response.message, 'Success');
-            setTimeout(function () {
-                window.location.href = '/account/projects';
-            }, 2000);
         }
     });
 };

@@ -38,12 +38,12 @@
                                     </span>
                                 </a>
                             </li>
-                            {{--<li>--}}
-                                {{--<a href="#step-3">--}}
-                                    {{--<span class="step_no">3</span>--}}
-                                    {{--<span class="step_descr">Step 3<br/><small>Execution results</small></span>--}}
-                                {{--</a>--}}
-                            {{--</li>--}}
+                            <li>
+                                <a href="#step-3">
+                                    <span class="step_no">3</span>
+                                    <span class="step_descr">Step 3<br/><small>Execution results</small></span>
+                                </a>
+                            </li>
                         </ul>
                         <div id="step-1">
                             @include('account.projects.create.tabs.1_step')
@@ -51,9 +51,9 @@
                         <div id="step-2">
                             <project-configuration></project-configuration>
                         </div>
-                        {{--<div id="step-3">--}}
-                            {{--@include('account.projects.create.tabs.3_step')--}}
-                        {{--</div>--}}
+                        <div id="step-3">
+                            @include('account.projects.create.tabs.3_step')
+                        </div>
                     </div>
                 </div>
             </div>

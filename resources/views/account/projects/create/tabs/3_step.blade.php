@@ -13,7 +13,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Text results</label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                        <textarea class="form-control" rows="5"></textarea>
+                        <textarea class="form-control" rows="5" id="result-textarea"></textarea>
                     </div>
                 </div>
                 <div class="ln_solid"></div>

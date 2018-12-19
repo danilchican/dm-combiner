@@ -92,7 +92,7 @@
 
                         <div class="form-group" v-for="(option, index) in editCommand.options">
                             <label for="link-title-edit">{{ option.title }}</label>
-                            <input :type="option.type" id="link-title-edit" @keyup.enter="updateLink()"
+                            <input :type="option.field" id="link-title-edit" @keyup.enter="updateLink()"
                                    v-model="editCommand.options[index].value"
                                    placeholder="Enter the value" class="form-control">
                         </div>
