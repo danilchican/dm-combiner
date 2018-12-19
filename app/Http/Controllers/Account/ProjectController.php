@@ -123,16 +123,15 @@ class ProjectController extends Controller
         $scale = $request->input('scale');
         $columns = $request->input('columns');
         $configuration = $request->input('configuration');
-        $result = $request->input('result');
 
         $attributes = [
-            'title'         => $title,
-            'normalize'     => $normalize === 'true',
-            'scale'         => $scale === 'true',
-            'columns'       => json_encode($columns),
-            'configuration' => json_encode($configuration),
-            'result'        => $result,
+            'title'     => $title,
+            'normalize' => $normalize === 'true',
+            'scale'     => $scale === 'true',
+            'columns'   => json_encode($columns),
         ];
+
+        $attributes['configuration'] = json_encode($this->prepareConfiguration($configuration));
 
         $project = new Project($attributes);
         \Auth::user()->projects()->save($project);
@@ -232,5 +231,60 @@ class ProjectController extends Controller
         }
 
         return $types['str'];
+    }
+
+    private function prepareConfiguration($configuration)
+    {
+        $resultConfiguration = [];
+
+        if (\is_array($configuration)) {
+            foreach ($configuration as $commandConfig) {
+                $tempConfig = [
+                    'name'      => $commandConfig['title'],
+                    'framework' => $commandConfig['framework'],
+                ];
+
+                $tempConfigOptions = [];
+
+                foreach($commandConfig['options'] as $option) {
+                    $tempConfigOptions[$option['title']] = $this->getOptionValue($option);
+                }
+
+                $tempConfig['params'] = $tempConfigOptions;
+                $resultConfiguration[] = $tempConfig;
+            }
+        }
+
+        return $resultConfiguration;
+    }
+
+    private function getOptionValue($option) {
+        if(\is_array($option)) {
+            if(array_key_exists('value', $option)) {
+                switch ($option['type']) {
+                    case 'text':
+                        return $option['value'];
+                    case 'checkbox':
+                        return $option['value'] === 'true';
+                    case 'number':
+                        return (float)$option['value'];
+                    default:
+                        return null;
+                }
+            } else {
+                switch ($option['type']) {
+                    case 'text':
+                        return '';
+                    case 'checkbox':
+                        return false;
+                    case 'number':
+                        return 0;
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        return null;
     }
 }

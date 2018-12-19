@@ -48,16 +48,12 @@ window.saveProject = function () {
         checkedCols.push($(option).val());
     });
 
-    let configuration = [1]; // TODO
-    let executionResults; // TODO if executed
-
     let data = {
         title: title,
         normalize: normalize,
         scale: scale,
         columns: checkedCols,
-        configuration: configuration,
-        result: executionResults  // TODO if executed
+        configuration: config,
     };
 
     $.ajax({
@@ -69,7 +65,7 @@ window.saveProject = function () {
         console.log('Project saved.');
         console.log('Saving project data.');
 
-        toastr.success(response.message, 'Success');
+        var message = response.message;
         toastr.info('Uploading data...', 'Info');
 
         let id = response.project.id;
@@ -85,6 +81,7 @@ window.saveProject = function () {
             success: function (response) {
                 console.log(response);
                 toastr.success('Project data was uploaded.', 'Success');
+                toastr.success(message, 'Success');
             }
         });
     });

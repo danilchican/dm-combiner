@@ -98279,16 +98279,12 @@ window.saveProject = function () {
         checkedCols.push($(option).val());
     });
 
-    var configuration = [1]; // TODO
-    var executionResults = void 0; // TODO if executed
-
     var data = {
         title: title,
         normalize: normalize,
         scale: scale,
         columns: checkedCols,
-        configuration: configuration,
-        result: executionResults // TODO if executed
+        configuration: config
     };
 
     $.ajax({
@@ -98300,7 +98296,7 @@ window.saveProject = function () {
         console.log('Project saved.');
         console.log('Saving project data.');
 
-        toastr.success(response.message, 'Success');
+        var message = response.message;
         toastr.info('Uploading data...', 'Info');
 
         var id = response.project.id;
@@ -98316,6 +98312,7 @@ window.saveProject = function () {
             success: function success(response) {
                 console.log(response);
                 toastr.success('Project data was uploaded.', 'Success');
+                toastr.success(message, 'Success');
             }
         });
     });
@@ -99093,7 +99090,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             options: [],
             editCommand: {
                 index: null,
-                title: '',
+                name: '',
                 framework: '',
                 options: []
             }

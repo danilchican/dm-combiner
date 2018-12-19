@@ -120,7 +120,7 @@
                 options: [],
                 editCommand: {
                     index: null,
-                    title: '',
+                    name: '',
                     framework: '',
                     options: [],
                 },
