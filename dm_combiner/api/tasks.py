@@ -57,7 +57,7 @@ def parse_commands(data: np.ndarray, commands: list):
         framework_class = frameworks.get(framework_name)
         if framework_class:
             method_name = command.get('name')                  # fetch method name
-            args = command.get('params')                       # fetch method args
+            args = command.get('params', {})                       # fetch method args
             method = getattr(framework_class(), method_name)   # get method instance from framework class instance
             data = method(data, **args)                        # execute method with args
     return data
