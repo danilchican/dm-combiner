@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role query()
  */
 class Role extends Model
 {
