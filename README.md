@@ -74,7 +74,7 @@ Response:
 }
 ```
 
-- get args for methods `[GET]`: /args/<framework_name>/<method_name>
+- get args for methods `[GET]`: /args/<framework_name>/<command>
 
 Request: `104.248.26.47:5000/args/SKL/normalize`
 

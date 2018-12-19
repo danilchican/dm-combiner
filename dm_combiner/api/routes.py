@@ -1,11 +1,9 @@
 import os
 
-import numpy as np
 from flask import request, jsonify, send_file, Blueprint
 
 from dm_combiner.config import Config
 from dm_combiner.frameworks.framework import Framework
-from dm_combiner.frameworks.skl import SKL
 from dm_combiner.handlers.data_handler import DataHandler
 from dm_combiner.utils import helpers
 from dm_combiner.utils.decorators import view_exception
@@ -86,17 +84,28 @@ def upload_file():
     return jsonify({'success': True, 'path': file_path})
 
 
-@api.route('/algorithm', methods=['POST'])
-# @view_exception
-def algorithm():
-    # try:
+@api.route('/algorithm/deffered', methods=['POST'])
+@view_exception
+def algorithm_deffered():
     data = request.get_json(force=True)
     task = tasks.run_algorithm.apply_async((data,))
-    #     logger.info(f'Algorithm start executing | Task id: {task.id} | Data: {data}')
-    # except Exception as ex:
-    #     logger.warning('{}: {}'.format(type(ex).__name__, ex))
-    #     return jsonify({'success': False, 'error': str(ex)})
+    logger.info(f'Algorithm start executing | Task id: {task.id} | Data: {data}')
     return jsonify({'success': True, 'task_id': task.id})
+
+
+@api.route('/algorithm', methods=['POST'])
+@view_exception
+def algorithm():
+    data = request.get_json(force=True)
+    logger.info(f'Algorithm start executing | Data: {data}')
+    config, commands = data.get('config', {}), data.get('commands', [])
+    file_path, columns, is_normalize, is_scale, callback_url = tasks.parse_config(config)
+    data = tasks.load_data(file_path=file_path, columns=columns, is_normalize=is_normalize, is_scale=is_scale)
+    data = tasks.parse_commands(data, commands)
+    data = DataHandler().jsonify_data(data=data)
+    if data is None:
+        jsonify({'success': True, 'Error': 'No data'})
+    return jsonify({'success': True, 'result': data})
 
 
 @api.route('/status/<task_id>')

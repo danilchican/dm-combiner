@@ -26,9 +26,12 @@ class Framework(ABC):
         if method_instance:
             # return tuple with 7 elements, but we need only last
             method_args_info = inspect.getfullargspec(method_instance)[6]
+            method_args_default = inspect.getfullargspec(method_instance)[3]
             for arg, arg_type in method_args_info.items():
                 if arg not in restricted_args:
                     args.append({'name': arg, 'type': arg_type.__name__})
+            for i, arg in enumerate(args):
+                arg.update({'default': method_args_default[i]})
             return args
         return None
 

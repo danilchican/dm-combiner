@@ -12,16 +12,19 @@ from dm_combiner.handlers.data_handler import DataHandler
 
 @celery.task
 def run_algorithm(data):
-    config, commands = data.get('config', {}), data.get('commands', [])
-    file_path, columns, is_normalize, is_scale, callback_url = parse_config(config)
-    data = load_data(file_path=file_path, columns=columns, is_normalize=is_normalize, is_scale=is_scale)
-    data = parse_commands(data, commands)
-    data = DataHandler().jsonify_data(data=data)
+    try:
+        config, commands = data.get('config', {}), data.get('commands', [])
+        file_path, columns, is_normalize, is_scale, callback_url = parse_config(config)
+        data = load_data(file_path=file_path, columns=columns, is_normalize=is_normalize, is_scale=is_scale)
+        data = parse_commands(data, commands)
+        data = DataHandler().jsonify_data(data=data)
+    except Exception as ex:
+        requests.post(callback_url, json=json.dumps({'error': ex}))
+        return None
     if data is None:
         return None
     print(data, callback_url)
-    r = requests.post(callback_url, json=json.dumps(data))
-    print(r)
+    requests.post(callback_url, json=json.dumps(data))
     return data
 
 

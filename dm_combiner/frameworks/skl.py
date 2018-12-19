@@ -22,7 +22,7 @@ class SKL(Framework):
         return data
 
     @staticmethod
-    def k_means(data: np.ndarray, n_clusters: int, max_iter: int = 300, random_state: int = None,
+    def k_means(data: np.ndarray, n_clusters: int = 2, max_iter: int = 300, random_state: int = None,
                 init: str = 'k-means++') -> dict:
         clusters_info = cluster.KMeans(n_clusters=n_clusters, max_iter=max_iter,
                                        random_state=random_state, init=init)
