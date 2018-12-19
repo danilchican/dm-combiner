@@ -31,13 +31,19 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], f
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'Account\ProjectController@showProjectsPage')
             ->name('account.projects.index');
+
         Route::get('/create', 'Account\ProjectController@showCreateProjectPage')
             ->name('account.projects.create');
+        Route::post('/create', 'Account\ProjectController@createProject')
+            ->name('account.projects.create.post');
+
+        Route::post('/run', 'Account\ProjectController@runProject')
+            ->name('account.projects.run');
+
         Route::post('/{projectId}/upload/data', 'Account\ProjectController@uploadProjectData')
             ->name('account.projects.upload.data')
             ->where('projectId', '[0-9]+');
-        Route::post('/create', 'Account\ProjectController@createProject')
-            ->name('account.projects.create.post');
+
         Route::get('/frameworks', 'Account\ProjectController@getFrameworksList')
             ->name('account.projects.frameworks');
         Route::get('/args/{framework}/{command}', 'Account\ProjectController@getCommandOptions')

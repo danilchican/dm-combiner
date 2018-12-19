@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProjectRequest;
+use App\Http\Requests\RunProjectRequest;
 use App\Http\Requests\UploadProjectDataRequest;
 use App\Models\Project;
 use App\Services\Combiner\Contracts\CombinerContract;
@@ -125,13 +126,12 @@ class ProjectController extends Controller
         $configuration = $request->input('configuration');
 
         $attributes = [
-            'title'     => $title,
-            'normalize' => $normalize === 'true',
-            'scale'     => $scale === 'true',
-            'columns'   => json_encode($columns),
+            'title'         => $title,
+            'normalize'     => $normalize === 'true',
+            'scale'         => $scale === 'true',
+            'columns'       => serialize($columns),
+            'configuration' => serialize($this->prepareConfiguration($configuration)),
         ];
-
-        $attributes['configuration'] = json_encode($this->prepareConfiguration($configuration));
 
         $project = new Project($attributes);
         \Auth::user()->projects()->save($project);
@@ -140,6 +140,50 @@ class ProjectController extends Controller
             'project' => $project,
             'message' => 'Project successfully created.',
         ]);
+    }
+
+    /**
+     * Run project.
+     *
+     * @param RunProjectRequest $request
+     * @param CombinerContract  $combiner
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function runProject(RunProjectRequest $request, CombinerContract $combiner)
+    {
+        try {
+            $projectId = $request->input('id');
+
+            $project = \Auth::user()->projects()->findOrFail($projectId);
+            $response = $combiner->executeAlgorithm($project);
+
+            if ($response !== null) {
+                if ($response->success === true) {
+                    $project->setTaskId($response->task_id);
+                    $project->setStatus('pending');
+                    $project->save();
+                } else {
+                    \Log::error('Combiner project start execution error: ', [$response]);
+                    return response()->json([
+                        'message' => 'Project execution error. See logs.',
+                    ]);
+                }
+
+                return response()->json([
+                    'message' => 'Project has been successfully run.',
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Looks lime something went wrong. Try again later.',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            \Log::error($e->getMessage(), $e->getTraceAsString());
+            return response()->json([
+                'message' => 'Project not found. Please update page and try again.',
+            ], 400);
+        }
     }
 
     /**
@@ -246,7 +290,7 @@ class ProjectController extends Controller
 
                 $tempConfigOptions = [];
 
-                foreach($commandConfig['options'] as $option) {
+                foreach ($commandConfig['options'] as $option) {
                     $tempConfigOptions[$option['title']] = $this->getOptionValue($option);
                 }
 
@@ -258,9 +302,10 @@ class ProjectController extends Controller
         return $resultConfiguration;
     }
 
-    private function getOptionValue($option) {
-        if(\is_array($option)) {
-            if(array_key_exists('value', $option)) {
+    private function getOptionValue($option)
+    {
+        if (\is_array($option)) {
+            if (array_key_exists('value', $option)) {
                 switch ($option['type']) {
                     case 'text':
                         return $option['value'];
