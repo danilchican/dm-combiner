@@ -50,6 +50,31 @@ class CombinerService extends AbstractCombiner
         return $this->executeGetRequest();
     }
 
+    /**
+     * Upload file for the project
+     *
+     * @param $filename
+     * @param $content
+     *
+     * @return mixed
+     */
+    public function uploadFile($filename, $content)
+    {
+        $endpoint = CombinerEndpointBuilder::point()->to('/upload_file')->make();
+        $options = [
+            'multipart' => [
+                [
+                    'name'     => 'file',
+                    'contents' => $content,
+                    'filename' => $filename,
+                ],
+            ],
+        ];
+
+        $this->setConfiguration($endpoint, $options);
+        return $this->executePostRequest();
+    }
+
     private function prepareExecuteAlgorithmData()
     {
         $endpoint = $this->prepareExecuteAlgorithmEndpoint();

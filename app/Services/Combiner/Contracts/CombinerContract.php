@@ -36,4 +36,14 @@ interface CombinerContract
      * @return mixed
      */
     public function getFrameworkCommands(string $framework);
+
+    /**
+     * Upload file for the project
+     *
+     * @param $filename
+     * @param $content
+     *
+     * @return mixed
+     */
+    public function uploadFile($filename, $content);
 }
