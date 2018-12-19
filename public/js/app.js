@@ -99131,6 +99131,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.error('Something went wrong...', 'Error');
             });
         },
+        clone: function clone(original) {
+            return JSON.parse(JSON.stringify(original));
+        },
         remove: function remove(index) {
             this.selectedAlgorithms.splice(index, 1);
         },
@@ -101224,6 +101227,7 @@ var render = function() {
                                     "draggable",
                                     {
                                       attrs: {
+                                        clone: _vm.clone,
                                         options: {
                                           group: {
                                             name: "frameworks",
@@ -101278,8 +101282,8 @@ var render = function() {
                 "draggable",
                 {
                   attrs: {
-                    options: { group: "frameworks", handle: ".draggable" },
-                    element: "tbody"
+                    element: "tbody",
+                    options: { group: "frameworks", handle: ".draggable" }
                   },
                   model: {
                     value: _vm.selectedAlgorithms,

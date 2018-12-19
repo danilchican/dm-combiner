@@ -20,7 +20,7 @@
                                  aria-labelledby="headingOne">
                                 <div class="panel-body">
                                     <ul class="to_do" v-if="framework.commands.length > 0">
-                                        <draggable v-model="framework.commands"
+                                        <draggable v-model="framework.commands" :clone="clone"
                                                    :options="{group:{name:'frameworks', pull:'clone', put: false}}">
                                             <li v-for="command in framework.commands">
                                                 <p>{{ command.title }}</p>
@@ -53,8 +53,8 @@
                             <th style="width: 30%">Action</th>
                         </tr>
                         </thead>
-                        <draggable v-model="selectedAlgorithms" :options="{group:'frameworks', handle: '.draggable'}"
-                                   :element="'tbody'">
+                        <draggable v-model="selectedAlgorithms" :element="'tbody'"
+                                   :options="{group:'frameworks', handle: '.draggable'}">
                             <tr class="draggable" v-for="(algorithm, index) in selectedAlgorithms">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ algorithm.title }}</td>
@@ -156,14 +156,20 @@
                     toastr.error('Something went wrong...', 'Error');
                 });
             },
+
+            clone(original) {
+                return JSON.parse(JSON.stringify(original));
+            },
+
             remove(index) {
                 this.selectedAlgorithms.splice(index, 1);
             },
+
             editAlgorithm(index, command) {
                 this.editCommand = JSON.parse(JSON.stringify(command));
                 this.editCommand.index = index;
 
-                if(this.editCommand.options.length < 1) {
+                if (this.editCommand.options.length < 1) {
                     let requestURL = '/account/projects/args/' + command.framework + '/' + command.title;
 
                     this.$http.get(requestURL).then((response) => {
