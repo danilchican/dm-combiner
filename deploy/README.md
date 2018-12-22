@@ -1,9 +1,5 @@
 # DM_COMBINER_API
 
-##Deploy 
-
-
-
 Deploy instruction:
 1) install Python3.7 or Python3.6 (`python3.7_installation`  contain script for installing Python3.7 on Ubuntu 16.04(or another debian based distributive)
 2) install pip3 
