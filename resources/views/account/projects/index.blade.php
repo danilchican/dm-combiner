@@ -14,36 +14,40 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <div class="table-responsive">
-                        <table class="table table-striped no-margin">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Created at</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            @foreach($projects as $project)
+                    @if(count($projects))
+                        <div class="table-responsive">
+                            <table class="table table-striped no-margin">
+                                <thead>
                                 <tr>
-                                    <td>{{ $project->getId() }}</td>
-                                    <td>{{ $project->getTitle() }}</td>
-                                    <td>{{ $project->getStatus() }}</td>
-                                    <td>{{ $project->getCreatedDate() }}</td>
-                                    <td>
-                                        <a href="" class="btn btn-info btn-xs">
-                                            Редактировать
-                                        </a>
-                                        <a href="" class="btn btn-danger btn-xs">Удалить</a>
-                                    </td>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Created at</th>
+                                    <th>Action</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+
+                                @foreach($projects as $project)
+                                    <tr>
+                                        <td>{{ $project->getId() }}</td>
+                                        <td>{{ $project->getTitle() }}</td>
+                                        <td>{{ $project->getStatus() }}</td>
+                                        <td>{{ $project->getCreatedDate() }}</td>
+                                        <td>
+                                            <a href="" class="btn btn-info btn-xs">
+                                                Редактировать
+                                            </a>
+                                            <a href="" class="btn btn-danger btn-xs">Удалить</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <p>No projects found.</p>
+                    @endif
                 </div>
             </div>
         </div>

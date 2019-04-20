@@ -36,7 +36,10 @@ class ProjectController extends Controller
      */
     public function showCreateProjectPage()
     {
-        return view('account.projects.create.index');
+        $useMock = config('app.combiner.mock.use', false);
+        $endpoint = $useMock ? config('app.combiner.mock.url') : config('app.url');
+
+        return view('account.projects.create.index')->with('endpoint', $endpoint);
     }
 
     /**
