@@ -14,7 +14,7 @@ return [
     */
 
     'name'      => env('APP_NAME', 'Datamining Combiner'),
-    'dashboard' => env('DASHBOARD_NAME', 'Админ-панель'),
+    'dashboard' => env('DASHBOARD_NAME', 'Dashboard'),
 
     /*
     |--------------------------------------------------------------------------
@@ -220,4 +220,13 @@ return [
         'JWTFactory'   => Tymon\JWTAuth\Facades\JWTFactory::class,
     ],
 
+    'combiner' => [
+        'url'     => env('COMBINER_API_URL', 'http://localhost'),
+        'prefix'  => env('COMBINER_API_PREFIX', 'api'),
+        'version' => env('COMBINER_API_VERSION', 'v1'),
+        'mock'    => [
+            'use' => env('COMBINER_API_MOCK_USE', false),
+            'url' => env('COMBINER_API_MOCK_URL', 'http://localhost'),
+        ],
+    ],
 ];
