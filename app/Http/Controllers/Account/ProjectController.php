@@ -36,10 +36,7 @@ class ProjectController extends Controller
      */
     public function showCreateProjectPage()
     {
-        $useMock = config('app.combiner.mock.use', false);
-        $endpoint = $useMock ? config('app.combiner.mock.url') : config('app.url');
-
-        return view('account.projects.create.index')->with('endpoint', $endpoint);
+        return view('account.projects.create.index');
     }
 
     /**
@@ -210,9 +207,9 @@ class ProjectController extends Controller
                 $object->title = $framework->name;
                 $object->commands = [];
 
-                foreach ($framework->commands as $command) {
+                foreach ($framework->methods as $method) {
                     $commandObj = new stdClass;
-                    $commandObj->title = $command;
+                    $commandObj->title = $method;
                     $commandObj->framework = $framework->name;
                     $commandObj->options = [];
 

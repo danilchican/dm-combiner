@@ -19,19 +19,19 @@
                             <div :id="'collapseOne-' + index" class="panel-collapse collapse" role="tabpanel"
                                  aria-labelledby="headingOne">
                                 <div class="panel-body">
-                                    <ul class="to_do" v-if="framework.methods.length > 0">
-                                        <draggable v-model="framework.methods" :clone="clone"
+                                    <ul class="to_do" v-if="framework.commands.length > 0">
+                                        <draggable v-model="framework.commands" :clone="clone"
                                                    :options="{group:{name:'frameworks', pull:'clone', put: false}}">
-                                            <li v-for="method in framework.methods">
-                                                <p>{{ method }}</p>
+                                            <li v-for="command in framework.commands">
+                                                <p>{{ command.title }}</p>
                                             </li>
                                         </draggable>
                                     </ul>
-                                    <p v-else>No methods were found.</p>
+                                    <p v-else>No commands found.</p>
                                 </div>
                             </div>
                         </div>
-                        <p v-else>No frameworks were found.</p>
+                        <p v-else>No frameworks found.</p>
                     </div>
                     <!-- end of accordion -->
                 </div>
@@ -57,7 +57,7 @@
                                    :options="{group:'frameworks', handle: '.draggable'}">
                             <tr class="draggable" v-for="(algorithm, index) in selectedAlgorithms">
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ algorithm }}</td>
+                                <td>{{ algorithm.title }}</td>
                                 <td>
                                     <a data-toggle="modal" data-target="#editCommandModal"
                                        class="btn btn-info btn-xs" @click="editAlgorithm(index, algorithm)">
@@ -113,8 +113,6 @@
     import draggable from 'vuedraggable'
 
     export default {
-        props: ['endpoint'],
-
         data() {
             return {
                 frameworks: [],
@@ -142,7 +140,7 @@
 
         methods: {
             uploadFrameworks() {
-                let requestURL = this.endpoint + '/account/projects/frameworks';
+                let requestURL = '/account/projects/frameworks';
 
                 this.$http.get(requestURL).then((response) => {
                     console.log(response);

@@ -14,7 +14,9 @@ class CombinerEndpointBuilder extends AbstractEndpointBuilder
     public function root()
     {
         try {
-            $this->endpoint = $this->getCombinerUrl() . $this->getCombinerPrefix() . $this->getCombinerVersion();
+            $this->endpoint = config('app.combiner.mock.use')
+                ? $this->getMockedCombinerUrl()
+                : $this->getCombinerUrl() . $this->getCombinerPrefix() . $this->getCombinerVersion();
         } catch (CombinerConfigurationNotFoundException $e) {
             \Log::error($e->getTraceAsString());
         }
@@ -41,6 +43,11 @@ class CombinerEndpointBuilder extends AbstractEndpointBuilder
         }
 
         return $combinerUrl;
+    }
+
+    private function getMockedCombinerUrl()
+    {
+        return config('app.combiner.mock.url');
     }
 
     private function getCombinerPrefix()
