@@ -109,6 +109,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Set password.
+     *
+     * @param $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = \Hash::make($password);
+    }
+
+    /**
      * Set role id for user.
      *
      * @param bool $roleId

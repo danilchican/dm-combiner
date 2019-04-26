@@ -21,12 +21,15 @@
     <li>
         <a>
             <i class="fa fa-sitemap"></i> @lang('sidebar.account.menu.projects.title')
+            &nbsp<span class="label label-success">{{ Auth::user()->projects()->count() }}</span>
             <span class="fa fa-chevron-down"></span>
         </a>
 
         <ul class="nav child_menu">
             <li>
-                <a href="{{ route('account.projects.index') }}">@lang('sidebar.account.menu.projects.view_all')</a>
+                <a href="{{ route('account.projects.index') }}">
+                    @lang('sidebar.account.menu.projects.view_all')
+                </a>
             </li>
             <li>
                 <a href="{{ route('account.projects.create') }}">@lang('sidebar.account.menu.projects.create')</a>

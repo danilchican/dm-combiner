@@ -26,7 +26,8 @@ Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], 
 });
 
 Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], function () {
-    Route::get('/', 'Account\AccountController')->name('account.index');
+    Route::get('/', 'Account\AccountController@index')->name('account.index');
+    Route::post('/update', 'Account\AccountController@updateAccountInfo')->name('account.update');
 
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'Account\ProjectController@showProjectsPage')
