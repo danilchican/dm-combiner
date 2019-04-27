@@ -19,7 +19,7 @@
                         <h3>{{ Auth::user()->getName() }}</h3>
 
                         <ul class="list-unstyled user_data">
-                            <li>{{ Auth::user()->role->getTitle() }}</li>
+                            <li><b>Group:</b> {{ Auth::user()->role->getTitle() }}</li>
                             <li>
                                 <i class="fa fa-envelope-o user-profile-icon"></i> {{ Auth::user()->getEmail() }}
                             </li>

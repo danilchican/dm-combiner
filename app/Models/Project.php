@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null                                                      $columns
  * @property string|null                                                      $configuration
  * @property string|null                                                      $result
+ * @property string                                                           $status
+ * @property string|null                                                      $task_id
  * @property \Illuminate\Support\Carbon                                       $created_at
  * @property \Illuminate\Support\Carbon                                       $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $user
@@ -33,11 +35,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereUserId($value)
- * @mixin \Eloquent
- * @property string                                                           $status
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereStatus($value)
- * @property string|null $task_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Project whereTaskId($value)
+ * @mixin \Eloquent
  */
 class Project extends Model
 {
@@ -45,8 +45,6 @@ class Project extends Model
      * Statuses of the project running.
      */
     const STATUSES = ['new', 'pending', 'finished', 'failed'];
-
-    public $table = 'projects';
 
     /**
      * The attributes that are mass assignable.
@@ -143,7 +141,8 @@ class Project extends Model
      *
      * @param $taskId
      */
-    public function setTaskId($taskId) {
+    public function setTaskId($taskId)
+    {
         $this->task_id = $taskId;
     }
 

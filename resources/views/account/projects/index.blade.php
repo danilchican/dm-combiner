@@ -35,10 +35,9 @@
                                         <td>{{ $project->getStatus() }}</td>
                                         <td>{{ $project->getCreatedDate() }}</td>
                                         <td>
-                                            <a href="" class="btn btn-info btn-xs">
-                                                Редактировать
-                                            </a>
-                                            <a href="" class="btn btn-danger btn-xs">Удалить</a>
+                                            {{--TODO add links--}}
+                                            <a href="" class="btn btn-info btn-xs">Edit</a>
+                                            <a href="" class="btn btn-danger btn-xs">Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach

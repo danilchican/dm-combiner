@@ -13,7 +13,7 @@ use UnexpectedValueException;
  *                $notifications
  * @property-read \App\Models\Role
  *                    $role
- * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Project[] $projects
  * @property int                                                                 $id
  * @property int                                                                 $role_id
  * @property string                                                              $name
@@ -32,10 +32,10 @@ use UnexpectedValueException;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Project[] $projects
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
+ * @mixin \Eloquent
  */
 class User extends Authenticatable
 {
