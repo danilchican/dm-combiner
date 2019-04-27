@@ -23,4 +23,9 @@
             <i class="fa fa-user-circle-o"></i> @lang('sidebar.dashboard.menu.users')
         </a>
     </li>
+    <li>
+        <a href="{{ route('dashboard.projects.index') }}">
+            <i class="fa fa-sitemap"></i> @lang('sidebar.dashboard.menu.projects')
+        </a>
+    </li>
 @endsection
