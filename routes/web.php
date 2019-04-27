@@ -21,13 +21,20 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], function () {
     Route::get('/', 'Dashboard\DashboardController')->name('dashboard.index');
-    Route::get('/users/{id}', 'Dashboard\UserController@viewUserPage')
-        ->name('dashboard.users.view')->where('id', '[0-9]+');
+
+    Route::group(['prefix' => '/users'], function () {
+        Route::get('/', 'Dashboard\UserController@showUserListPage')
+            ->name('dashboard.users.index');
+        Route::get('/{id}', 'Dashboard\UserController@viewUserPage')
+            ->name('dashboard.users.view')->where('id', '[0-9]+');
+    });
 });
+
+Route::post('/profile/update', 'Auth\ProfileController@updateProfileInfo')
+    ->name('profile.update')->middleware('auth.access:client,admin');
 
 Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], function () {
     Route::get('/', 'Account\AccountController@index')->name('account.index');
-    Route::post('/update', 'Account\AccountController@updateAccountInfo')->name('account.update');
 
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'Account\ProjectController@showProjectsPage')

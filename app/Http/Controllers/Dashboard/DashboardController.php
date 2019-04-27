@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 
 class DashboardController extends Controller
 {
-    const USERS_PER_PAGE = 10;
-
     /**
      * Show index page of the dashboard.
      *
@@ -17,7 +14,6 @@ class DashboardController extends Controller
      */
     public function __invoke()
     {
-        $users = User::paginate(self::USERS_PER_PAGE);
-        return view('dashboard.home.index')->with(compact('users'));
+        return view('dashboard.home.index');
     }
 }
