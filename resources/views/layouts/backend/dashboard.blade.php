@@ -18,4 +18,9 @@
             <i class="fa fa-home"></i> @lang('sidebar.dashboard.menu.home')
         </a>
     </li>
+    <li>
+        <a href="{{ route('dashboard.users.index') }}">
+            <i class="fa fa-user-circle-o"></i> @lang('sidebar.dashboard.menu.users')
+        </a>
+    </li>
 @endsection
