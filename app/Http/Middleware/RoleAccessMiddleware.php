@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class RoleAccessMiddleware
@@ -12,14 +13,14 @@ class RoleAccessMiddleware
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure                 $next
-     * @param                           $role
+     * @param  array                    $role
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$role)
     {
         if (Auth::guest() || !$request->user()->hasRole($role)) {
-            return redirect()->route('index');
+            return abort(Response::HTTP_NOT_FOUND);
         }
 
         return $next($request);
