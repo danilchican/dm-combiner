@@ -26,13 +26,6 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/'; // TODO change redirect URL by Role::class
-
-    /**
      * Create a new controller instance.
      *
      * @return void
@@ -40,5 +33,15 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Get the post register / login redirect path.
+     *
+     * @return string
+     */
+    public function redirectPath()
+    {
+        return \Auth::user()->isAdministrator() ? route('dashboard.index') : route('account.index');
     }
 }
