@@ -27747,8 +27747,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 __webpack_require__(137);
 __webpack_require__(345);
 
-window.useMock = false;
-
 /**
  * Toastr notifier
  */
@@ -99157,10 +99155,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             var requestURL = '/account/projects/frameworks';
-
-            if (useMock) {
-                requestURL = '/mocks/frameworks.json';
-            }
 
             this.$http.get(requestURL).then(function (response) {
                 console.log(response);
