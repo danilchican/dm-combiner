@@ -1,4 +1,4 @@
-@extends('layouts.backend.account', ['title' => ' | ' . trans('sidebar.account.menu.projects.create')])
+@extends('layouts.backend.account', ['title' => ' | Projects | Create'])
 
 @section('content')
     <div class="row">

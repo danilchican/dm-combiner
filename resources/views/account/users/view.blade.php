@@ -1,4 +1,4 @@
-@extends('layouts.backend.account', ['title' => ' | ' . trans('sidebar.dashboard.users.view')])
+@extends('layouts.backend.account', ['title' => ' | Users | #' . $user->id])
 
 @section('content')
     <div class="">

@@ -1,4 +1,4 @@
-@extends('layouts.backend.account', ['title' => ' | ' . trans('sidebar.account.menu.projects.title')])
+@extends('layouts.backend.account', ['title' => ' | ' . (Auth::user()->isAdministrator() ? 'Projects' : 'My Projects') ])
 
 @section('content')
     <div class="row">
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>My Projects</h2>
+                    <h2>{{ Auth::user()->isAdministrator() ? 'Projects' : 'My Projects' }}</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
