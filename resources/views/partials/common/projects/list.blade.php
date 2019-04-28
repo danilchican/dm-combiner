@@ -19,9 +19,9 @@
                     <td>{{ $project->getStatus() }}</td>
                     <td>{{ $project->getCreatedDate() }}</td>
                     <td>
-                        {{--TODO add links--}}
                         <a href="{{ route('account.projects.view', ['id' => $project->getId()]) }}"
                            class="btn btn-primary btn-xs">View</a>
+                        {{--TODO add links--}}
                         <a href="" class="btn btn-warning btn-xs">Edit</a>
                         <a href="" class="btn btn-danger btn-xs">Delete</a>
                     </td>

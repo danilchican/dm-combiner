@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function showUserListPage()
     {
-        $users = User::paginate(self::USERS_PER_PAGE);
+        $users = User::withCount('projects')->paginate(self::USERS_PER_PAGE);
         return view('account.users.index')->with(compact('users'));
     }
 

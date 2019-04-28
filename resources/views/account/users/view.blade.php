@@ -44,6 +44,7 @@
                                         <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab"
                                            aria-expanded="true">
                                             @lang('general.dashboard.section.user_view.tabs.projects')
+                                            ({{ $projects->total() }})
                                         </a>
                                     </li>
                                     <li role="presentation">

@@ -2,8 +2,9 @@
 
 return [
     'user' => [
-        'name'  => 'Name',
-        'email' => 'Email',
-        'created_at' => 'Registration date'
+        'name'           => 'Name',
+        'email'          => 'Email',
+        'projects_count' => 'Project count',
+        'created_at'     => 'Registration date',
     ],
 ];
