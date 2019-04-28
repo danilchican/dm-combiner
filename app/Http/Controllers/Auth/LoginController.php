@@ -3,12 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\VerifyJWTAuthToken;
-use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
@@ -42,6 +37,6 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
-        return \Auth::user()->isAdministrator() ? route('dashboard.index') : route('account.index');
+        return route('account.index');
     }
 }

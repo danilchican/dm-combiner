@@ -19,7 +19,7 @@ Route::auth();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/profile/update', 'Auth\ProfileController@updateProfileInfo')
-    ->name('profile.update')->middleware('auth.access:client,admin');
+    ->name('profile.update')->middleware('auth');
 
 /* Admin Functionality */
 Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], function () {
@@ -29,8 +29,12 @@ Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], 
         Route::get('/', 'Dashboard\ProjectController@showProjectsPage')
             ->name('dashboard.projects.index');
     });
+});
 
-    Route::group(['prefix' => '/users'], function () {
+Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
+    Route::get('/', 'Account\AccountController@index')->name('account.index');
+
+    Route::group(['prefix' => '/users', 'middleware' => ['auth.access:admin']], function () {
         Route::get('/', 'Dashboard\UserController@showUserListPage')
             ->name('dashboard.users.index');
         Route::post('/update', 'Dashboard\UserController@updateUserInfo')
@@ -38,11 +42,6 @@ Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], 
         Route::get('/{id}', 'Dashboard\UserController@viewUserPage')
             ->name('dashboard.users.view')->where('id', '[0-9]+');
     });
-});
-
-/* Client Functionality */
-Route::group(['prefix' => '/account', 'middleware' => ['auth.access:client']], function () {
-    Route::get('/', 'Account\AccountController@index')->name('account.index');
 
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'Account\ProjectController@showProjectsPage')
