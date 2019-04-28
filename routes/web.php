@@ -20,6 +20,7 @@ Route::auth();
 Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
     Route::get('/', 'Account\AccountController@index')->name('account.index');
 
+    /* Account settings */
     Route::post('/update', 'Auth\ProfileController@updateProfileInfo')
         ->name('account.update');
 
@@ -33,6 +34,7 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
             ->name('account.users.view')->where('id', '[0-9]+');
     });
 
+    /* Project manipulation */
     Route::group(['prefix' => '/projects'], function () {
         Route::get('/', 'Account\ProjectController@showProjectsPage')
             ->name('account.projects.index');
