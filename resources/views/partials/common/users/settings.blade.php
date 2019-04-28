@@ -1,4 +1,4 @@
-<form method="post" action="{{ route('dashboard.users.update') }}"
+<form method="post" action="{{ route('account.users.update') }}"
       id="update-user-form" class="form-horizontal form-label-left">
     {{ csrf_field() }}
 

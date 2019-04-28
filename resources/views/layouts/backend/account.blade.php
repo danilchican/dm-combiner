@@ -20,7 +20,7 @@
     </li>
     @if(Auth::user()->isAdministrator())
         <li>
-            <a href="{{ route('dashboard.users.index') }}">
+            <a href="{{ route('account.users.index') }}">
                 <i class="fa fa-user-circle-o"></i> @lang('sidebar.dashboard.menu.users')
             </a>
         </li>

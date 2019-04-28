@@ -1,4 +1,4 @@
-@extends('layouts.backend.dashboard', ['title' => ' | ' . trans('sidebar.dashboard.users.view')])
+@extends('layouts.backend.account', ['title' => ' | ' . trans('sidebar.dashboard.users.view')])
 
 @section('content')
     <div class="">
@@ -56,11 +56,11 @@
                                 <div id="myTabContent" class="tab-content">
                                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1"
                                          aria-labelledby="home-tab">
-                                        @include('partials.dashboard.users.project_list')
+                                        @include('partials.common.users.project_list')
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="tab_content2"
                                          aria-labelledby="profile-tab">
-                                        @include('partials.dashboard.users.settings')
+                                        @include('partials.common.users.settings')
                                     </div>
                                 </div>
                             </div>

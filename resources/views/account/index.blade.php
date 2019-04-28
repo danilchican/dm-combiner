@@ -19,9 +19,12 @@
                         <h3>{{ Auth::user()->getName() }}</h3>
 
                         <ul class="list-unstyled user_data">
-                            <li><b>Group:</b> {{ Auth::user()->role->getTitle() }}</li>
                             <li>
                                 <i class="fa fa-envelope-o user-profile-icon"></i> {{ Auth::user()->getEmail() }}
+                            </li>
+                            <li class="m-top-xs">
+                                <i class="fa fa-user user-profile-icon"></i>
+                                @lang('general.roles.'. Auth::user()->role->getSlug())
                             </li>
                         </ul>
                     </div>

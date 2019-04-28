@@ -21,7 +21,7 @@ class UserController extends Controller
     public function showUserListPage()
     {
         $users = User::paginate(self::USERS_PER_PAGE);
-        return view('dashboard.users.index')->with(compact('users'));
+        return view('account.users.index')->with(compact('users'));
     }
 
     /**
@@ -35,7 +35,7 @@ class UserController extends Controller
     {
         $user = User::with('role')->findOrFail($id);
         $projects = $user->projects()->paginate(self::USER_PROJECTS_PER_PAGE);
-        return view('dashboard.users.view')->with(compact(['user', 'projects']));
+        return view('account.users.view')->with(compact(['user', 'projects']));
     }
 
     /**

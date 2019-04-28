@@ -36,11 +36,11 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => '/users', 'middleware' => ['auth.access:admin']], function () {
         Route::get('/', 'Dashboard\UserController@showUserListPage')
-            ->name('dashboard.users.index');
+            ->name('account.users.index');
         Route::post('/update', 'Dashboard\UserController@updateUserInfo')
-            ->name('dashboard.users.update');
+            ->name('account.users.update');
         Route::get('/{id}', 'Dashboard\UserController@viewUserPage')
-            ->name('dashboard.users.view')->where('id', '[0-9]+');
+            ->name('account.users.view')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => '/projects'], function () {

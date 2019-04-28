@@ -17,7 +17,7 @@
             <td>{{ $user->getEmail() }}</td>
             <td>{{ $user->getRegistrationDate() }}</td>
             <td>
-                <a href="{{ route('dashboard.users.view', ['id' => $user->getId()]) }}"
+                <a href="{{ route('account.users.view', ['id' => $user->getId()]) }}"
                    class="btn btn-primary btn-xs">
                     <i class="fa fa-edit"></i> @lang('buttons.dashboard.view')
                 </a>
