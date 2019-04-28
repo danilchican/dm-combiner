@@ -31,7 +31,17 @@ class LoginController extends Controller
     }
 
     /**
-     * Get the post register / login redirect path.
+     * Show the application's login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm()
+    {
+        return view('auth.login')->with('subtitle', 'System Login');
+    }
+
+    /**
+     * Get the post login redirect path.
      *
      * @return string
      */
