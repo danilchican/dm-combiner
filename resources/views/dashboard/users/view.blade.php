@@ -41,27 +41,49 @@
                                     <li role="presentation" class="active">
                                         <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab"
                                            aria-expanded="true">
-                                            @lang('general.dashboard.section.user_view.tabs.settings')
+                                            @lang('general.dashboard.section.user_view.tabs.projects')
                                         </a>
                                     </li>
                                     <li role="presentation">
-                                        <a href="#tab_content2" role="tab" id="profile-tab2" data-toggle="tab"
+                                        <a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"
                                            aria-expanded="false">
-                                            @lang('general.dashboard.section.user_view.tabs.projects')
+                                            @lang('general.dashboard.section.user_view.tabs.settings')
                                         </a>
                                     </li>
                                 </ul>
                                 <div id="myTabContent" class="tab-content">
                                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1"
                                          aria-labelledby="home-tab">
-                                        {{--TODO settings here--}}
-                                        Settings here...
+                                        @if(count($projects))
+                                            <table class="table table-striped no-margin">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-md-1">#</th>
+                                                    <th class="col-md-8">Title</th>
+                                                    <th class="col-md-3">Created at</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                @foreach($projects as $project)
+                                                    <tr>
+                                                        <td>{{ $project->id }}</td>
+                                                        <td>{{ $project->getTitle() }}</td>
+                                                        <td>{{ $project->getCreatedDate() }}</td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        @else
+                                            <p>User haven't any projects.</p>
+                                        @endif
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="tab_content2"
                                          aria-labelledby="profile-tab">
-                                        {{--TODO list of user's projects here--}}
-                                        List of user's projects here
+                                        {{--TODO settings here--}}
+                                        Settings here...
                                     </div>
+
                                 </div>
                             </div>
                         </div>
