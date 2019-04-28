@@ -27,7 +27,12 @@ class ProjectController extends Controller
      */
     public function showProjectsPage()
     {
-        $projects = \Auth::user()->projects()->paginate(self::PROJECTS_PER_PAGE);
+        $user = \Auth::user();
+
+        $projects = $user->isAdministrator()
+            ? Project::paginate(self::PROJECTS_PER_PAGE)
+            : $user->projects()->paginate(self::PROJECTS_PER_PAGE);
+
         return view('account.projects.index')->with('projects', $projects);
     }
 
