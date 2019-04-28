@@ -32,7 +32,6 @@
                         <input type="text" value="{{ old('email') }}" class="form-control"
                                placeholder="Username" name="email" required/>
                     </div>
-                    {{--TODO make beautiful display errors--}}
                     @if ($errors->has('email'))
                         <span class="help-block">
                             <strong>{{ $errors->first('email') }}</strong>
