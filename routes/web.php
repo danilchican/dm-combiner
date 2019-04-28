@@ -17,13 +17,13 @@ Route::get('/', function () {
 
 Route::auth();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::post('/profile/update', 'Auth\ProfileController@updateProfileInfo')
-    ->name('profile.update')->middleware('auth');
-
 Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
     Route::get('/', 'Account\AccountController@index')->name('account.index');
 
+    Route::post('/update', 'Auth\ProfileController@updateProfileInfo')
+        ->name('account.update');
+
+    /* User manipulation */
     Route::group(['prefix' => '/users', 'middleware' => ['auth.access:admin']], function () {
         Route::get('/', 'Account\UserController@showUserListPage')
             ->name('account.users.index');

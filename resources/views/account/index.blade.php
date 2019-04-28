@@ -42,7 +42,7 @@
 
                                     @include('partials.messages')
 
-                                    <form method="post" action="{{ route('profile.update') }}"
+                                    <form method="post" action="{{ route('account.update') }}"
                                           id="update-user-form" class="form-horizontal form-label-left">
                                         {{ csrf_field() }}
 
