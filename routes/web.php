@@ -53,6 +53,10 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
         Route::post('/create', 'Account\ProjectController@createProject')
             ->name('account.projects.create.post');
 
+        Route::get('/{id}/view', 'Account\ProjectController@viewProjectDetailsPage')
+            ->name('account.projects.view')
+            ->where('id', '[0-9]+');
+
         Route::post('/run', 'Account\ProjectController@runProject')
             ->name('account.projects.run');
 

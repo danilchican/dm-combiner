@@ -47,6 +47,24 @@ class ProjectController extends Controller
     }
 
     /**
+     * View Project details page.
+     *
+     * @param integer $id
+     *
+     * @return $this
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function viewProjectDetailsPage($id)
+    {
+        $user = \Auth::user();
+        $project = $user->isAdministrator()
+            ? Project::with('user')->findOrFail($id)
+            : $user->projects()->with('user')->findOrFail($id);
+
+        return view('account.projects.view')->with('project', $project);
+    }
+
+    /**
      * Upload project data
      *
      * @param UploadProjectDataRequest $request

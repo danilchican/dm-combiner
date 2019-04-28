@@ -46,14 +46,14 @@ class Project extends Model
      */
     const STATUSES = ['new', 'pending', 'finished', 'failed'];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'user_id', 'status', 'task_id', 'title', 'normalize', 'scale',
         'data_url', 'columns', 'configuration', 'result',
+    ];
+
+    protected $casts = [
+        'normalize' => 'boolean',
+        'scale'     => 'boolean',
     ];
 
     /**
@@ -79,7 +79,7 @@ class Project extends Model
     /**
      * Get normalize flag.
      *
-     * @return int
+     * @return bool
      */
     public function getNormalize()
     {
@@ -89,7 +89,7 @@ class Project extends Model
     /**
      * Get scale flag.
      *
-     * @return int
+     * @return bool
      */
     public function getScale()
     {
@@ -134,6 +134,16 @@ class Project extends Model
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * Get task ID of the running project.
+     *
+     * @return string
+     */
+    public function getTaskId()
+    {
+        return $this->task_id;
     }
 
     /**
@@ -207,12 +217,22 @@ class Project extends Model
     }
 
     /**
+     * Get the last time of project updates.
+     *
+     * @return \Illuminate\Support\Carbon
+     */
+    public function getLastUpdatedTime()
+    {
+        return $this->updated_at;
+    }
+
+    /**
      * Get the role's user.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }
