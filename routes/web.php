@@ -25,11 +25,11 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
     Route::get('/', 'Account\AccountController@index')->name('account.index');
 
     Route::group(['prefix' => '/users', 'middleware' => ['auth.access:admin']], function () {
-        Route::get('/', 'Dashboard\UserController@showUserListPage')
+        Route::get('/', 'Account\UserController@showUserListPage')
             ->name('account.users.index');
-        Route::post('/update', 'Dashboard\UserController@updateUserInfo')
+        Route::post('/update', 'Account\UserController@updateUserInfo')
             ->name('account.users.update');
-        Route::get('/{id}', 'Dashboard\UserController@viewUserPage')
+        Route::get('/{id}', 'Account\UserController@viewUserPage')
             ->name('account.users.view')->where('id', '[0-9]+');
     });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Account;
 
 use App\Http\Requests\UpdateUserInfoRequest;
 use App\Models\User;
