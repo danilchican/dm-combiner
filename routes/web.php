@@ -21,16 +21,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/profile/update', 'Auth\ProfileController@updateProfileInfo')
     ->name('profile.update')->middleware('auth');
 
-/* Admin Functionality */
-Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], function () {
-    Route::get('/', 'Dashboard\DashboardController')->name('dashboard.index');
-
-    Route::group(['prefix' => '/projects'], function () {
-        Route::get('/', 'Dashboard\ProjectController@showProjectsPage')
-            ->name('dashboard.projects.index');
-    });
-});
-
 Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
     Route::get('/', 'Account\AccountController@index')->name('account.index');
 
