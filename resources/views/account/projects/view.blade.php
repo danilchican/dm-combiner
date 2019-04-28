@@ -1,4 +1,4 @@
-@extends('layouts.backend.account', ['title' => ' | View #' . $project->getId() ])
+@extends('layouts.backend.account', ['title' => ' | Projects | View #' . $project->getId() ])
 
 @section('content')
     <div class="row">
