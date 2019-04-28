@@ -10,6 +10,7 @@
                     <div class="x_title">
                         <h2 style="padding-bottom: 5px; width: 100%;">
                             @lang('general.dashboard.section.user_view.title')
+                            <small>created at {{ $user->getRegistrationDate()->format('d.m.Y H:i') }}</small>
                         </h2>
                         <div class="clearfix"></div>
                     </div>
@@ -35,6 +36,7 @@
                             </ul>
                         </div>
                         <div class="col-md-9 col-sm-9 col-xs-12">
+                            @include('partials.messages')
 
                             <div class="" role="tabpanel" data-example-id="togglable-tabs">
                                 <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
@@ -54,36 +56,12 @@
                                 <div id="myTabContent" class="tab-content">
                                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1"
                                          aria-labelledby="home-tab">
-                                        @if(count($projects))
-                                            <table class="table table-striped no-margin">
-                                                <thead>
-                                                <tr>
-                                                    <th class="col-md-1">#</th>
-                                                    <th class="col-md-8">Title</th>
-                                                    <th class="col-md-3">Created at</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                @foreach($projects as $project)
-                                                    <tr>
-                                                        <td>{{ $project->id }}</td>
-                                                        <td>{{ $project->getTitle() }}</td>
-                                                        <td>{{ $project->getCreatedDate() }}</td>
-                                                    </tr>
-                                                @endforeach
-                                                </tbody>
-                                            </table>
-                                        @else
-                                            <p>User haven't any projects.</p>
-                                        @endif
+                                        @include('partials.dashboard.users.project_list')
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="tab_content2"
                                          aria-labelledby="profile-tab">
-                                        {{--TODO settings here--}}
-                                        Settings here...
+                                        @include('partials.dashboard.users.settings')
                                     </div>
-
                                 </div>
                             </div>
                         </div>

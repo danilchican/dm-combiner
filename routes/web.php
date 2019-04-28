@@ -33,6 +33,8 @@ Route::group(['prefix' => '/dashboard', 'middleware' => ['auth.access:admin']], 
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Dashboard\UserController@showUserListPage')
             ->name('dashboard.users.index');
+        Route::post('/update', 'Dashboard\UserController@updateUserInfo')
+            ->name('dashboard.users.update');
         Route::get('/{id}', 'Dashboard\UserController@viewUserPage')
             ->name('dashboard.users.view')->where('id', '[0-9]+');
     });
