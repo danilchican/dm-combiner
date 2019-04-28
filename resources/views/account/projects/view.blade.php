@@ -9,6 +9,9 @@
                         View Project #{{ $project->getId() }}
                         <small>created at {{ $project->getCreatedDate()->format('m.d.Y H:i') }}</small>
                     </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                    </ul>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -41,20 +44,47 @@
 
                     <p><b>Data url:</b> {{ $project->getDataUrl() }}</p>
                     <p><b>Columns:</b> {{ $project->getCheckedColumns() }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="ln_solid"></div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Configuration</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    @include('partials.common.projects.configuration')
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <p><b>Configuration:</b></p>
-                    {{--TODO add configuration showing--}}
-
-                    @if($project->getResult() !== null)
-                        <div class="ln_solid"></div>
-                        <p><b>Result:</b></p>
-                        <p>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Results</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <p>
+                        @if($project->getResult() !== null)
                             {{--// TODO limit length and put download results button--}}
                             <i>{{ $project->getResult() }}</i>
-                        </p>
-                    @endif
+                        @else
+                            No results found.
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>

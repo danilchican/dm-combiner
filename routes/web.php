@@ -39,7 +39,7 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
             ->name('account.users.index');
         Route::post('/update', 'Account\UserController@updateUserInfo')
             ->name('account.users.update');
-        Route::get('/{id}', 'Account\UserController@viewUserPage')
+        Route::get('/{id}/view', 'Account\UserController@viewUserPage')
             ->name('account.users.view')->where('id', '[0-9]+');
     });
 
