@@ -18,12 +18,19 @@
                     <td>{{ $project->getTitle() }}</td>
                     <td>{{ $project->getStatus() }}</td>
                     <td>{{ $project->getCreatedDate() }}</td>
-                    <td>
+                    <td style="display: flex;">
                         <a href="{{ route('account.projects.view', ['id' => $project->getId()]) }}"
                            class="btn btn-primary btn-xs">View</a>
-                        {{--TODO add links--}}
+
+                        {{--TODO add edit link--}}
                         <a href="" class="btn btn-warning btn-xs">Edit</a>
-                        <a href="" class="btn btn-danger btn-xs">Delete</a>
+
+                        <form action="{{ route('account.projects.remove') }}" method="POST">
+                            {{ csrf_field() }}
+
+                            <input type="hidden" name="id" value="{{ $project->id }}">
+                            <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProjectRequest;
+use App\Http\Requests\RemoveProjectRequest;
 use App\Http\Requests\RunProjectRequest;
 use App\Http\Requests\UploadProjectDataRequest;
 use App\Models\Project;
@@ -167,6 +168,29 @@ class ProjectController extends Controller
             'project' => $project,
             'message' => 'Project successfully created.',
         ]);
+    }
+
+    /**
+     * Remove Project by id depending on User role.
+     *
+     * @param RemoveProjectRequest $request
+     *
+     * @throws \Exception
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function removeProject(RemoveProjectRequest $request)
+    {
+        $user = \Auth::user();
+        $projectId = $request->input('id');
+
+        $project = $user->isAdministrator()
+            ? Project::findOrFail($projectId)
+            : $user->projects()->findOrFail($projectId);
+
+        $project->delete();
+
+        return redirect()->back()->with('success', 'Project #' . $projectId . ' successfully deleted!');
     }
 
     /**
