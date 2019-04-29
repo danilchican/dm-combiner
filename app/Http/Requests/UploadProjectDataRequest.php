@@ -25,7 +25,7 @@ class UploadProjectDataRequest extends FormRequest
     {
         return [
             'data-file' => 'nullable|file',
-            'file-url'  => 'nullable|url',
+            'file-url'  => 'nullable',
         ];
     }
 }
