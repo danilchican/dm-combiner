@@ -145,6 +145,7 @@
             });
 
             $('#data-url').on('focusout', function () {
+                $clearBtn.click();
                 let url = $(this).val();
                 let $previewBlock = $('#preview-block');
 

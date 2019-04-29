@@ -280,7 +280,7 @@ class ProjectController extends Controller
 
             if ($response !== null) {
                 if ($response->success === true) {
-                    $project->setResult(json_encode($response->result));
+                    $project->setResult($response->result);
                     $project->setStatus('pending');
                     $project->save();
                 } else {
