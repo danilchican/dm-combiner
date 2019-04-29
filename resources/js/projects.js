@@ -60,7 +60,7 @@ window.saveProject = function () {
         url: '/account/projects/create',
         method: "POST",
         data: data,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             console.log('Project saved.');
             console.log('Saving project data.');
@@ -125,36 +125,40 @@ window.updateProject = function () {
         url: '/account/projects/update',
         method: "POST",
         data: data,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             console.log('Project updated.');
             console.log('Updating project data.');
 
             var message = response.message;
-            toastr.info('Uploading data...', 'Info');
+            toastr.success(message, 'Success');
 
             let id = response.project.id;
             let form = $('#project-data-upload-form')[0];
             let formData = new FormData(form);
+            let newDataUrl = $('#data-url').val();
 
-            $.ajax({
-                url: '/account/projects/' + id + '/upload/data',
-                data: formData,
-                type: 'POST',
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    console.log(response);
-                    toastr.success('Project data was uploaded.', 'Success');
-                    toastr.success(message, 'Success');
-                    window.lastProjectId = id;
-                    return true;
-                },
-                error: function (xhr) {
-                    let response = JSON.parse(xhr.responseText);
-                    showErrors(response);
-                }
-            });
+            if (newDataUrl !== window.oldDataUrl) {
+                toastr.info('Uploading data...', 'Info');
+
+                $.ajax({
+                    url: '/account/projects/' + id + '/upload/data',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        toastr.success('Project data was uploaded.', 'Success');
+                        window.lastProjectId = id;
+                        return true;
+                    },
+                    error: function (xhr) {
+                        let response = JSON.parse(xhr.responseText);
+                        showErrors(response);
+                    }
+                });
+            }
         },
         error: function (xhr) {
             let response = JSON.parse(xhr.responseText);

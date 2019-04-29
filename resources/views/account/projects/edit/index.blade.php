@@ -39,5 +39,6 @@
     <script>
         window.isEditPage = true;
         window.lastProjectId = {{ $project->id }};
+        window.oldDataUrl = {!! '"' . $project->getDataUrl() . '"' !!};
     </script>
 @endpush

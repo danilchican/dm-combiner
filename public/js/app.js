@@ -98360,30 +98360,34 @@ window.updateProject = function () {
             console.log('Updating project data.');
 
             var message = response.message;
-            toastr.info('Uploading data...', 'Info');
+            toastr.success(message, 'Success');
 
             var id = response.project.id;
             var form = $('#project-data-upload-form')[0];
             var formData = new FormData(form);
+            var newDataUrl = $('#data-url').val();
 
-            $.ajax({
-                url: '/account/projects/' + id + '/upload/data',
-                data: formData,
-                type: 'POST',
-                contentType: false,
-                processData: false,
-                success: function success(response) {
-                    console.log(response);
-                    toastr.success('Project data was uploaded.', 'Success');
-                    toastr.success(message, 'Success');
-                    window.lastProjectId = id;
-                    return true;
-                },
-                error: function error(xhr) {
-                    var response = JSON.parse(xhr.responseText);
-                    showErrors(response);
-                }
-            });
+            if (newDataUrl !== window.oldDataUrl) {
+                toastr.info('Uploading data...', 'Info');
+
+                $.ajax({
+                    url: '/account/projects/' + id + '/upload/data',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function success(response) {
+                        console.log(response);
+                        toastr.success('Project data was uploaded.', 'Success');
+                        window.lastProjectId = id;
+                        return true;
+                    },
+                    error: function error(xhr) {
+                        var response = JSON.parse(xhr.responseText);
+                        showErrors(response);
+                    }
+                });
+            }
         },
         error: function error(xhr) {
             var response = JSON.parse(xhr.responseText);

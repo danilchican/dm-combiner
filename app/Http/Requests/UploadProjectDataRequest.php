@@ -24,8 +24,8 @@ class UploadProjectDataRequest extends FormRequest
     public function rules()
     {
         return [
-            'data-file' => 'required_without:file-url',
-            'file-url'  => 'required_without:data-file',
+            'data-file' => 'nullable|file',
+            'file-url'  => 'nullable|url',
         ];
     }
 }

@@ -145,7 +145,10 @@
             });
 
             $('#data-url').on('focusout', function () {
-                $clearBtn.click();
+                if ($(this).val() === undefined || $(this).val() === "") {
+                    return;
+                }
+
                 let url = $(this).val();
                 let $previewBlock = $('#preview-block');
 
