@@ -34,3 +34,10 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        window.isEditPage = true;
+        window.lastProjectId = {{ $project->id }};
+    </script>
+@endpush

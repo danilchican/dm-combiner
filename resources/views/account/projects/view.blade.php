@@ -43,7 +43,7 @@
                     </ul>
 
                     <p><b>Data url:</b> {{ $project->getDataUrl() }}</p>
-                    <p><b>Columns:</b> {{ $project->getCheckedColumns() }}</p>
+                    <p><b>Columns:</b> {{ $columns }}</p>
                 </div>
             </div>
         </div>

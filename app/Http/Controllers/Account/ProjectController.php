@@ -61,8 +61,9 @@ class ProjectController extends Controller
             : $user->projects()->with('user')->findOrFail($id);
 
         $configuration = json_encode(unserialize($project->getConfiguration()));
+        $columns = implode(', ', unserialize($project->getCheckedColumns()));
 
-        return view('account.projects.edit.index')->with(compact(['project', 'configuration']));
+        return view('account.projects.edit.index')->with(compact(['project', 'configuration', 'columns']));
     }
 
     /**
@@ -80,9 +81,10 @@ class ProjectController extends Controller
             ? Project::with('user')->findOrFail($id)
             : $user->projects()->with('user')->findOrFail($id);
 
+        $columns = implode(', ', unserialize($project->getCheckedColumns()));
         $configuration = unserialize($project->getConfiguration());
 
-        return view('account.projects.view')->with(compact(['project', 'configuration']));
+        return view('account.projects.view')->with(compact(['project', 'configuration', 'columns']));
     }
 
     /**
@@ -139,17 +141,20 @@ class ProjectController extends Controller
                 'message' => 'Looks lime something went wrong. Try again later.',
             ], 400);
         } catch (FileNotFoundException $e) {
-            \Log::error($e->getMessage(), $e->getTraceAsString());
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return response()->json([
                 'message' => 'File not found. Please select another file.',
             ], 400);
         } catch (ModelNotFoundException $e) {
-            \Log::error($e->getMessage(), $e->getTraceAsString());
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return response()->json([
                 'message' => 'Project not found. Please update page and try again.',
             ], 400);
         } catch (\Exception $e) {
-            \Log::error($e->getMessage(), $e->getTraceAsString());
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return response()->json([
                 'message' => 'Internal error. Try again later.',
             ], 400);
@@ -263,9 +268,13 @@ class ProjectController extends Controller
     public function runProject(RunProjectRequest $request, CombinerContract $combiner)
     {
         try {
+            $user = \Auth::user();
             $projectId = $request->input('id');
 
-            $project = \Auth::user()->projects()->findOrFail($projectId);
+            $project = $user->isAdministrator()
+                ? Project::findOrFail($projectId)
+                : $user->projects()->findOrFail($projectId);
+
             $response = $combiner->executeAlgorithm($project);
             \Log::debug('Response from API: ', [$response]);
 
@@ -291,7 +300,8 @@ class ProjectController extends Controller
                 'message' => 'Looks lime something went wrong. Try again later.',
             ], 400);
         } catch (ModelNotFoundException $e) {
-            \Log::error($e->getMessage(), $e->getTraceAsString());
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return response()->json([
                 'message' => 'Project not found. Please update page and try again.',
             ], 400);
@@ -370,7 +380,8 @@ class ProjectController extends Controller
 
             return $response->getBody()->getContents();
         } catch (RequestException $e) {
-            \Log::error($e->getMessage(), $e->getTraceAsString());
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return null;
         }
     }

@@ -98327,12 +98327,75 @@ window.saveProject = function () {
     });
 };
 
-window.runProject = function () {
-    var id = window.lastProjectId;
+window.updateProject = function () {
+    console.log('Updating project...');
+    toastr.info('Updating project...', 'Info');
+    var projectId = $('input#project-id').val();
+    var title = $('input#project-title').val();
+
+    var normalize = $('input#normalize-option').prop('checked');
+    var scale = $('input#scale-option').prop('checked');
+
+    var checkedCols = [];
+    $.each($('.data-head-option:checked'), function (index, option) {
+        checkedCols.push($(option).val());
+    });
+
+    var data = {
+        id: projectId,
+        title: title,
+        normalize: normalize,
+        scale: scale,
+        columns: checkedCols,
+        configuration: config
+    };
 
     $.ajax({
+        url: '/account/projects/update',
+        method: "POST",
+        data: data,
+        success: function success(response) {
+            console.log(response);
+            console.log('Project updated.');
+            console.log('Updating project data.');
+
+            var message = response.message;
+            toastr.info('Uploading data...', 'Info');
+
+            var id = response.project.id;
+            var form = $('#project-data-upload-form')[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                url: '/account/projects/' + id + '/upload/data',
+                data: formData,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                success: function success(response) {
+                    console.log(response);
+                    toastr.success('Project data was uploaded.', 'Success');
+                    toastr.success(message, 'Success');
+                    window.lastProjectId = id;
+                    return true;
+                },
+                error: function error(xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    showErrors(response);
+                }
+            });
+        },
+        error: function error(xhr) {
+            var response = JSON.parse(xhr.responseText);
+            showErrors(response);
+        }
+    });
+};
+
+window.runProject = function () {
+    $.ajax({
         url: '/account/projects/run',
-        data: { id: id },
+        data: { id: window.lastProjectId },
         type: 'POST',
         success: function success(response) {
             console.log(response);

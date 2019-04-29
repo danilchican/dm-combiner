@@ -69,13 +69,16 @@ function SmartWizard(target, options) {
             return false;
         });
         $($this.buttons.save).click(function () {
-            if (!$(this).hasClass('buttonDisabled')) {
+            if (window.isEditPage) {
+                updateProject();
+            } else if (!$(this).hasClass('buttonDisabled')) {
                 saveProject();
                 var context = {fromStep: $this.curStepIdx + 1};
                 if (!$this.options.onSave.call(this, $($this.steps), context)) {
                     return false;
                 }
             }
+
             return false;
         });
 

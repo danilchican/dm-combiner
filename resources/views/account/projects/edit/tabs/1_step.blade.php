@@ -96,7 +96,7 @@
 
             // TODO add validation "OR rule"
             let $clearBtn = $('#data-file-clear');
-            let selectedColumns = {{ $project->getCheckedColumns() }};
+            let selectedColumns = [{{ $columns }}];
 
             $clearBtn.click(function (e) {
                 e.preventDefault();
@@ -203,10 +203,6 @@
                         });
                     }
                 }
-            });
-
-            $('.buttonSave').on('click', function () {
-                // TODO
             });
         });
     </script>

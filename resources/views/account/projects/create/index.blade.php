@@ -22,7 +22,7 @@
                     <br/>
                 </div>
                 <div class="x_content">
-                    <div id="wizard" class="form_wizard wizard_horizontal">
+                    <divE id="wizard" class="form_wizard wizard_horizontal">
                         <ul class="wizard_steps">
                             @include('partials.common.projects.tabs_header')
                         </ul>
@@ -35,7 +35,7 @@
                         <div id="step-3">
                             @include('account.projects.create.tabs.3_step')
                         </div>
-                    </div>
+                    </divE>
                 </div>
             </div>
         </div>
