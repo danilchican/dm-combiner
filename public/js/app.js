@@ -99125,6 +99125,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        isEditPage: Boolean,
+        configuration: String
+    },
+
     data: function data() {
         return {
             frameworks: [],
@@ -99140,6 +99145,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     created: function created() {
         this.uploadFrameworks();
+
+        if (this.isEditPage) {
+            this.applyExistingConfiguration();
+        }
     },
 
 
@@ -99166,6 +99175,59 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.error('Something went wrong...', 'Error');
             });
         },
+        applyExistingConfiguration: function applyExistingConfiguration() {
+            var _this2 = this;
+
+            var configuration = JSON.parse(this.configuration);
+
+            if (configuration instanceof Array) {
+                var _loop = function _loop(i) {
+                    var configEntry = configuration[i];
+                    var requestURL = '/account/projects/args/' + configEntry.framework + '/' + configEntry.name;
+                    var configEntryOptions = void 0;
+
+                    _this2.$http.get(requestURL).then(function (response) {
+                        if (response.status === 200) {
+                            (function () {
+                                configEntryOptions = response.body;
+
+                                var keys = Object.keys(configEntry.params);
+
+                                if (keys !== undefined && keys.length > 0) {
+                                    var _loop2 = function _loop2(_i) {
+                                        var option = configEntryOptions.find(function (e) {
+                                            return e.title === keys[_i];
+                                        });
+
+                                        if (option !== null) {
+                                            option.value = configEntry.params[keys[_i]];
+                                        }
+                                    };
+
+                                    for (var _i = 0; keys.length > 0 && _i < keys.length; _i++) {
+                                        _loop2(_i);
+                                    }
+                                }
+
+                                _this2.selectedAlgorithms.push({
+                                    framework: configEntry.framework,
+                                    title: configEntry.name,
+                                    options: configEntryOptions
+                                });
+                            })();
+                        }
+                    }, function () {
+                        toastr.error('Something went wrong...', 'Error');
+                    });
+                };
+
+                for (var i = 0; i < configuration.length; i++) {
+                    _loop(i);
+                }
+            } else {
+                toastr.error('Project configuration is wrong.', 'Error');
+            }
+        },
         clone: function clone(original) {
             return JSON.parse(JSON.stringify(original));
         },
@@ -99173,7 +99235,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.selectedAlgorithms.splice(index, 1);
         },
         editAlgorithm: function editAlgorithm(index, command) {
-            var _this2 = this;
+            var _this3 = this;
 
             this.editCommand = JSON.parse(JSON.stringify(command));
             this.editCommand.index = index;
@@ -99185,7 +99247,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     console.log(response);
 
                     if (response.status === 200) {
-                        _this2.editCommand.options = response.body;
+                        _this3.editCommand.options = response.body;
                     }
                 }, function () {
                     toastr.error('Something went wrong...', 'Error');
