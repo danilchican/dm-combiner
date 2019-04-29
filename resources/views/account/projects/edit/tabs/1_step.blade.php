@@ -1,8 +1,20 @@
 <form class="form-horizontal form-label-left" id="project-data-upload-form" enctype="multipart/form-data">
     <div class="form-group">
-        <p class="col-md-2 col-sm-2 col-xs-12" style="text-align: right;"><b>Old data url:</b></p>
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="project-title">Title
+            <span class="required">*</span>:
+        </label>
         <div class="col-md-9 col-sm-9 col-xs-12">
-            {{ $project->getDataUrl() }}
+            <input type="text" id="project-title" required="required" value="{{ $project->getTitle() }}"
+                   class="form-control col-md-7 col-xs-12">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="project-title">
+            Old data url:
+        </label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" id="project-old-data-url" value="{{ $project->getDataUrl() }}"
+                   class="form-control col-md-7 col-xs-12" readonly="readonly">
         </div>
     </div>
     <div class="form-group">
@@ -75,8 +87,8 @@
     <script>
         $(document).ready(function () {
             $('.buttonSave').css({
-                'opacity' : '1',
-                'cursor' : 'pointer',
+                'opacity': '1',
+                'cursor': 'pointer',
                 'pointer-events': 'auto'
             });
 

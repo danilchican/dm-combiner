@@ -11,12 +11,13 @@
             <br/>
             <form class="form-horizontal form-label-left input_mask">
                 <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Text results</label>
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Previous text results</label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                        <textarea class="form-control" rows="5" id="result-textarea"></textarea>
+                        <textarea class="form-control" rows="5"
+                                  id="result-textarea">{{ $project->getResult() }}</textarea>
                     </div>
                 </div>
-                {{--TODO add download functionality--}}
+                {{--TODO add download functionality --}}
                 {{--<div class="ln_solid"></div>
                 <div class="form-group">
                     <div class="col-md-9 col-sm-9 col-xs-12 col-sm-offset-3">

@@ -12,20 +12,6 @@
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
-                    <form class="form-horizontal form-label-left">
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="project-title">Title
-                                <span class="required">*</span>
-                            </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="project-title" required="required"
-                                       value="{{ $project->getTitle() }}"
-                                       class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                    </form>
-                    <div class="clearfix"></div>
-                    <br/>
                 </div>
                 <div class="x_content">
                     <div id="wizard" class="form_wizard wizard_horizontal">
@@ -40,7 +26,7 @@
                                                    :is-edit-page="true"></project-configuration>
                         </div>
                         <div id="step-3">
-                            {{--@include('account.projects.create.tabs.3_step')--}}
+                            @include('account.projects.edit.tabs.3_step')
                         </div>
                     </div>
                 </div>
