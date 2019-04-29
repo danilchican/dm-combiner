@@ -307,7 +307,7 @@ class ProjectController extends Controller
             foreach ($response->args as $option) {
                 $object = new stdClass;
                 $object->title = $option->name;
-                $object->defaultValue = $option->default;
+                $object->defaultValue = '';// TODO modify api $option->default;
                 $object->field = $this->getCommandOptionType($option->type);
                 $object->type = $option->type;
 

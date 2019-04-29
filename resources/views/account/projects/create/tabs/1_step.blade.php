@@ -1,7 +1,7 @@
 <form class="form-horizontal form-label-left" id="project-data-upload-form" enctype="multipart/form-data">
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Data
-            <span class="required">*</span>
+            <span class="required">*</span>:
         </label>
         <div class="col-md-9 col-sm-9 col-xs-12">
             <div class="row">
@@ -23,7 +23,7 @@
 <div class="form-horizontal form-label-left">
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Options
-            <span class="required">*</span>
+            <span class="required">*</span>:
         </label>
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="row">
