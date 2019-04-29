@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProjectRequest;
 use App\Http\Requests\RemoveProjectRequest;
 use App\Http\Requests\RunProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Requests\UploadProjectDataRequest;
 use App\Models\Project;
 use App\Services\Combiner\Contracts\CombinerContract;
@@ -184,6 +185,47 @@ class ProjectController extends Controller
         return response()->json([
             'project' => $project,
             'message' => 'Project successfully created.',
+        ]);
+    }
+
+    /**
+     * Update project.
+     *
+     * @param UpdateProjectRequest $request
+     *
+     * @throws \Illuminate\Database\Eloquent\MassAssignmentException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateProject(UpdateProjectRequest $request)
+    {
+        $user = \Auth::user();
+
+        $projectId = $request->input('id');
+        $title = $request->input('title');
+        $normalize = $request->input('normalize');
+        $scale = $request->input('scale');
+        $columns = $request->input('columns');
+        $configuration = $request->input('configuration');
+
+        $attributes = [
+            'title'         => $title,
+            'normalize'     => $normalize === 'true',
+            'scale'         => $scale === 'true',
+            'columns'       => serialize(array_map('intval', $columns)),
+            'configuration' => serialize($this->prepareConfiguration($configuration)),
+        ];
+
+        $project = $user->isAdministrator()
+            ? Project::findOrFail($projectId)
+            : $user->projects()->findOrFail($projectId);
+
+        $project->fill($attributes);
+        $project->save();
+
+        return response()->json([
+            'project' => $project,
+            'message' => 'Project #' . $projectId . ' successfully updated.',
         ]);
     }
 

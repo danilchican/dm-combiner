@@ -1,4 +1,6 @@
 <form class="form-horizontal form-label-left" id="project-data-upload-form" enctype="multipart/form-data">
+    <input type="hidden" name="project-id" id="project-id" value="{{ $project->id }}">
+
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="project-title">Title
             <span class="required">*</span>:

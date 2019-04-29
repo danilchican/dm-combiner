@@ -53,6 +53,9 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
         Route::post('/create', 'Account\ProjectController@createProject')
             ->name('account.projects.create.post');
 
+        Route::post('/update', 'Account\ProjectController@updateProject')
+            ->name('account.projects.update');
+
         Route::post('/remove', 'Account\ProjectController@removeProject')
             ->name('account.projects.remove');
 
