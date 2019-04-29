@@ -1,4 +1,4 @@
-@extends('layouts.backend.account', ['title' => ' | Projects | Edit #' .  $project->id])
+`@extends('layouts.backend.account', ['title' => ' | Projects | Edit Project #' .  $project->id])
 
 @section('content')
     <div class="row">
@@ -8,6 +8,9 @@
                     <h2>Edit project #{{ $project->getId() }}
                         <small>created at {{ $project->getCreatedDate()->format('m.d.Y H:i') }}</small>
                     </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                    </ul>
                     <div class="clearfix"></div>
                     <form class="form-horizontal form-label-left">
                         <div class="form-group">
