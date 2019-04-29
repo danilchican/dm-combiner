@@ -1,4 +1,4 @@
-`@extends('layouts.backend.account', ['title' => ' | Projects | Edit Project #' .  $project->id])
+@extends('layouts.backend.account', ['title' => ' | Projects | Edit Project #' .  $project->id])
 
 @section('content')
     <div class="row">
@@ -33,10 +33,10 @@
                             @include('partials.common.projects.tabs_header')
                         </ul>
                         <div id="step-1">
-                            {{--@include('account.projects.create.tabs.1_step')--}}
+                            @include('account.projects.edit.tabs.1_step')
                         </div>
                         <div id="step-2">
-                            {{--<project-configuration></project-configuration>--}}
+                            <project-configuration></project-configuration>
                         </div>
                         <div id="step-3">
                             {{--@include('account.projects.create.tabs.3_step')--}}
