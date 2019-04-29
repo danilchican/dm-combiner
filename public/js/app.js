@@ -99277,9 +99277,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 }
 
                                 _this2.selectedAlgorithms.push({
+                                    index: i,
                                     framework: configEntry.framework,
                                     title: configEntry.name,
                                     options: configEntryOptions
+                                });
+
+                                _this2.selectedAlgorithms.sort(function (a, b) {
+                                    if (a.index > b.index) {
+                                        return 1;
+                                    }
+
+                                    if (a.index < b.index) {
+                                        return -1;
+                                    }
+
+                                    return 0;
                                 });
                             })();
                         }

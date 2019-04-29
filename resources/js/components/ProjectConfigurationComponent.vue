@@ -181,17 +181,30 @@
                                     for (let i = 0; keys.length > 0 && i < keys.length; i++) {
                                         let option = configEntryOptions.find(e => e.title === keys[i]);
 
-                                        if(option !== null) {
+                                        if (option !== null) {
                                             option.value = configEntry.params[keys[i]];
                                         }
                                     }
                                 }
 
                                 this.selectedAlgorithms.push({
+                                    index: i,
                                     framework: configEntry.framework,
                                     title: configEntry.name,
                                     options: configEntryOptions
-                                })
+                                });
+
+                                this.selectedAlgorithms.sort(function (a, b) {
+                                    if (a.index > b.index) {
+                                        return 1;
+                                    }
+
+                                    if (a.index < b.index) {
+                                        return -1;
+                                    }
+
+                                    return 0;
+                                });
                             }
                         }, () => {
                             toastr.error('Something went wrong...', 'Error');
