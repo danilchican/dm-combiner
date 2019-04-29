@@ -42,56 +42,158 @@ window.saveProject = function () {
 
     let normalize = $('input#normalize-option').prop('checked');
     let scale = $('input#scale-option').prop('checked');
-    let dataUrl = $('input#data-url').val();
 
     let checkedCols = [];
     $.each($('.data-head-option:checked'), function (index, option) {
         checkedCols.push($(option).val());
     });
 
-    let configuration = [1]; // TODO
-    let executionResults; // TODO if executed
-
     let data = {
         title: title,
         normalize: normalize,
         scale: scale,
         columns: checkedCols,
-        configuration: configuration,
-        result: executionResults  // TODO if executed
+        configuration: config,
     };
-
-    if (dataUrl !== '') {
-        data.data_url = dataUrl;
-    }
 
     $.ajax({
         url: '/account/projects/create',
         method: "POST",
         data: data,
-    }).done(function (response) {
-        toastr.success(response.message, 'Success');
-        console.log(response);
-        toastr.info('Uploading data...', 'Info');
+        success: function (response) {
+            console.log(response);
+            console.log('Project saved.');
+            console.log('Saving project data.');
 
-        let id = response.project.id; // TODO
+            var message = response.message;
+            toastr.info('Uploading data...', 'Info');
 
-        let formData = new FormData();
+            let id = response.project.id;
+            let form = $('#project-data-upload-form')[0];
+            let formData = new FormData(form);
 
-        if (dataUrl === '') {
-            formData.append('file', $('input#data-file')[0].files[0]);
+            $.ajax({
+                url: '/account/projects/' + id + '/upload/data',
+                data: formData,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    toastr.success('Project data was uploaded.', 'Success');
+                    toastr.success(message, 'Success');
+                    window.lastProjectId = id;
+                    return true;
+                },
+                error: function (xhr) {
+                    let response = JSON.parse(xhr.responseText);
+                    showErrors(response);
+                }
+            });
+        },
+        error: function (xhr) {
+            let response = JSON.parse(xhr.responseText);
+            showErrors(response);
         }
-
-        toastr.success('Project data was uploaded.', 'Success');
-
-        // $.ajax({
-        //     url: '/account/projects/' + id + '/upload',
-        //     method: "POST",
-        //     data: formData,
-        //     dataType: false,
-        //     processData: false,
-        // }).done(function (response) {
-        //     console.log(response);
-        // });
     });
 };
+
+window.updateProject = function () {
+    console.log('Updating project...');
+    toastr.info('Updating project...', 'Info');
+    let projectId = $('input#project-id').val();
+    let title = $('input#project-title').val();
+
+    let normalize = $('input#normalize-option').prop('checked');
+    let scale = $('input#scale-option').prop('checked');
+
+    let checkedCols = [];
+    $.each($('.data-head-option:checked'), function (index, option) {
+        checkedCols.push($(option).val());
+    });
+
+    let data = {
+        id: projectId,
+        title: title,
+        normalize: normalize,
+        scale: scale,
+        columns: checkedCols,
+        configuration: config,
+    };
+
+    $.ajax({
+        url: '/account/projects/update',
+        method: "POST",
+        data: data,
+        success: function (response) {
+            console.log(response);
+            console.log('Project updated.');
+            console.log('Updating project data.');
+
+            var message = response.message;
+            toastr.success(message, 'Success');
+
+            let id = response.project.id;
+            let form = $('#project-data-upload-form')[0];
+            let formData = new FormData(form);
+            let newDataUrl = $('#data-url').val();
+
+            if (newDataUrl !== window.oldDataUrl) {
+                toastr.info('Uploading data...', 'Info');
+
+                $.ajax({
+                    url: '/account/projects/' + id + '/upload/data',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        toastr.success('Project data was uploaded.', 'Success');
+                        window.lastProjectId = id;
+                        return true;
+                    },
+                    error: function (xhr) {
+                        let response = JSON.parse(xhr.responseText);
+                        showErrors(response);
+                    }
+                });
+            }
+        },
+        error: function (xhr) {
+            let response = JSON.parse(xhr.responseText);
+            showErrors(response);
+        }
+    });
+};
+
+window.runProject = function () {
+    $.ajax({
+        url: '/account/projects/run',
+        data: {id: window.lastProjectId},
+        type: 'POST',
+        success: function (response) {
+            console.log(response);
+            let resultData = response.result;
+            $('#result-textarea').text(resultData);
+            toastr.success(response.message, 'Success');
+        },
+        error: function (xhr) {
+            let response = JSON.parse(xhr.responseText);
+            showErrors(response);
+        }
+    });
+};
+
+function showErrors(data) {
+    console.log(data);
+
+    if (data.errors !== undefined) {
+        // error callback
+        $.each(data.errors, function (key, value) {
+            toastr.error(value, 'Error')
+        });
+    } else {
+        toastr.error('Something went wrong...', 'Error')
+    }
+}

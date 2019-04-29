@@ -4,8 +4,16 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProjectRequest;
+use App\Http\Requests\RemoveProjectRequest;
+use App\Http\Requests\RunProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\UploadProjectDataRequest;
 use App\Models\Project;
 use App\Services\Combiner\Contracts\CombinerContract;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\File;
 use stdClass;
 
 class ProjectController extends Controller
@@ -15,11 +23,18 @@ class ProjectController extends Controller
     /**
      * Show projects list page.
      *
+     * @throws \InvalidArgumentException
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function showProjectsPage()
     {
-        $projects = \Auth::user()->projects()->paginate(self::PROJECTS_PER_PAGE);
+        $user = \Auth::user();
+
+        $projects = $user->isAdministrator()
+            ? Project::paginate(self::PROJECTS_PER_PAGE)
+            : $user->projects()->paginate(self::PROJECTS_PER_PAGE);
+
         return view('account.projects.index')->with('projects', $projects);
     }
 
@@ -34,6 +49,119 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show Edit project page.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showEditProjectPage($id)
+    {
+        $user = \Auth::user();
+        $project = $user->isAdministrator()
+            ? Project::with('user')->findOrFail($id)
+            : $user->projects()->with('user')->findOrFail($id);
+
+        $configuration = json_encode(unserialize($project->getConfiguration()));
+        $columns = implode(', ', unserialize($project->getCheckedColumns()));
+
+        return view('account.projects.edit.index')->with(compact(['project', 'configuration', 'columns']));
+    }
+
+    /**
+     * View Project details page.
+     *
+     * @param integer $id
+     *
+     * @return $this
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function viewProjectDetailsPage($id)
+    {
+        $user = \Auth::user();
+        $project = $user->isAdministrator()
+            ? Project::with('user')->findOrFail($id)
+            : $user->projects()->with('user')->findOrFail($id);
+
+        $columns = implode(', ', unserialize($project->getCheckedColumns()));
+        $configuration = unserialize($project->getConfiguration());
+
+        return view('account.projects.view')->with(compact(['project', 'configuration', 'columns']));
+    }
+
+    /**
+     * Upload project data
+     *
+     * @param UploadProjectDataRequest $request
+     * @param CombinerContract         $combiner
+     *
+     * @param null                     $projectId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadProjectData(UploadProjectDataRequest $request, CombinerContract $combiner, $projectId)
+    {
+        try {
+            $project = Project::findOrFail($projectId);
+
+            if ($request->has('data-file')) {
+                $file = $request->file('data-file');
+
+                $filename = $file->getClientOriginalName();
+                $contents = File::get($file->getRealPath());
+            } else {
+                $filePath = $request->input('file-url');
+
+                $filename = 'url-file_project-' . $projectId . '_'
+                    . \Carbon\Carbon::now()->format('d-m-Y_H-i-s') . '.csv';
+                $contents = $this->getFileContentsByExternalUrl($filePath);
+            }
+
+            \Log::debug('Using ' . $filename . ' to upload data for project.');
+            $response = $combiner->uploadFile($filename, $contents);
+            \Log::debug('Combiner file upload response: ', [$response]);
+
+            if ($response !== null) {
+                if ($response->success === true) {
+                    $project->setDataUrl($response->path);
+                    $project->save();
+                } else {
+                    $project->delete();
+                    \Log::error('Upload project file error.', [$response]);
+                    return response()->json([
+                        'message' => 'Upload project file error. See logs.',
+                    ], 400);
+                }
+
+                return response()->json([
+                    'message' => 'Project data successfully uploaded.',
+                ]);
+            }
+
+            $project->delete();
+            return response()->json([
+                'message' => 'Looks lime something went wrong. Try again later.',
+            ], 400);
+        } catch (FileNotFoundException $e) {
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return response()->json([
+                'message' => 'File not found. Please select another file.',
+            ], 400);
+        } catch (ModelNotFoundException $e) {
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return response()->json([
+                'message' => 'Project not found. Please update page and try again.',
+            ], 400);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return response()->json([
+                'message' => 'Internal error. Try again later.',
+            ], 400);
+        }
+    }
+
+    /**
      * Create project.
      *
      * @param CreateProjectRequest $request
@@ -45,19 +173,15 @@ class ProjectController extends Controller
         $title = $request->input('title');
         $normalize = $request->input('normalize');
         $scale = $request->input('scale');
-        $data_url = $request->input('data_url'); // TODO url of upload file
         $columns = $request->input('columns');
         $configuration = $request->input('configuration');
-        $result = $request->input('result');
 
         $attributes = [
             'title'         => $title,
             'normalize'     => $normalize === 'true',
             'scale'         => $scale === 'true',
-            'data_url'      => $data_url,
-            'columns'       => json_encode($columns),
-            'configuration' => json_encode($configuration),
-            'result'        => $result,
+            'columns'       => serialize(array_map('intval', $columns)),
+            'configuration' => serialize($this->prepareConfiguration($configuration)),
         ];
 
         $project = new Project($attributes);
@@ -70,6 +194,121 @@ class ProjectController extends Controller
     }
 
     /**
+     * Update project.
+     *
+     * @param UpdateProjectRequest $request
+     *
+     * @throws \Illuminate\Database\Eloquent\MassAssignmentException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateProject(UpdateProjectRequest $request)
+    {
+        $user = \Auth::user();
+
+        $projectId = $request->input('id');
+        $title = $request->input('title');
+        $normalize = $request->input('normalize');
+        $scale = $request->input('scale');
+        $columns = $request->input('columns');
+        $configuration = $request->input('configuration');
+
+        $attributes = [
+            'title'         => $title,
+            'normalize'     => $normalize === 'true',
+            'scale'         => $scale === 'true',
+            'columns'       => serialize(array_map('intval', $columns)),
+            'configuration' => serialize($this->prepareConfiguration($configuration)),
+        ];
+
+        $project = $user->isAdministrator()
+            ? Project::findOrFail($projectId)
+            : $user->projects()->findOrFail($projectId);
+
+        $project->fill($attributes);
+        $project->save();
+
+        return response()->json([
+            'project' => $project,
+            'message' => 'Project #' . $projectId . ' successfully updated.',
+        ]);
+    }
+
+    /**
+     * Remove Project by id depending on User role.
+     *
+     * @param RemoveProjectRequest $request
+     *
+     * @throws \Exception
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function removeProject(RemoveProjectRequest $request)
+    {
+        $user = \Auth::user();
+        $projectId = $request->input('id');
+
+        $project = $user->isAdministrator()
+            ? Project::findOrFail($projectId)
+            : $user->projects()->findOrFail($projectId);
+
+        $project->delete();
+
+        return redirect()->back()->with('success', 'Project #' . $projectId . ' successfully deleted!');
+    }
+
+    /**
+     * Run project.
+     *
+     * @param RunProjectRequest $request
+     * @param CombinerContract  $combiner
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function runProject(RunProjectRequest $request, CombinerContract $combiner)
+    {
+        try {
+            $user = \Auth::user();
+            $projectId = $request->input('id');
+
+            $project = $user->isAdministrator()
+                ? Project::findOrFail($projectId)
+                : $user->projects()->findOrFail($projectId);
+
+            $response = $combiner->executeAlgorithm($project);
+            \Log::debug('Response from API: ', [$response]);
+
+            if ($response !== null) {
+                if ($response->success === true) {
+                    $project->setResult($response->result);
+                    $project->setStatus('pending');
+                    $project->save();
+                } else {
+                    \Log::error('Combiner project start execution error: ', [$response]);
+                    return response()->json([
+                        'message' => 'Project execution error. See logs. ' . $response->error,
+                    ], 400);
+                }
+
+                return response()->json([
+                    'message' => 'Project has been successfully run.',
+                    'result'  => $project->getResult(),
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Looks lime something went wrong. Try again later.',
+            ], 400);
+        } catch (ModelNotFoundException $e) {
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return response()->json([
+                'message' => 'Project not found. Please update page and try again.',
+            ], 400);
+        }
+    }
+
+    /**
      * Get frameworks list.
      *
      * @param CombinerContract $combiner
@@ -78,15 +317,24 @@ class ProjectController extends Controller
      */
     public function getFrameworksList(CombinerContract $combiner)
     {
-        $frameworks = $combiner->getFrameworks();
+        // TODO move to another layer
+        $response = $combiner->getFrameworks();
+        $combinedFrameworks = [];
 
-        if ($frameworks->success === true) {
-            $combinedFrameworks = [];
-
-            foreach ($frameworks->result as $framework) {
+        if ($response !== null && $response->success === true) {
+            foreach ($response->frameworks as $framework) {
                 $object = new stdClass;
-                $object->title = $framework;
-                $object->commands = $this->getFrameworkCommands($framework, $combiner);
+                $object->title = $framework->name;
+                $object->commands = [];
+
+                foreach ($framework->methods as $method) {
+                    $commandObj = new stdClass;
+                    $commandObj->title = $method;
+                    $commandObj->framework = $framework->name;
+                    $commandObj->options = [];
+
+                    $object->commands[] = $commandObj;
+                }
 
                 $combinedFrameworks[] = $object;
             }
@@ -95,14 +343,118 @@ class ProjectController extends Controller
         return response()->json($combinedFrameworks);
     }
 
-    private function getFrameworkCommands(string $framework, CombinerContract $combiner)
+    /**
+     * Get framework command options.
+     *
+     * @param CombinerContract $combiner
+     * @param                  $framework
+     * @param                  $command
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCommandOptions(CombinerContract $combiner, $framework, $command)
     {
-        $commands = $combiner->getFrameworkCommands($framework);
+        $response = $combiner->getCommandOptions($framework, $command);
+        $options = [];
 
-        if ($commands->success === true) {
-            return $commands->result;
+        if ($response !== null && $response->success === true) {
+            foreach ($response->args as $option) {
+                $object = new stdClass;
+                $object->title = $option->name;
+                $object->defaultValue = '';// TODO modify api $option->default;
+                $object->field = $this->getCommandOptionType($option->type);
+                $object->type = $option->type;
+
+                $options[] = $object;
+            }
         }
 
-        return [];
+        return response()->json($options);
+    }
+
+    private function getFileContentsByExternalUrl(string $url)
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get($url);
+
+            return $response->getBody()->getContents();
+        } catch (RequestException $e) {
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return null;
+        }
+    }
+
+    private function getCommandOptionType($type)
+    {
+        $types = [
+            'int'   => 'number',
+            'float' => 'number',
+            'str'   => 'text',
+            'bool'  => 'checkbox',
+        ];
+
+        if (array_key_exists($type, $types)) {
+            return $types[$type];
+        }
+
+        return $types['str'];
+    }
+
+    private function prepareConfiguration($configuration)
+    {
+        $resultConfiguration = [];
+
+        if (\is_array($configuration)) {
+            foreach ($configuration as $commandConfig) {
+                $tempConfig = [
+                    'name'      => $commandConfig['title'],
+                    'framework' => $commandConfig['framework'],
+                ];
+
+                $tempConfigOptions = [];
+
+                if (array_key_exists('options', $commandConfig)) {
+                    foreach ($commandConfig['options'] as $option) {
+                        $optionValue = $this->getOptionValue($option);
+
+                        if ($optionValue !== null) {
+                            $tempConfigOptions[$option['title']] = $optionValue;
+                        }
+                    }
+
+                    if (\count($tempConfigOptions) > 0) {
+                        $tempConfig['params'] = $tempConfigOptions;
+                    }
+                }
+
+                $resultConfiguration[] = $tempConfig;
+            }
+        }
+
+        return $resultConfiguration;
+    }
+
+    private function getOptionValue($option)
+    {
+        if (\is_array($option)) {
+            if (array_key_exists('value', $option)) {
+                switch ($option['type']) {
+                    case 'int':
+                        return (int)$option['value'];
+                    case 'float':
+                        return (float)$option['value'];
+                    case 'bool':
+                        return $option['value'] === 'true';
+                    case 'str':
+                        return (string)$option['value'];
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        return null;
     }
 }

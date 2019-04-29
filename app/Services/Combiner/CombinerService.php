@@ -3,6 +3,7 @@
 namespace App\Services\Combiner;
 
 use App\Builders\CombinerEndpointBuilder;
+use App\Models\Project;
 
 class CombinerService extends AbstractCombiner
 {
@@ -11,11 +12,16 @@ class CombinerService extends AbstractCombiner
     /**
      * Execute algorithm.
      *
+     * @param Project $project
+     *
      * @return mixed
      */
-    public function executeAlgorithm()
+    public function executeAlgorithm(Project $project)
     {
-        $this->prepareExecuteAlgorithmData();
+        $endpoint = CombinerEndpointBuilder::point()->to('/algorithm')->make();
+        $options = $this->prepareExecuteAlgorithmOptions($project);
+
+        $this->setConfiguration($endpoint, $options);
         return $this->executePostRequest();
     }
 
@@ -50,30 +56,64 @@ class CombinerService extends AbstractCombiner
         return $this->executeGetRequest();
     }
 
-    private function prepareExecuteAlgorithmData()
-    {
-        $endpoint = $this->prepareExecuteAlgorithmEndpoint();
-        $options = $this->prepareExecuteAlgorithmOptions();
 
-        $this->setConfiguration($endpoint, $options);
+    /**
+     * Get framework command options.
+     *
+     * @param string $framework
+     * @param string $command
+     *
+     * @return mixed
+     */
+    public function getCommandOptions(string $framework, string $command)
+    {
+        $endpoint = CombinerEndpointBuilder::point()
+            ->to('/args/')
+            ->to($framework)
+            ->to('/' . $command)
+            ->make();
+
+        $this->setConfiguration($endpoint);
+        return $this->executeGetRequest();
     }
 
     /**
-     * Prepare endpoint for execution of algorithm.
+     * Upload file for the project
      *
-     * @return string|null
+     * @param $filename
+     * @param $content
+     *
+     * @return mixed
      */
-    private function prepareExecuteAlgorithmEndpoint()
+    public function uploadFile($filename, $content)
     {
-        // TODO change URI to real
-        return CombinerEndpointBuilder::point()->to('/process_json')->make();
+        $endpoint = CombinerEndpointBuilder::point()->to('/upload_file')->make();
+        $options = [
+            'multipart' => [
+                [
+                    'name'     => 'file',
+                    'contents' => $content,
+                    'filename' => $filename,
+                ],
+            ],
+        ];
+
+        $this->setConfiguration($endpoint, $options);
+        return $this->executePostRequest();
     }
 
-    private function prepareExecuteAlgorithmOptions()
+    private function prepareExecuteAlgorithmOptions(Project $project)
     {
         return [
             \GuzzleHttp\RequestOptions::JSON => [
-                // TODO json body for the request
+                'config'   => [
+                    'normalize'    => $project->getNormalize(),
+                    'scale'        => $project->getScale(),
+                    'file_url'     => $project->getDataUrl(),
+                    'columns'      => unserialize($project->getCheckedColumns()),
+                    'callback_url' => 'http://github.com/danilchican', // TODO
+                ],
+                'commands' => unserialize($project->getConfiguration()),
             ],
         ];
     }

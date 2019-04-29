@@ -1,4 +1,4 @@
-@extends('layouts.backend.account', ['title' => ' | ' . trans('sidebar.account.menu.projects.create')])
+@extends('layouts.backend.account', ['title' => ' | Projects | Create'])
 
 @section('content')
     <div class="row">
@@ -22,39 +22,20 @@
                     <br/>
                 </div>
                 <div class="x_content">
-                    <div id="wizard" class="form_wizard wizard_horizontal">
+                    <divE id="wizard" class="form_wizard wizard_horizontal">
                         <ul class="wizard_steps">
-                            <li>
-                                <a href="#step-1">
-                                    <span class="step_no">1</span>
-                                    <span class="step_descr">Step 1<br/><small>Load data</small></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#step-2">
-                                    <span class="step_no">2</span>
-                                    <span class="step_descr">
-                                        Step 2<br/><small>Select & configure algorithms</small>
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#step-3">
-                                    <span class="step_no">3</span>
-                                    <span class="step_descr">Step 3<br/><small>Execution results</small></span>
-                                </a>
-                            </li>
+                            @include('partials.common.projects.tabs_header')
                         </ul>
                         <div id="step-1">
                             @include('account.projects.create.tabs.1_step')
                         </div>
                         <div id="step-2">
-                            <project-configuration></project-configuration>
+                            <project-configuration :is-edit-page="false"></project-configuration>
                         </div>
                         <div id="step-3">
                             @include('account.projects.create.tabs.3_step')
                         </div>
-                    </div>
+                    </divE>
                 </div>
             </div>
         </div>

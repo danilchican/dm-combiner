@@ -20,6 +20,7 @@ trait CombinerTrait
             return \GuzzleHttp\json_decode($response->getBody());
         } catch (RequestException $e) {
             \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return null;
         }
     }
@@ -38,6 +39,7 @@ trait CombinerTrait
             return \GuzzleHttp\json_decode($response->getBody());
         } catch (RequestException $e) {
             \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
             return null;
         }
     }

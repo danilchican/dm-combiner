@@ -27,10 +27,8 @@ class CreateProjectRequest extends FormRequest
             'title'         => 'required|string|min:3|max:100',
             'normalize'     => 'required|in:true,false',
             'scale'         => 'required|in:true,false',
-            'data_url'      => 'url',
             'columns'       => 'required|array',
-            'configuration' => 'required',
-            'result'        => 'string',
+            'configuration' => 'required|array',
         ];
     }
 }

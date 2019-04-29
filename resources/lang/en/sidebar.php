@@ -4,7 +4,9 @@ return [
     'dashboard' => [
         'title' => 'Dashboard',
         'menu'  => [
-            'home' => 'Home',
+            'home'     => 'Home',
+            'users'    => 'Users',
+            'projects' => 'Projects',
         ],
         'users' => [
             'view' => 'User Page',

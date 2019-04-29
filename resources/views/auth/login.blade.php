@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ config('app.name', 'ФКСиС') }} @isset($subtitle) - {{$subtitle}} @endisset</title>
+    <title>{{ config('app.name') }} @isset($subtitle) - {{$subtitle}} @endisset</title>
 
     <link href="{{ asset('css/login.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.min.css') }}" rel="stylesheet">
@@ -32,7 +32,6 @@
                         <input type="text" value="{{ old('email') }}" class="form-control"
                                placeholder="Username" name="email" required/>
                     </div>
-                    {{--TODO make beautiful display errors--}}
                     @if ($errors->has('email'))
                         <span class="help-block">
                             <strong>{{ $errors->first('email') }}</strong>
@@ -57,7 +56,11 @@
                     </div>
                     <div class="clearfix"></div>
                     <div class="separator">
-                        <div><p>&copy;2018 {{ config('app.name', 'Datamining Combiner') }}</p></div>
+                        <div>
+                            <p>
+                                &copy;<script>document.write(new Date().getFullYear())</script> {{ config('app.name') }}
+                            </p>
+                        </div>
                     </div>
                 </form>
             </section>

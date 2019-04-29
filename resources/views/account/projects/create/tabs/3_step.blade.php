@@ -8,20 +8,21 @@
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
-            <br />
+            <br/>
             <form class="form-horizontal form-label-left input_mask">
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Text results</label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                        <textarea class="form-control" rows="5"></textarea>
+                        <textarea class="form-control" rows="5" id="result-textarea"></textarea>
                     </div>
                 </div>
-                <div class="ln_solid"></div>
+                {{--TODO add download functionality--}}
+                {{--<div class="ln_solid"></div>
                 <div class="form-group">
                     <div class="col-md-9 col-sm-9 col-xs-12 col-sm-offset-3">
                         <button type="submit" class="btn btn-success">Download CSV</button>
                     </div>
-                </div>
+                </div>--}}
             </form>
         </div>
     </div>

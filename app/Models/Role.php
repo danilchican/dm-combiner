@@ -8,13 +8,16 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Role
  *
  * @property-read \App\Models\User $user
- * @mixin \Eloquent
  * @property int                   $id
  * @property string                $title
  * @property string                $slug
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role query()
+ * @mixin \Eloquent
  */
 class Role extends Model
 {

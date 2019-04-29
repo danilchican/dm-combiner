@@ -1,4 +1,4 @@
-@extends('layouts.backend.dashboard', ['title' => ' | ' . trans('sidebar.dashboard.title')])
+@extends('layouts.backend.account', ['title' => ' | Users'])
 
 @section('content')
     <div class="row">
@@ -11,7 +11,7 @@
                 <div class="x_content">
                     <div class="table-responsive">
                         @if(count($users))
-                            @include('partials.dashboard.home.users')
+                            @include('partials.common.users.list')
                         @else
                             @lang('dashboard.home.section.users.messages.empty_collection')
                         @endif

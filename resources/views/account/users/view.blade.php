@@ -1,4 +1,4 @@
-@extends('layouts.backend.dashboard', ['title' => ' | ' . trans('sidebar.dashboard.users.view')])
+@extends('layouts.backend.account', ['title' => ' | Users | #' . $user->id])
 
 @section('content')
     <div class="">
@@ -10,6 +10,7 @@
                     <div class="x_title">
                         <h2 style="padding-bottom: 5px; width: 100%;">
                             @lang('general.dashboard.section.user_view.title')
+                            <small>created at {{ $user->getRegistrationDate()->format('d.m.Y H:i') }}</small>
                         </h2>
                         <div class="clearfix"></div>
                     </div>
@@ -35,32 +36,32 @@
                             </ul>
                         </div>
                         <div class="col-md-9 col-sm-9 col-xs-12">
+                            @include('partials.messages')
 
                             <div class="" role="tabpanel" data-example-id="togglable-tabs">
                                 <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
                                     <li role="presentation" class="active">
                                         <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab"
                                            aria-expanded="true">
-                                            @lang('general.dashboard.section.user_view.tabs.settings')
+                                            @lang('general.dashboard.section.user_view.tabs.projects')
+                                            ({{ $projects->total() }})
                                         </a>
                                     </li>
                                     <li role="presentation">
-                                        <a href="#tab_content2" role="tab" id="profile-tab2" data-toggle="tab"
+                                        <a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"
                                            aria-expanded="false">
-                                            @lang('general.dashboard.section.user_view.tabs.projects')
+                                            @lang('general.dashboard.section.user_view.tabs.settings')
                                         </a>
                                     </li>
                                 </ul>
                                 <div id="myTabContent" class="tab-content">
                                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1"
                                          aria-labelledby="home-tab">
-                                        {{--TODO settings here--}}
-                                        Settings here...
+                                        @include('partials.common.users.project_list')
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="tab_content2"
                                          aria-labelledby="profile-tab">
-                                        {{--TODO list of user's projects here--}}
-                                        List of user's projects here
+                                        @include('partials.common.users.settings')
                                     </div>
                                 </div>
                             </div>

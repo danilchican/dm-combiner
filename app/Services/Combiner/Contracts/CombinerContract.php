@@ -2,6 +2,8 @@
 
 namespace App\Services\Combiner\Contracts;
 
+use App\Models\Project;
+
 interface CombinerContract
 {
     /**
@@ -17,9 +19,11 @@ interface CombinerContract
     /**
      * Execute algorithm.
      *
+     * @param Project $project
+     *
      * @return mixed
      */
-    public function executeAlgorithm();
+    public function executeAlgorithm(Project $project);
 
     /**
      * Get all frameworks.
@@ -36,4 +40,24 @@ interface CombinerContract
      * @return mixed
      */
     public function getFrameworkCommands(string $framework);
+
+    /**
+     * Get framework command options.
+     *
+     * @param string $framework
+     * @param string $command
+     *
+     * @return mixed
+     */
+    public function getCommandOptions(string $framework, string $command);
+
+    /**
+     * Upload file for the project
+     *
+     * @param $filename
+     * @param $content
+     *
+     * @return mixed
+     */
+    public function uploadFile($filename, $content);
 }

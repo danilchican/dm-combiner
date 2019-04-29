@@ -27747,8 +27747,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 __webpack_require__(137);
 __webpack_require__(345);
 
-window.useMock = true;
-
 /**
  * Toastr notifier
  */
@@ -98273,59 +98271,161 @@ window.saveProject = function () {
 
     var normalize = $('input#normalize-option').prop('checked');
     var scale = $('input#scale-option').prop('checked');
-    var dataUrl = $('input#data-url').val();
 
     var checkedCols = [];
     $.each($('.data-head-option:checked'), function (index, option) {
         checkedCols.push($(option).val());
     });
 
-    var configuration = [1]; // TODO
-    var executionResults = void 0; // TODO if executed
-
     var data = {
         title: title,
         normalize: normalize,
         scale: scale,
         columns: checkedCols,
-        configuration: configuration,
-        result: executionResults // TODO if executed
+        configuration: config
     };
-
-    if (dataUrl !== '') {
-        data.data_url = dataUrl;
-    }
 
     $.ajax({
         url: '/account/projects/create',
         method: "POST",
-        data: data
-    }).done(function (response) {
-        toastr.success(response.message, 'Success');
-        console.log(response);
-        toastr.info('Uploading data...', 'Info');
+        data: data,
+        success: function success(response) {
+            console.log(response);
+            console.log('Project saved.');
+            console.log('Saving project data.');
 
-        var id = response.project.id; // TODO
+            var message = response.message;
+            toastr.info('Uploading data...', 'Info');
 
-        var formData = new FormData();
+            var id = response.project.id;
+            var form = $('#project-data-upload-form')[0];
+            var formData = new FormData(form);
 
-        if (dataUrl === '') {
-            formData.append('file', $('input#data-file')[0].files[0]);
+            $.ajax({
+                url: '/account/projects/' + id + '/upload/data',
+                data: formData,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                success: function success(response) {
+                    console.log(response);
+                    toastr.success('Project data was uploaded.', 'Success');
+                    toastr.success(message, 'Success');
+                    window.lastProjectId = id;
+                    return true;
+                },
+                error: function error(xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    showErrors(response);
+                }
+            });
+        },
+        error: function error(xhr) {
+            var response = JSON.parse(xhr.responseText);
+            showErrors(response);
         }
-
-        toastr.success('Project data was uploaded.', 'Success');
-
-        // $.ajax({
-        //     url: '/account/projects/' + id + '/upload',
-        //     method: "POST",
-        //     data: formData,
-        //     dataType: false,
-        //     processData: false,
-        // }).done(function (response) {
-        //     console.log(response);
-        // });
     });
 };
+
+window.updateProject = function () {
+    console.log('Updating project...');
+    toastr.info('Updating project...', 'Info');
+    var projectId = $('input#project-id').val();
+    var title = $('input#project-title').val();
+
+    var normalize = $('input#normalize-option').prop('checked');
+    var scale = $('input#scale-option').prop('checked');
+
+    var checkedCols = [];
+    $.each($('.data-head-option:checked'), function (index, option) {
+        checkedCols.push($(option).val());
+    });
+
+    var data = {
+        id: projectId,
+        title: title,
+        normalize: normalize,
+        scale: scale,
+        columns: checkedCols,
+        configuration: config
+    };
+
+    $.ajax({
+        url: '/account/projects/update',
+        method: "POST",
+        data: data,
+        success: function success(response) {
+            console.log(response);
+            console.log('Project updated.');
+            console.log('Updating project data.');
+
+            var message = response.message;
+            toastr.success(message, 'Success');
+
+            var id = response.project.id;
+            var form = $('#project-data-upload-form')[0];
+            var formData = new FormData(form);
+            var newDataUrl = $('#data-url').val();
+
+            if (newDataUrl !== window.oldDataUrl) {
+                toastr.info('Uploading data...', 'Info');
+
+                $.ajax({
+                    url: '/account/projects/' + id + '/upload/data',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function success(response) {
+                        console.log(response);
+                        toastr.success('Project data was uploaded.', 'Success');
+                        window.lastProjectId = id;
+                        return true;
+                    },
+                    error: function error(xhr) {
+                        var response = JSON.parse(xhr.responseText);
+                        showErrors(response);
+                    }
+                });
+            }
+        },
+        error: function error(xhr) {
+            var response = JSON.parse(xhr.responseText);
+            showErrors(response);
+        }
+    });
+};
+
+window.runProject = function () {
+    $.ajax({
+        url: '/account/projects/run',
+        data: { id: window.lastProjectId },
+        type: 'POST',
+        success: function success(response) {
+            console.log(response);
+            var resultData = response.result;
+            $('#result-textarea').text(resultData);
+            toastr.success(response.message, 'Success');
+        },
+        error: function error(xhr) {
+            var response = JSON.parse(xhr.responseText);
+            showErrors(response);
+        }
+    });
+};
+
+function showErrors(data) {
+    console.log(data);
+
+    if (data.errors !== undefined) {
+        // error callback
+        $.each(data.errors, function (key, value) {
+            toastr.error(value, 'Error');
+        });
+    } else {
+        toastr.error('Something went wrong...', 'Error');
+    }
+}
 
 /***/ }),
 /* 346 */
@@ -99056,18 +99156,66 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        isEditPage: Boolean,
+        configuration: String
+    },
+
     data: function data() {
         return {
             frameworks: [],
-            selectedAlgorithms: []
+            selectedAlgorithms: [],
+            options: [],
+            editCommand: {
+                index: null,
+                name: '',
+                framework: '',
+                options: []
+            }
         };
     },
     created: function created() {
         this.uploadFrameworks();
+
+        if (this.isEditPage) {
+            this.applyExistingConfiguration();
+        }
     },
 
 
@@ -99084,10 +99232,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var requestURL = '/account/projects/frameworks';
 
-            if (useMock) {
-                requestURL = '/mocks/frameworks.json';
-            }
-
             this.$http.get(requestURL).then(function (response) {
                 console.log(response);
 
@@ -99098,8 +99242,108 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.error('Something went wrong...', 'Error');
             });
         },
+        applyExistingConfiguration: function applyExistingConfiguration() {
+            var _this2 = this;
+
+            var configuration = JSON.parse(this.configuration);
+
+            if (configuration instanceof Array) {
+                var _loop = function _loop(i) {
+                    var configEntry = configuration[i];
+                    var requestURL = '/account/projects/args/' + configEntry.framework + '/' + configEntry.name;
+                    var configEntryOptions = void 0;
+
+                    _this2.$http.get(requestURL).then(function (response) {
+                        if (response.status === 200) {
+                            (function () {
+                                configEntryOptions = response.body;
+
+                                var keys = Object.keys(configEntry.params);
+
+                                if (keys !== undefined && keys.length > 0) {
+                                    var _loop2 = function _loop2(_i) {
+                                        var option = configEntryOptions.find(function (e) {
+                                            return e.title === keys[_i];
+                                        });
+
+                                        if (option !== null) {
+                                            option.value = configEntry.params[keys[_i]];
+                                        }
+                                    };
+
+                                    for (var _i = 0; keys.length > 0 && _i < keys.length; _i++) {
+                                        _loop2(_i);
+                                    }
+                                }
+
+                                _this2.selectedAlgorithms.push({
+                                    index: i,
+                                    framework: configEntry.framework,
+                                    title: configEntry.name,
+                                    options: configEntryOptions
+                                });
+
+                                _this2.selectedAlgorithms.sort(function (a, b) {
+                                    if (a.index > b.index) {
+                                        return 1;
+                                    }
+
+                                    if (a.index < b.index) {
+                                        return -1;
+                                    }
+
+                                    return 0;
+                                });
+                            })();
+                        }
+                    }, function () {
+                        toastr.error('Something went wrong...', 'Error');
+                    });
+                };
+
+                for (var i = 0; i < configuration.length; i++) {
+                    _loop(i);
+                }
+            } else {
+                toastr.error('Project configuration is wrong.', 'Error');
+            }
+        },
+        clone: function clone(original) {
+            return JSON.parse(JSON.stringify(original));
+        },
         remove: function remove(index) {
             this.selectedAlgorithms.splice(index, 1);
+        },
+        editAlgorithm: function editAlgorithm(index, command) {
+            var _this3 = this;
+
+            this.editCommand = JSON.parse(JSON.stringify(command));
+            this.editCommand.index = index;
+
+            if (this.editCommand.options.length < 1) {
+                var requestURL = '/account/projects/args/' + command.framework + '/' + command.title;
+
+                this.$http.get(requestURL).then(function (response) {
+                    console.log(response);
+
+                    if (response.status === 200) {
+                        _this3.editCommand.options = response.body;
+                    }
+                }, function () {
+                    toastr.error('Something went wrong...', 'Error');
+                });
+            }
+        },
+        updateCommandConfig: function updateCommandConfig() {
+            var editCommandIndex = this.editCommand.index;
+            this.selectedAlgorithms[editCommandIndex].options = this.editCommand.options;
+
+            this.editCommand.index = null;
+            this.editCommand.title = '';
+            this.editCommand.framework = '';
+            this.editCommand.options = [];
+
+            $('#editCommandModal').modal('hide');
         }
     },
 
@@ -101160,6 +101404,7 @@ var render = function() {
                                     "draggable",
                                     {
                                       attrs: {
+                                        clone: _vm.clone,
                                         options: {
                                           group: {
                                             name: "frameworks",
@@ -101180,7 +101425,7 @@ var render = function() {
                                       command
                                     ) {
                                       return _c("li", [
-                                        _c("p", [_vm._v(_vm._s(command))])
+                                        _c("p", [_vm._v(_vm._s(command.title))])
                                       ])
                                     })
                                   )
@@ -101214,8 +101459,8 @@ var render = function() {
                 "draggable",
                 {
                   attrs: {
-                    options: { group: "frameworks", handle: ".draggable" },
-                    element: "tbody"
+                    element: "tbody",
+                    options: { group: "frameworks", handle: ".draggable" }
                   },
                   model: {
                     value: _vm.selectedAlgorithms,
@@ -101230,13 +101475,28 @@ var render = function() {
                     return _c("tr", { staticClass: "draggable" }, [
                       _c("td", [_vm._v(_vm._s(index + 1))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(algorithm))]),
+                      _c("td", [_vm._v(_vm._s(algorithm.title))]),
                       _vm._v(" "),
                       _c("td", [
-                        _c("a", { staticClass: "btn btn-info btn-xs" }, [
-                          _c("i", { staticClass: "fa fa-pencil" }),
-                          _vm._v(" Edit ")
-                        ]),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-info btn-xs",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#editCommandModal"
+                            },
+                            on: {
+                              click: function($event) {
+                                _vm.editAlgorithm(index, algorithm)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-pencil" }),
+                            _vm._v(" Edit\n                                ")
+                          ]
+                        ),
                         _vm._v(" "),
                         _c(
                           "a",
@@ -101272,7 +101532,219 @@ var render = function() {
           )
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "editCommandModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "h4",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "editCommandModalLabel" }
+                  },
+                  [
+                    _vm._v(
+                      '\n                        Command configuration "' +
+                        _vm._s(_vm.editCommand.framework) +
+                        "/" +
+                        _vm._s(_vm.editCommand.title) +
+                        '"\n                    '
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "modal-body" },
+                [
+                  _vm._l(_vm.editCommand.options, function(option, index) {
+                    return _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "config-title-edit" } }, [
+                        _vm._v(_vm._s(option.title))
+                      ]),
+                      _vm._v(" "),
+                      option.field === "checkbox"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.editCommand.options[index].value,
+                                expression: "editCommand.options[index].value"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              id: "config-title-edit",
+                              placeholder: "Enter the value",
+                              type: "checkbox"
+                            },
+                            domProps: {
+                              checked: Array.isArray(
+                                _vm.editCommand.options[index].value
+                              )
+                                ? _vm._i(
+                                    _vm.editCommand.options[index].value,
+                                    null
+                                  ) > -1
+                                : _vm.editCommand.options[index].value
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.editCommand.options[index].value,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 &&
+                                      _vm.$set(
+                                        _vm.editCommand.options[index],
+                                        "value",
+                                        $$a.concat([$$v])
+                                      )
+                                  } else {
+                                    $$i > -1 &&
+                                      _vm.$set(
+                                        _vm.editCommand.options[index],
+                                        "value",
+                                        $$a
+                                          .slice(0, $$i)
+                                          .concat($$a.slice($$i + 1))
+                                      )
+                                  }
+                                } else {
+                                  _vm.$set(
+                                    _vm.editCommand.options[index],
+                                    "value",
+                                    $$c
+                                  )
+                                }
+                              }
+                            }
+                          })
+                        : option.field === "radio"
+                          ? _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.editCommand.options[index].value,
+                                  expression: "editCommand.options[index].value"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                id: "config-title-edit",
+                                placeholder: "Enter the value",
+                                type: "radio"
+                              },
+                              domProps: {
+                                checked: _vm._q(
+                                  _vm.editCommand.options[index].value,
+                                  null
+                                )
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.$set(
+                                    _vm.editCommand.options[index],
+                                    "value",
+                                    null
+                                  )
+                                }
+                              }
+                            })
+                          : _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.editCommand.options[index].value,
+                                  expression: "editCommand.options[index].value"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                id: "config-title-edit",
+                                placeholder: "Enter the value",
+                                type: option.field
+                              },
+                              domProps: {
+                                value: _vm.editCommand.options[index].value
+                              },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.editCommand.options[index],
+                                    "value",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _vm.editCommand.options.length < 1
+                    ? _c("p", [_vm._v("No options found.")])
+                    : _vm._e()
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-default",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Отмена")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.updateCommandConfig()
+                      }
+                    }
+                  },
+                  [_vm._v("Сохранить")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -101315,6 +101787,23 @@ var staticRenderFns = [
         _c("th", { staticStyle: { width: "30%" } }, [_vm._v("Action")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true

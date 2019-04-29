@@ -69,25 +69,21 @@ function SmartWizard(target, options) {
             return false;
         });
         $($this.buttons.save).click(function () {
-            if (!$(this).hasClass('buttonDisabled')) {
+            if (window.isEditPage) {
+                updateProject();
+            } else if (!$(this).hasClass('buttonDisabled')) {
                 saveProject();
-                if ($.isFunction($this.options.onSave)) {
-                    var context = {fromStep: $this.curStepIdx + 1};
-                    if (!$this.options.onSave.call(this, $($this.steps), context)) {
-                        return false;
-                    }
-                } else {
-                    var frm = $this.target.parents('form');
-                    if (frm && frm.length) {
-                        frm.submit();
-                    }
+                var context = {fromStep: $this.curStepIdx + 1};
+                if (!$this.options.onSave.call(this, $($this.steps), context)) {
+                    return false;
                 }
             }
+
             return false;
         });
 
         $($this.buttons.run).click(function () {
-            console.log('button RUN was clicked'); // TODO change
+            runProject();
             return false;
         });
 
@@ -444,10 +440,10 @@ function SmartWizard(target, options) {
         enableRunButton: false, // make run button enabled always
         hideButtonsOnDisabled: false, // when the previous/next/save/run buttons are disabled, hide them instead?
         errorSteps: [],    // Array Steps with errors
-        labelNext: 'Дальше',
-        labelPrevious: 'Назад',
-        labelSave: 'Сохранить',
-        labelRun: 'Запустить',
+        labelNext: 'Next',
+        labelPrevious: 'Previous',
+        labelSave: 'Save',
+        labelRun: 'Run',
         noForwardJumping: false,
         onLeaveStep: null, // triggers when leaving a step
         onShowStep: null,  // triggers when showing a step
