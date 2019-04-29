@@ -48,6 +48,21 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show Edit project page.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showEditProjectPage($id)
+    {
+        $user = \Auth::user();
+        $project = $user->isAdministrator()
+            ? Project::with('user')->findOrFail($id)
+            : $user->projects()->with('user')->findOrFail($id);
+
+        return view('account.projects.edit.index')->with('project', $project);
+    }
+
+    /**
      * View Project details page.
      *
      * @param integer $id

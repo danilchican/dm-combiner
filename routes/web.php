@@ -60,6 +60,10 @@ Route::group(['prefix' => '/account', 'middleware' => ['auth']], function () {
             ->name('account.projects.view')
             ->where('id', '[0-9]+');
 
+        Route::get('/{id}/edit', 'Account\ProjectController@showEditProjectPage')
+            ->name('account.projects.edit')
+            ->where('id', '[0-9]+');
+
         Route::post('/run', 'Account\ProjectController@runProject')
             ->name('account.projects.run');
 

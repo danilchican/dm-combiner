@@ -1,11 +1,13 @@
-@extends('layouts.backend.account', ['title' => ' | Projects | Create'])
+@extends('layouts.backend.account', ['title' => ' | Projects | Edit #' .  $project->id])
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Create project</h2>
+                    <h2>Edit project #{{ $project->getId() }}
+                        <small>created at {{ $project->getCreatedDate()->format('m.d.Y H:i') }}</small>
+                    </h2>
                     <div class="clearfix"></div>
                     <form class="form-horizontal form-label-left">
                         <div class="form-group">
@@ -14,6 +16,7 @@
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="text" id="project-title" required="required"
+                                       value="{{ $project->getTitle() }}"
                                        class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
@@ -27,13 +30,13 @@
                             @include('partials.common.projects.tabs_header')
                         </ul>
                         <div id="step-1">
-                            @include('account.projects.create.tabs.1_step')
+                            {{--@include('account.projects.create.tabs.1_step')--}}
                         </div>
                         <div id="step-2">
-                            <project-configuration></project-configuration>
+                            {{--<project-configuration></project-configuration>--}}
                         </div>
                         <div id="step-3">
-                            @include('account.projects.create.tabs.3_step')
+                            {{--@include('account.projects.create.tabs.3_step')--}}
                         </div>
                     </div>
                 </div>

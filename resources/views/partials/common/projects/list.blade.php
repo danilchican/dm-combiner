@@ -19,11 +19,11 @@
                     <td>{{ $project->getStatus() }}</td>
                     <td>{{ $project->getCreatedDate() }}</td>
                     <td style="display: flex;">
-                        <a href="{{ route('account.projects.view', ['id' => $project->getId()]) }}"
+                        <a href="{{ route('account.projects.view', ['id' => $project->id]) }}"
                            class="btn btn-primary btn-xs">View</a>
 
-                        {{--TODO add edit link--}}
-                        <a href="" class="btn btn-warning btn-xs">Edit</a>
+                        <a href="{{ route('account.projects.edit', ['id' => $project->id]) }}"
+                           class="btn btn-warning btn-xs">Edit</a>
 
                         <form action="{{ route('account.projects.remove') }}" method="POST">
                             {{ csrf_field() }}
