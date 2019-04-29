@@ -36,7 +36,8 @@
                             @include('account.projects.edit.tabs.1_step')
                         </div>
                         <div id="step-2">
-                            <project-configuration></project-configuration>
+                            <project-configuration configuration="{{ $configuration }}"
+                                                   :is-edit-page="true"></project-configuration>
                         </div>
                         <div id="step-3">
                             {{--@include('account.projects.create.tabs.3_step')--}}

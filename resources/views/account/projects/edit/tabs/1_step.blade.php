@@ -184,7 +184,6 @@
                             .filter(e => selectedColumns.includes(e));
 
                         $.each(cols, function (index, col) {
-                            console.log(col);
                             $(col).attr('checked', true);
                             $(col).closest('.icheckbox_flat-green').addClass('checked');
                         });

@@ -59,7 +59,9 @@ class ProjectController extends Controller
             ? Project::with('user')->findOrFail($id)
             : $user->projects()->with('user')->findOrFail($id);
 
-        return view('account.projects.edit.index')->with('project', $project);
+        $configuration = json_encode(unserialize($project->getConfiguration()));
+
+        return view('account.projects.edit.index')->with(compact(['project', 'configuration']));
     }
 
     /**

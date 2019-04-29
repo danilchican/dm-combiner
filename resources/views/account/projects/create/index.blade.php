@@ -30,7 +30,7 @@
                             @include('account.projects.create.tabs.1_step')
                         </div>
                         <div id="step-2">
-                            <project-configuration></project-configuration>
+                            <project-configuration :is-edit-page="false"></project-configuration>
                         </div>
                         <div id="step-3">
                             @include('account.projects.create.tabs.3_step')

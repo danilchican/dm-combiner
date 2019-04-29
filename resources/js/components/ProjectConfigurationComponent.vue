@@ -113,6 +113,11 @@
     import draggable from 'vuedraggable'
 
     export default {
+        props: {
+            isEditPage: Boolean,
+            configuration: String
+        },
+
         data() {
             return {
                 frameworks: [],
@@ -129,6 +134,10 @@
 
         created() {
             this.uploadFrameworks();
+
+            if (this.isEditPage) {
+                this.applyExistingConfiguration();
+            }
         },
 
         watch: {
@@ -151,6 +160,46 @@
                 }, () => {
                     toastr.error('Something went wrong...', 'Error');
                 });
+            },
+
+            applyExistingConfiguration() {
+                let configuration = JSON.parse(this.configuration);
+
+                if (configuration instanceof Array) {
+                    for (let i = 0; i < configuration.length; i++) {
+                        let configEntry = configuration[i];
+                        let requestURL = '/account/projects/args/' + configEntry.framework + '/' + configEntry.name;
+                        let configEntryOptions;
+
+                        this.$http.get(requestURL).then((response) => {
+                            if (response.status === 200) {
+                                configEntryOptions = response.body;
+
+                                let keys = Object.keys(configEntry.params);
+
+                                if (keys !== undefined && keys.length > 0) {
+                                    for (let i = 0; keys.length > 0 && i < keys.length; i++) {
+                                        let option = configEntryOptions.find(e => e.title === keys[i]);
+
+                                        if(option !== null) {
+                                            option.value = configEntry.params[keys[i]];
+                                        }
+                                    }
+                                }
+
+                                this.selectedAlgorithms.push({
+                                    framework: configEntry.framework,
+                                    title: configEntry.name,
+                                    options: configEntryOptions
+                                })
+                            }
+                        }, () => {
+                            toastr.error('Something went wrong...', 'Error');
+                        });
+                    }
+                } else {
+                    toastr.error('Project configuration is wrong.', 'Error');
+                }
             },
 
             clone(original) {

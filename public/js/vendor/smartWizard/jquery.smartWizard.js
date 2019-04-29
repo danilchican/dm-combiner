@@ -437,10 +437,10 @@ function SmartWizard(target, options) {
         enableRunButton: false, // make run button enabled always
         hideButtonsOnDisabled: false, // when the previous/next/save/run buttons are disabled, hide them instead?
         errorSteps: [],    // Array Steps with errors
-        labelNext: 'Дальше',
-        labelPrevious: 'Назад',
-        labelSave: 'Сохранить',
-        labelRun: 'Запустить',
+        labelNext: 'Next',
+        labelPrevious: 'Previous',
+        labelSave: 'Save',
+        labelRun: 'Run',
         noForwardJumping: false,
         onLeaveStep: null, // triggers when leaving a step
         onShowStep: null,  // triggers when showing a step
